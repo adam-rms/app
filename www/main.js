@@ -1,3 +1,12 @@
+var initialPlatform = ons.platform.isAndroid() ? 'android' : 'ios';
+if (true) {
+    initialPlatform = 'android';
+}
+
+if (initialPlatform == "android") {
+    ons.platform.select('android');
+}
+
 class PullToRefresh extends React.Component {
     constructor(props) {
         super(props);
@@ -314,7 +323,7 @@ class InfiniteScroll extends React.Component {
                 <Ons.LazyList
                     length={10000}
                     renderRow={this.renderRow}
-                    calculateItemHeight={() => ons.platform.isAndroid() ? 48 : 44}
+                    calculateItemHeight={() => initialPlatform == "android" ? 48 : 44}
                 />
             </Ons.Page>
         );
@@ -668,7 +677,7 @@ class Animations extends React.Component {
 }
 
 
-const initialPlatform = ons.platform.isAndroid() ? 'android' : 'ios';
+
 
 class Home extends React.Component {
     gotoComponent(component, key) {
