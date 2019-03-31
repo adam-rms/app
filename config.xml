@@ -2,10 +2,10 @@
 <widget id="com.bithellstudios.adamrms" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Adam RMS</name>
     <description>
-        A blank PhoneGap app.
+        Rental Management System for Theatre, AV and Broadcast
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+    <author email="hi@jbithell.com" href="https://jbithell.com">
+        Bithell Studios
     </author>
     <content src="index.html" />
     <access origin="*" />
