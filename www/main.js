@@ -1,8 +1,58 @@
-var initialPlatform = ons.platform.isAndroid() ? 'android' : 'ios';
-if (true) {
-    initialPlatform = 'android';
-}
+// Setup API Calls
+const instance = axios.create({
+   baseURL: 'https://some-domain.com/api/',
 
+    // `transformRequest` allows changes to the request data before it is sent to the server
+    // This is only applicable for request methods 'PUT', 'POST', and 'PATCH'
+    // The last function in the array must return a string or an instance of Buffer, ArrayBuffer,
+    // FormData or Stream
+    // You may modify the headers object.
+    transformRequest: [function (data, headers) {
+    // Do whatever you want to transform the data
+
+        return data;
+    }],
+
+    // `headers` are custom headers to be sent
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+
+    // `params` are the URL parameters to be sent with the request
+    // Must be a plain object or a URLSearchParams object
+    params: {
+        ID: 12345
+    },
+
+    // `timeout` specifies the number of milliseconds before the request times out.
+    // If the request takes longer than `timeout`, the request will be aborted.
+    timeout: 300000, // default is `0` (no timeout)
+
+    // `auth` indicates that HTTP Basic auth should be used, and supplies credentials.
+    // This will set an `Authorization` header, overwriting any existing
+    // `Authorization` custom headers you have set using `headers`.
+    auth: {
+        username: 'janedoe',
+            password: 's00pers3cret'
+    },
+
+    // `responseType` indicates the type of data that the server will respond with
+    // options are 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
+    responseType: 'json', // default
+
+    // `responseEncoding` indicates encoding to use for decoding responses
+    // Note: Ignored for `responseType` of 'stream' or client-side requests
+    responseEncoding: 'utf8', // default
+
+    // `maxRedirects` defines the maximum number of redirects to follow in node.js.
+    // If set to 0, no redirects will be followed.
+    maxRedirects: 5, // default
+});
+
+localStorage.getItem("test");
+localStorage.setItem("test", "test");
+localStorage.clear();
+
+// Setup Platform
+var initialPlatform = ons.platform.isAndroid() ? 'android' : 'ios';
 if (initialPlatform == "android") {
     ons.platform.select('android');
 }
