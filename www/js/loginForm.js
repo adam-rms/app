@@ -32,6 +32,7 @@ ons.ready(function() {
                         }
                     },
                     error: function(request, status, error) {
+                        console.log(resquest);
                         ons.notification.alert(request.statusText);
                     }
                 });
