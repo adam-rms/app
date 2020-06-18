@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AdamRMS</title>
+
+  <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; script-src 'self' 'unsafe-inline';">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+
+
+  <script src="cordova.js"></script>
+
+  <script src="lib/onsen/js/onsenui.min.js"></script>
+  <script src="lib/jquery-3.5.1.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/services.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="js/loginForm.js"></script>
+
+  <link rel="stylesheet" href="lib/onsen/css/onsenui.min.css">
+  <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<ons-page id="login" style="display:none;">
+  <ons-toolbar>
+    <div class="center">AdamRMS</div>
+  </ons-toolbar>
+  <ons-card style="text-align: center;">
+    <img src="assets/logoicon.svg" alt="AdamRMS" style="width: 30%">
+    <div class="title">
+      Login
+    </div>
+    <div class="content">
+         <p>
+          <ons-input id="login-username" modifier="underbar" placeholder="Username" float></ons-input>
+        </p>
+        <p>
+          <ons-input id="login-password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
+        </p>
+        <p style="margin-top: 30px;">
+          <ons-button modifier="quiet" onclick="window.open('https://adam-rms.com','_blank')">Forgot password</ons-button>
+          <ons-button id="login-submitbtn">Sign in</ons-button>
+        </p>
+      </div>
+  </ons-card>
+</ons-page>
+<div id="app-mainview" style="display:none;">
+  <!-- First navigation component: Navigator. This will remain always on top of the app. -->
+  <ons-navigator id="myNavigator" page="splitter.html">
+  </ons-navigator>
+  <!-- Second navigation component: Splitter. This will disappear if the first component changes its content. -->
+  <template id="splitter.html">
+    <ons-page>
+      <ons-splitter id="mySplitter">
+        <ons-splitter-side page="html/menu.html" swipeable width="250px" collapse swipe-target-width="50px">
+        </ons-splitter-side>
+        <ons-splitter-content page="tabbar.html">
+        </ons-splitter-content>
+      </ons-splitter>
+    </ons-page>
+  </template>
+
+  <!-- Third navigation component: Tabbar. This will disappear if the first or second components change their content. -->
+  <template id="tabbar.html">
+    <ons-page id="tabbarPage">
+      <ons-toolbar>
+        <div class="left">
+          <!-- Toolbar-button with different icons depending on the platform. -->
+          <ons-toolbar-button onclick="document.querySelector('#mySplitter').left.toggle()">
+            <ons-icon icon="fa-bars" size="32px, material:24px"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">AdamRMS</div>
+        <div class="right">
+          <!-- Toolbar-button  only visible for iOS/other. -->
+          <ons-if platform="ios other">
+            <ons-toolbar-button onclick="myApp.controllers.assets.barcodeScanFAB()"><ons-icon icon="fa-camera" size="32px, material:24px"></ons-icon></ons-toolbar-button>
+          </ons-if>
+        </div>
+      </ons-toolbar>
+
+
+      <!-- Floating Action Button only visible for Android. -->
+      <ons-if platform="android">
+        <ons-fab position="right bottom" onclick="myApp.controllers.assets.barcodeScanFAB()">
+          <ons-icon icon="fa-camera"></ons-icon>
+        </ons-fab>
+      </ons-if>
+
+      <ons-modal class="loadingDialog">
+        <ons-progress-circular indeterminate></ons-progress-circular><br/><br/>
+        Connecting to AdamRMS Servers
+      </ons-modal>
+
+      <!-- Auto-positioned Tabbar: top on Android, bottom on iOS/other. -->
+      <ons-tabbar id="page-assets" position="auto">
+        <ons-tab page="html/allAssets.html" label="Assets" active>
+        </ons-tab>
+        <ons-tab page="html/assetsScanned.html" label="Recently Scanned">
+        </ons-tab>
+      </ons-tabbar>
+    </ons-page>
+  </template>
+  <template id="project.html">
+    <ons-page id="projectPage">
+      <ons-toolbar>
+        <div class="left">
+          <div class="left"><ons-back-button>Back</ons-back-button></div>
+        </div>
+        <div class="center" id="projectPage-title">Project</div>
+      </ons-toolbar>
+      <ons-modal class="loadingDialog">
+        <ons-progress-circular indeterminate></ons-progress-circular><br/><br/>
+        Connecting to AdamRMS Servers
+      </ons-modal>
+
+      <!-- Auto-positioned Tabbar: top on Android, bottom on iOS/other. -->
+      <ons-tabbar position="auto">
+        <ons-tab page="html/allAssets.html" label="Assets2" active>
+        </ons-tab>
+        <ons-tab page="html/assetsScanned.html" label="Recently Scanned2">
+        </ons-tab>
+      </ons-tabbar>
+    </ons-page>
+  </template>
+  <template id="newAssetPage.html">
+    <ons-page id="newAssetPage">
+      <ons-toolbar>
+        <div class="left"><ons-back-button>Back</ons-back-button></div>
+        <div class="center">New Task</div>
+        <div class="right">
+          <ons-if platform="android">
+            <ons-toolbar-button component="button/save-task">
+              <ons-icon icon="md-save"></ons-icon>
+            </ons-toolbar-button>
+          </ons-if>
+        </div>
+      </ons-toolbar>
+
+      <ons-list-title>Add a new task</ons-list-title>
+      <ons-list>
+        <ons-list-item modifier="nodivider">
+          <div class="center">
+            <ons-input id="title-input" type="text" placeholder="I want to..." float></ons-input>
+          </div>
+        </ons-list-item>
+        <ons-list-item modifier="nodivider">
+          <div class="center">
+            <ons-input id="category-input" type="text" placeholder="Category" float></ons-input>
+          </div>
+        </ons-list-item>
+        <ons-list-item modifier="nodivider">
+          <div class="center">
+            <ons-input id="description-input" type="text" placeholder="Description" float></ons-input>
+          </div>
+        </ons-list-item>
+      </ons-list>
+
+      <ons-list-title>Other options</ons-list-title>
+      <ons-list>
+        <ons-list-item modifier="nodivider">
+          <label class="center" for="inner-highlight-input">
+            Highlight?
+          </label>
+          <div class="right">
+            <ons-switch id="highlight-input" input-id="inner-highlight-input"></ons-switch>
+          </div>
+        </ons-list-item>
+        <ons-list-item modifier="nodivider">
+          <label class="center" for="inner-urgent-input">
+            Is it urgent?
+          </label>
+          <div class="right">
+            <ons-switch id="urgent-input" input-id="inner-urgent-input"></ons-switch>
+          </div>
+        </ons-list-item>
+      </ons-list>
+
+      <ons-if platform="ios other">
+        <ons-button modifier="large" component="button/save-task">Add New Task</ons-button>
+      </ons-if>
+    </ons-page>
+  </template>
+  <template id="about.html">
+    <ons-page id="about">
+      <ons-toolbar>
+        <div class="left"><ons-back-button>Back</ons-back-button></div>
+        <div class="center">About</div>
+      </ons-toolbar>
+      <ons-card style="text-align: center;">
+      <img src="assets/logo.svg" alt="AdamRMS" style="max-width: 100%; max-height: 100px;">
+      <div class="content">
+        <p>&copy;2020 Bithell Studios Ltd. All rights reserved.</p>
+      </div>
+      </ons-card>
+      <ons-card>
+        <div class="content">
+          <ons-list>
+            <ons-list-item tappable onclick="window.open('mailto:hi@jbithell.com','_system')">
+              Contact Support
+            </ons-list-item>
+          </ons-list>
+        </div>
+      </ons-card>
+      <ons-card>
+        <div class="content">
+          <ons-list>
+            <ons-list-item>
+                <span class="list-item__title">Version Number</span><span class="list-item__subtitle" id="aboutPageVersion"></span>
+            </ons-list-item>
+            <ons-list-item>
+              <span class="list-item__title">Version Code</span><span class="list-item__subtitle" id="aboutPageCode"></span>
+            </ons-list-item>
+            <ons-list-item>
+              <span class="list-item__title">Platform</span><span class="list-item__subtitle" id="aboutPagePlatform"></span>
+            </ons-list-item>
+          </ons-list>
+        </div>
+      </ons-card>
+    </ons-page>
+  </template>
+</div>
+</body>
+
+</html>

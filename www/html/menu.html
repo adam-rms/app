@@ -1,0 +1,56 @@
+<ons-page id="menuPage">
+  <ons-toolbar>
+    <div class="center" id="menu-title"></div>
+  </ons-toolbar>
+  <ons-list>
+    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" onclick="window.open('https://adam-rms.com','_system')">
+      <div class="left">
+        <ons-icon icon="fa-external-link" style="color: grey;"></ons-icon>
+      </div>
+      <div class="center">
+        Dashboard
+      </div>
+    </ons-list-item>
+    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" onclick="myApp.auth.changeInstance()">
+      <div class="left">
+        <ons-icon icon="fa-building" style="color: grey;"></ons-icon>
+      </div>
+      <div class="center">
+        Change Instance
+      </div>
+    </ons-list-item>
+  </ons-list>
+  <ons-list-title>Assets</ons-list-title>
+  <ons-list>
+    <ons-list-item tappable modifier="longdivider" onclick="document.querySelector('#myNavigator').pushPage('newAssetPage.html', {data: {title: 'Page 2'}});" id="menu-asset-addNewButton" style="display:none;">
+      <div class="left">
+        <ons-icon icon="fa-plus" style="color: grey;"></ons-icon>
+      </div>
+      <div class="center">
+        New Asset
+      </div>
+    </ons-list-item>
+  </ons-list>
+  <ons-list-title>Projects</ons-list-title>
+    <ons-list id="menu-projects-list">
+    </ons-list>
+  <ons-list-title>Settings</ons-list-title>
+  <ons-list>
+    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" onclick="myApp.auth.logout()">
+      <div class="left">
+        <ons-icon icon="fa-sign-out" style="color: grey;"></ons-icon>
+      </div>
+      <div class="center">
+        Logout
+      </div>
+    </ons-list-item>
+    <ons-list-item tappable modifier="longdivider chevron" onclick="document.querySelector('#myNavigator').pushPage('about.html', {data: {title: 'Page 2'}});">
+      <div class="left">
+        <ons-icon icon="fa-info" style="color: grey;"></ons-icon>
+      </div>
+      <div class="center">
+        About
+      </div>
+    </ons-list-item>
+  </ons-list>
+</ons-page>

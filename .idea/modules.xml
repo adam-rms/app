@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/adam-rms-app.iml" filepath="$PROJECT_DIR$/.idea/adam-rms-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/AdamRMS-App.iml" filepath="$PROJECT_DIR$/.idea/AdamRMS-App.iml" />
     </modules>
   </component>
 </project>
