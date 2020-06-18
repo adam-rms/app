@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.bstudios.adamrms" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.bstudios.adamrms" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>AdamRMS App</name>
     <description>
         Rental Management System for Theatre, AV and Broadcast
@@ -61,6 +61,8 @@
         <splash density="port-xxxhdpi" src="res/screen/android/splash-port-xxxhdpi.png" />
     </platform>
     <plugin name="cordova-plugin-whitelist" source="npm" spec="1.1.0" />
+    <plugin name="phonegap-plugin-barcodescanner" source="npm" spec="8.1.0" />
+    <plugin name="cordova-plugin-app-version" source="npm" spec="0.1.9" />
     <allow-navigation href="*" />
     <allow-intent href="*" />
     <access origin="*" />
