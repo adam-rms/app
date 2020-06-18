@@ -1,7 +1,8 @@
 // App logic.
 window.myApp = {};
 myApp.config = {
-  endpoint: 'http://localhost/api/',
+  //endpoint: 'http://localhost/api/',
+  endpoint: 'https://adam-rms.com/api/',
   version: {
     code: 'WEB',
     number: 'WEB'
