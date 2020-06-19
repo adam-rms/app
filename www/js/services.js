@@ -21,7 +21,7 @@ myApp.functions = {
             alert("Scanning failed: " + error);
           },
           {
-            preferFrontCamera : false, // iOS and Android
+            /*preferFrontCamera : false, // iOS and Android
             showFlipCameraButton : false, // iOS and Android
             showTorchButton : true, // iOS and Android
             torchOn: false, // Android, launch with the torch switched on (if available)
@@ -31,9 +31,10 @@ myApp.functions = {
             formats : "CODE_128", // default: all but PDF_417 and RSS_EXPANDED
             orientation : "portrait", // Android only (portrait|landscape), default unset so it rotates with the device
             disableAnimations : true, // iOS
-            disableSuccessBeep: true // iOS and Android
+            disableSuccessBeep: true // iOS and Android*/
           }
       );
+      console.log("Attempted to trigger barcode scan");
     }
   },
   apiCall: function (endpoint, data, callback) {
