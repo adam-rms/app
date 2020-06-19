@@ -37,8 +37,8 @@ myApp.auth = {
     }).then(function (index) {
       if (index >= 0 && index < myApp.data.instances.length) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
         myApp.functions.apiCall("instances/change.php", {"instances_id": myApp.data.instances[index]['instances_id']}, function (result) {
-            console.log("Callign first boot");
-          myApp.controllers.firstBoot();
+            console.log("Calling first boot");
+            myApp.controllers.firstBoot();
         });
       }
     });

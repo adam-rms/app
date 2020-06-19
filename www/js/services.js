@@ -53,15 +53,20 @@ myApp.functions = {
         data: data,
         success: function (response) {
           $('.loadingDialog').hide();
+          console.log("Got ajax data - going to call callback");
           if (response.result) {
-            console.log(response.response);
+            console.log("Calling callback");
             callback(response.response);
           } else {
             ons.notification.toast(response.error.message, {timeout: 3000});
           }
+          console.log(JSON.stringify(response));
         },
         error: function (request, status, error) {
           $('.loadingDialog').hide();
+          console.log(JSON.stringify(request));
+          console.log(JSON.stringify(error));
+          console.log(JSON.stringify(status));
           ons.notification.alert(request.statusText);
         }
       });
