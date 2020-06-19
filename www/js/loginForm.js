@@ -32,7 +32,9 @@ ons.ready(function() {
                         }
                     },
                     error: function(request, status, error) {
-                        console.log(request);
+                        console.log(JSON.stringify(request));
+                        console.log(JSON.stringify(error));
+                        console.log(JSON.stringify(status));
                         ons.notification.alert(request.statusText);
                     }
                 });
