@@ -57,6 +57,7 @@ myApp.controllers = {
     },
     assets: {
         barcodeScanFAB: function() {
+            console.log("Starting barcode scan");
             myApp.functions.barcode.scan(false, function(text,type) {
                console.log(text,type);
             });

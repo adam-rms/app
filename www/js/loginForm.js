@@ -32,7 +32,7 @@ ons.ready(function() {
                         }
                     },
                     error: function(request, status, error) {
-                        console.log(resquest);
+                        console.log(request);
                         ons.notification.alert(request.statusText);
                     }
                 });

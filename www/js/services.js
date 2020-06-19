@@ -4,8 +4,10 @@
 myApp.functions = {
   barcode: {
     scan: function(continuous,callback) {
+      console.log("Triggtering cordova barcode scan");
       cordova.plugins.barcodeScanner.scan(
           function (result) {
+            console.log(result);
             if (!result.cancelled) {
               callback(result.text,result.format);
               if (continuous) {
