@@ -13,15 +13,16 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-  <!--<meta http-equiv="Content-Security-Policy" content="
+  <meta http-equiv="Content-Security-Policy" content="
      base-uri 'self';
      default-src 'self' https://*.phonegap.com data: gap: https://ssl.gstatic.com 'unsafe-eval';
      style-src 'self' 'unsafe-inline';
      media-src *;
      img-src 'self' https://*.adam-rms.com data: content:;
      connect-src 'self' https://*.adam-rms.com https://*.phonegap.com;
-     script-src 'self' 'unsafe-inline';
-  ">-->
+     script-src-elem 'self' 'unsafe-inline' https://*.adam-rms.com https://*.phonegap.com;
+     script-src 'self' 'unsafe-inline' https://*.phonegap.com;
+  ">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
@@ -52,17 +53,19 @@
       Login
     </div>
     <div class="content">
-         <p>
-          <ons-input id="login-username" modifier="underbar" placeholder="Username" float></ons-input>
-        </p>
-        <p>
-          <ons-input id="login-password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
-        </p>
-        <p style="margin-top: 30px;">
-          <ons-button modifier="quiet" onclick="window.open('https://adam-rms.com','_blank')">Forgot password</ons-button>
-          <ons-button id="login-submitbtn">Sign in</ons-button>
-        </p>
-      </div>
+        <form>
+           <p>
+            <ons-input id="login-username" modifier="underbar" placeholder="Username" float autocomplete="username"></ons-input>
+          </p>
+          <p>
+            <ons-input id="login-password" modifier="underbar" type="password" placeholder="Password" float autocomplete="current-password"></ons-input>
+          </p>
+          <p style="margin-top: 30px;">
+            <ons-button modifier="quiet" onclick="window.open('https://adam-rms.com','_blank')">Forgot password</ons-button>
+            <ons-button type="submit" value="Submit" id="login-submitbtn">Sign in</ons-button>
+          </p>
+        </form>
+    </div>
   </ons-card>
 </ons-page>
 <div id="app-mainview" style="display:none;">

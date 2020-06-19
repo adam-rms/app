@@ -1,10 +1,12 @@
 myApp.controllers = {
     firstBoot: function() {
         //Called when app opened or when the instance is changed
+        console.log("Running first boot");
         myApp.controllers.menu.loadNavigation();
     },
     menu: {
         loadNavigation: function () {
+            console.log("Loading navigation");
             myApp.functions.apiCall("instances/list.php", {}, function (result) {
                 if (result.length < 1) {
                     //User has no instances so can't use the app
