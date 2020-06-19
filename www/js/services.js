@@ -5,35 +5,40 @@ myApp.functions = {
   barcode: {
     scan: function(continuous,callback) {
       console.log("Triggtering cordova barcode scan");
-      cordova.plugins.barcodeScanner.scan(
-          function (result) {
-            console.log(result);
-            if (!result.cancelled) {
-              callback(result.text,result.format);
-              if (continuous) {
-                myApp.functions.barcode.scan(true,callback);
+      try {
+        cordova.plugins.barcodeScanner.scan(
+            function (result) {
+              console.log(result);
+              if (!result.cancelled) {
+                callback(result.text,result.format);
+                if (continuous) {
+                  myApp.functions.barcode.scan(true,callback);
+                }
+              } else {
+                callback(false,false);
               }
-            } else {
-              callback(false,false);
+            },
+            function (error) {
+              alert("Scanning failed: " + error);
+            },
+            {
+              preferFrontCamera : false, // iOS and Android
+              showFlipCameraButton : false, // iOS and Android
+              showTorchButton : true, // iOS and Android
+              torchOn: false, // Android, launch with the torch switched on (if available)
+              saveHistory: false, // Android, save scan history (default false)
+              prompt : "Place an asset's barcode inside the scan area", // Android
+              resultDisplayDuration: 0, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
+              formats : "CODE_128", // default: all but PDF_417 and RSS_EXPANDED
+              orientation : "portrait", // Android only (portrait|landscape), default unset so it rotates with the device
+              disableAnimations : true, // iOS
+              disableSuccessBeep: true // iOS and Android
             }
-          },
-          function (error) {
-            alert("Scanning failed: " + error);
-          },
-          {
-            /*preferFrontCamera : false, // iOS and Android
-            showFlipCameraButton : false, // iOS and Android
-            showTorchButton : true, // iOS and Android
-            torchOn: false, // Android, launch with the torch switched on (if available)
-            saveHistory: false, // Android, save scan history (default false)
-            prompt : "Place an asset's barcode inside the scan area", // Android
-            resultDisplayDuration: 0, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
-            formats : "CODE_128", // default: all but PDF_417 and RSS_EXPANDED
-            orientation : "portrait", // Android only (portrait|landscape), default unset so it rotates with the device
-            disableAnimations : true, // iOS
-            disableSuccessBeep: true // iOS and Android*/
-          }
-      );
+        );
+      }
+      catch(err) {
+        console.log(JSON.stringify(err));
+      }
       console.log("Attempted to trigger barcode scan");
     }
   },
