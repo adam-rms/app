@@ -15,6 +15,10 @@ myApp.controllers = {
                             myApp.auth.logout();
                         });
                 } else {
+                    myApp.controllers.assets.fullAssetList(function () {
+                        console.log("First asset list logged");
+                    });
+
                     myApp.data.instances = [];
                     $(result).each(function (index, element) {
                         //Parse instance permissions
@@ -63,7 +67,39 @@ myApp.controllers = {
             myApp.functions.barcode.scan(false, function(text,type) {
                console.log(text,type);
             });
-        }
+        },
+        fullAssetList: function(done, searchTerm) {
+            $("#allAssetsListLoader").show();
+            var requestData = {"page": Math.floor(Object.keys(myApp.data.assetTypes).length / 20)+1};
+            if (searchTerm !== undefined) {
+                requestData['term'] = searchTerm;
+                requestData['all'] = "true";
+            }
+            myApp.functions.apiCall("assets/list.php", requestData, function (assetResult) {
+                $(assetResult['assets']).each(function (index, element) {
+                    myApp.data.assetTypes[element['assetTypes_id']] = element;
+                    $("#allAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
+                        '<div class="left">' +
+                        (element.thumbnailSuggested ? '<img class="list-item__thumbnail" src="' + element['thumbnailSuggested'] + '">' : '&nbsp;')+
+                        '</div>' +
+                        '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
+                        '<div class="right">' +
+                        '<div class="list-item__label">' + (element['tags'].length > 1 ? 'x' + element['tags'].length : element['tags'][0]['assets_tag_format'].replace("-","&#8209;"))+'</div>'+
+                        '</div>' +
+                        '</ons-list-item>');
+                });
+                $("#allAssetsListLoader").hide();
+                done();
+            }, true);
+        },
+        fullAssetListSearch: function(value) {
+            $("#allAssetsList").html("");
+            myApp.data.assetTypes = {};
+            myApp.controllers.assets.fullAssetList(function () {
+                console.log("Serach complete")
+            },value);
+        },
+        fullAssetListPullRefresh: null,
     },
     pages: {
         projectPage: function (data) {
@@ -74,15 +110,102 @@ myApp.controllers = {
             console.log(data);
         },
         about: function (data) {
-            console.log(data);
             $('#aboutPageVersion').text(myApp.config.version.number);
             $('#aboutPageCode').text(myApp.config.version.code);
             $('#aboutPagePlatform').text(device.platform + " (" + device.model + ")");
         },
+        assetTypePage: function (data) {
+            var thisAsset = myApp.data.assetTypes[data.data.id];
+            console.log(thisAsset);
+            $("#assetTypePageTitle").html(thisAsset['assetTypes_name']);
+            $("#assetTypePageManufacturer").html(thisAsset['manufacturers_name']);
+            $("#assetTypePageCategory").html(thisAsset['assetCategories_name']);
+            $("#assetTypePageDescription").html(thisAsset['assetTypes_description']);
+            $("#assetTypePageProductLink").html(thisAsset['assetTypes_productLink']);
+            if (thisAsset['assetTypes_productLink'] !== null) {
+                $("#assetTypePageProductLink").attr("onclick", "window.open('" + thisAsset['assetTypes_productLink'] + "','_blank')");
+            }
+            $(thisAsset['tags']).each(function (index, element) {
+                $("#assetTypePageAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + data.data.id + ',asset: ' + index + '}});">' +
+                    '<div class="left">' +
+                    (element['flagsblocks']["COUNT"]["BLOCK"] > 0 ? '<ons-icon icon="fa-ban" style="color: #dc3545;"></ons-icon>&nbsp;' : '&nbsp;') +
+                    (element['flagsblocks']["COUNT"]["FLAG"] > 0 ? '<ons-icon icon="fa-flag" style="color: #ffc107;"></ons-icon>' : '') +
+                    '</div>' +
+                    '<div class="center">' + element['assets_tag_format'] + '</div>' +
+                    '</ons-list-item>');
+            });
+        },
+        assetPage: function (data) {
+            var thisAssetType = myApp.data.assetTypes[data.data.id];
+            var thisAsset = thisAssetType['tags'][data.data.asset];
+            console.log(thisAsset);
+            $("#assetPageTitle").html(thisAsset['assets_tag_format']);
+            $("#assetPageNotes").html(thisAsset['assets_notes']);
+            $("#assetPageMass").html((thisAsset['assets_mass'] !== null ? thisAsset['assets_mass_format'] : thisAssetType['assetTypes_mass_format']));
+            $("#assetPageValue").html((thisAsset['assets_value'] !== null ? thisAsset['assets_value_format'] : thisAssetType['assetTypes_value_format']));
+            $("#assetPageWeekRate").html((thisAsset['assets_weekRate'] !== null ? thisAsset['assets_weekRate_format'] : thisAssetType['assetTypes_weekRate_format']));
+            $("#assetPageDayRate").html((thisAsset['assets_dayRate'] !== null ? thisAsset['assets_dayRate_format'] : thisAssetType['assetTypes_dayRate_format']));
+            $("#assetPageDefinableFields").html("");
+            for (i = 1; i <= 10; i++) {
+                if (thisAssetType['fields'][i-1] !== "") {
+                    $("#assetPageDefinableFields").append('<ons-list-header>' + thisAssetType['fields'][i-1] + '</ons-list-header>' +
+                        '        <ons-list-item modifier="nodivider">' +
+                       '          <div class="center">' +
+                        thisAsset["asset_definableFields_" + i] +
+                       // '            <ons-input type="text" value="' + thisAsset["asset_definableFields_" + i] + '" float></ons-input>' +
+                        '          </div>' +
+                        '        </ons-list-item>');
+                }
+            }
+            $("#assetPageFlagsBlocks").html("");
+            $(thisAsset['flagsblocks']['BLOCK']).each(function (index, element) {
+                $("#assetPageFlagsBlocks").append('<ons-card>' +
+                    '        <div class="title"><ons-icon icon="fa-ban" style="color: #dc3545;"></ons-icon>&nbsp;' +
+                                element['maintenanceJobs_title'] +
+                    '        </div>' +
+                    '        <div class="content">' +
+                                element['maintenanceJobs_faultDescription'] +
+                    '        </div>' +
+                    '      </ons-card>');
+            });
+            $(thisAsset['flagsblocks']['FLAG']).each(function (index, element) {
+                $("#assetPageFlagsBlocks").append('<ons-card>' +
+                    '        <div class="title"><ons-icon icon="fa-flag" style="color: #ffc107;"></ons-icon>&nbsp;' +
+                    element['maintenanceJobs_title'] +
+                    '        </div>' +
+                    '        <div class="content">' +
+                    element['maintenanceJobs_faultDescription'] +
+                    '        </div>' +
+                    '      </ons-card>');
+            });
+            //TODO associate with barcode
+        },
     }
 }
-
-    /*
+ons.ready(function() {
+    myApp.controllers.assets.fullAssetListPullRefresh = document.getElementById('allAssetsListLoaderPullHook');
+    myApp.controllers.assets.fullAssetListPullRefresh.addEventListener('changestate', function(event) {
+        var message = '';
+        switch (event.state) {
+            case 'initial':
+                message = 'Pull to refresh';
+                break;
+            case 'preaction':
+                message = 'Release';
+                break;
+            case 'action':
+                message = 'Loading...';
+                break;
+        }
+        myApp.controllers.assets.fullAssetListPullRefresh.innerHTML = message;
+    });
+    myApp.controllers.assets.fullAssetListPullRefresh.onAction = function(done) {
+        $("#allAssetsList").html("");
+        myApp.data.assetTypes = {};
+        myApp.controllers.assets.fullAssetList(done);
+    };
+});
+/*
 myApp.controllers = {
 
   //////////////////////////

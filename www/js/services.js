@@ -19,7 +19,8 @@ myApp.functions = {
               }
             },
             function (error) {
-              alert("Scanning failed: " + error);
+              console.log(error);
+              ons.notification.toast("Scanning failed: " + error, { timeout: 2000 });
             },
             {
               preferFrontCamera : false, // iOS and Android
@@ -30,7 +31,6 @@ myApp.functions = {
               prompt : "Place an asset's barcode inside the scan area", // Android
               resultDisplayDuration: 0, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
               formats : "CODE_128", // default: all but PDF_417 and RSS_EXPANDED
-              orientation : "portrait", // Android only (portrait|landscape), default unset so it rotates with the device
               disableAnimations : true, // iOS
               disableSuccessBeep: true // iOS and Android
             }
@@ -42,23 +42,27 @@ myApp.functions = {
       console.log("Attempted to trigger barcode scan");
     }
   },
-  apiCall: function (endpoint, data, callback) {
+  apiCall: function (endpoint, data, callback, useCustomLoader) {
     if (typeof data !== 'object' || data === null) {
       data = {}
     }
-    data['token'] = myApp.auth.token;
+    data['jwt'] = myApp.auth.token;
     if (navigator.connection.type === Connection.NONE) {
       ons.notification.toast("No Network Connection", { timeout: 2000 });
     } else {
-      $(".loadingDialog").show();
-      document.querySelector('#mySplitter').left.close();
+      if (useCustomLoader !== true) {
+        $(".loadingDialog").show();
+        document.querySelector('#mySplitter').left.close();
+      }
       $.ajax({
         type: "POST",
         url: myApp.config.endpoint + endpoint,
         dataType: 'json',
         data: data,
         success: function (response) {
-          $('.loadingDialog').hide();
+          if (useCustomLoader !== true) {
+            $('.loadingDialog').hide();
+          }
           console.log("Got ajax data - going to call callback");
           if (response.result) {
             console.log("Calling callback");
@@ -70,10 +74,12 @@ myApp.functions = {
         },
         error: function (request, status, error) {
           $('.loadingDialog').hide();
-          console.log(JSON.stringify(request));
           console.log(JSON.stringify(error));
-          console.log(JSON.stringify(status));
-          ons.notification.alert(request.statusText);
+          ons.notification.alert({title: request.statusText + " - " + status, message: (request.responseText ? request.responseText : 'Error connecting to AdamRMS') }, function () {
+            if (navigator.app) {
+              navigator.app.exitApp();
+            }
+          });
         }
       });
     }

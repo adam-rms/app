@@ -1,28 +1,16 @@
-<ons-page>
-  <ons-list id="pending-list">
-    <ons-list-item>
-      <div class="left">
-        <img class="list-item__thumbnail" src="">
-      </div>
-      <div class="center">
-        <span class="list-item__title">Cutest kitty</span><span class="list-item__subtitle">On the Internet</span>
-      </div>
-    </ons-list-item>
-    <ons-list-item>
-      <div class="left">
-        <img class="list-item__thumbnail" src="">
-      </div>
-      <div class="center">
-        <span class="list-item__title">Cutest kitty</span><span class="list-item__subtitle">On the Internet</span>
-      </div>
-    </ons-list-item>
-    <ons-list-item>
-      <div class="left">
-        <img class="list-item__thumbnail" src="">
-      </div>
-      <div class="center">
-        <span class="list-item__title">Cutest kitty</span><span class="list-item__subtitle">On the Internet</span>
-      </div>
-    </ons-list-item>
+<ons-page on-infinite-scroll="myApp.controllers.assets.fullAssetList">
+  <ons-pull-hook id="allAssetsListLoaderPullHook">
+    Pull to refresh
+  </ons-pull-hook>
+  <p style="text-align: center; margin-top: 10px;margin-bottom:10px;">
+    <ons-search-input
+            placeholder="Search"
+            onchange="myApp.controllers.assets.fullAssetListSearch(this.value)"
+    ></ons-search-input>
+  </p>
+  <ons-list id="allAssetsList">
   </ons-list>
+  <div style="text-align: center;padding:10px;" id="allAssetsListLoader">
+    <ons-progress-circular indeterminate></ons-progress-circular>
+  </div>
 </ons-page>

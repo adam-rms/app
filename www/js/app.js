@@ -11,15 +11,19 @@ myApp.config = {
 myApp.data = {
   instances: [],
   instance: [],
-  projects: {}
+  projects: {},
+  assetTypes: {}
 }
 myApp.auth = {
   token: false,
+  location: false,
   logout: function() {
     localStorage.setItem('token','');
     $("#app-mainview").hide();
     $("#login").show();
-    navigator.app.exitApp();
+    if (navigator.app) {
+      navigator.app.exitApp();
+    }
   },
   changeInstance: function() {
     var listOfInstances = [];
@@ -40,6 +44,36 @@ myApp.auth = {
             console.log("Calling first boot");
             myApp.controllers.firstBoot();
         });
+      }
+    });
+  },
+  setLocation: function() {
+    var options = [{
+      label: 'Scan',
+      icon: 'fa-camera'
+    },
+      {
+        label: 'Enter Manually',
+        icon: 'fa-pencil'
+      },
+      {
+        label: 'Cancel',
+        icon: 'md-close'
+      }
+    ];
+    ons.openActionSheet({
+      title: 'Set Location',
+      cancelable: true,
+      buttons: options
+    }).then(function (index) {
+      if (index >= 0 && index < 2) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
+        if (index === 0) {
+          //Do some scanning!
+        } else if (index === 1) {
+          ons.notification.prompt({ message: 'Description for your location',title: 'Set Location' }).then(function(result) {
+            myApp.auth.location = name;
+          });
+        }
       }
     });
   },

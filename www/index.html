@@ -22,6 +22,7 @@
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com;
      script-src-elem 'self' 'unsafe-inline' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com;
      script-src 'self' 'unsafe-inline' https://*.phonegap.com;
+     frame-src *;
   ">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
@@ -139,29 +140,44 @@
       </ons-modal>
 
       <!-- Auto-positioned Tabbar: top on Android, bottom on iOS/other. -->
-      <ons-tabbar position="auto">
+      <!--<ons-tabbar position="auto">
         <ons-tab page="html/allAssets.html" label="Assets2" active>
         </ons-tab>
         <ons-tab page="html/assetsScanned.html" label="Recently Scanned2">
         </ons-tab>
-      </ons-tabbar>
+      </ons-tabbar>-->
+      <ons-card style="text-align:center;">
+        <div class="title">
+          AdamRMS<sup>BETA</sup>
+        </div>
+        <div class="content">
+          Sorry, projects view isn't available in the app just yet
+        </div>
+      </ons-card>
     </ons-page>
   </template>
   <template id="newAssetPage.html">
     <ons-page id="newAssetPage">
       <ons-toolbar>
         <div class="left"><ons-back-button>Back</ons-back-button></div>
-        <div class="center">New Task</div>
+        <div class="center">New Asset</div>
         <div class="right">
-          <ons-if platform="android">
+          <!--<ons-if platform="android">
             <ons-toolbar-button component="button/save-task">
               <ons-icon icon="md-save"></ons-icon>
             </ons-toolbar-button>
-          </ons-if>
+          </ons-if>-->
         </div>
       </ons-toolbar>
-
-      <ons-list-title>Add a new task</ons-list-title>
+      <ons-card style="text-align:center;">
+        <div class="title">
+          AdamRMS<sup>BETA</sup>
+        </div>
+        <div class="content">
+          Sorry, adding assets isn't available in the app just yet
+        </div>
+      </ons-card>
+      <!--<ons-list-title>Add a new task</ons-list-title>
       <ons-list>
         <ons-list-item modifier="nodivider">
           <div class="center">
@@ -202,7 +218,89 @@
 
       <ons-if platform="ios other">
         <ons-button modifier="large" component="button/save-task">Add New Task</ons-button>
-      </ons-if>
+      </ons-if>-->
+    </ons-page>
+  </template>
+  <template id="assetType.html">
+    <ons-page id="assetTypePage">
+      <ons-toolbar>
+        <div class="left"><ons-back-button>Assets</ons-back-button></div>
+        <div class="center" id="assetTypePageTitle"></div>
+        <!--<div class="right">
+          <ons-if platform="android">
+            <ons-toolbar-button>
+              <ons-icon icon="md-save"></ons-icon>
+            </ons-toolbar-button>
+          </ons-if>
+        </div>-->
+      </ons-toolbar>
+
+      <ons-list>
+        <ons-list-header>Manufacturer</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetTypePageManufacturer">
+          </div>
+        </ons-list-item>
+        <ons-list-header>Category</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetTypePageCategory">
+          </div>
+        </ons-list-item>
+        <ons-list-header>Description</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetTypePageDescription">
+          </div>
+        </ons-list-item>
+        <ons-list-header>Product Page</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetTypePageProductLink">
+          </div>
+        </ons-list-item>
+      </ons-list>
+      <ons-list-title>Individual Assets</ons-list-title>
+      <ons-list id="assetTypePageAssetsList">
+      </ons-list>
+      <!--<ons-if platform="ios other">
+        <ons-button modifier="large">Save</ons-button>
+      </ons-if>-->
+    </ons-page>
+  </template>
+  <template id="asset.html">
+    <ons-page id="assetPage">
+      <ons-toolbar>
+        <div class="left"><ons-back-button>Asset Type</ons-back-button></div>
+        <div class="center" id="assetPageTitle"></div>
+      </ons-toolbar>
+      <div id="assetPageFlagsBlocks"></div>
+      <ons-list id="assetPageDefinableFields">
+      </ons-list>
+      <ons-list>
+        <ons-list-header>Description</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetPageNotes">
+          </div>
+        </ons-list-item>
+        <ons-list-header>Mass</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetPageMass">
+            </div>
+        </ons-list-item>
+        <ons-list-header>Value</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetPageValue">
+          </div>
+        </ons-list-item>
+        <ons-list-header>Day Rate</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetPageDayRate">
+          </div>
+        </ons-list-item>
+        <ons-list-header>Week Rate</ons-list-header>
+        <ons-list-item modifier="nodivider">
+          <div class="center" id="assetPageWeekRate">
+          </div>
+        </ons-list-item>
+      </ons-list>
     </ons-page>
   </template>
   <template id="about.html">
