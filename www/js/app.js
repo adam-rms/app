@@ -16,7 +16,7 @@ myApp.data = {
 }
 myApp.auth = {
   token: false,
-  location: false,
+  location: {"type":false,"value":"Not set"},
   logout: function() {
     localStorage.setItem('token','');
     $("#app-mainview").hide();
@@ -71,7 +71,8 @@ myApp.auth = {
           //Do some scanning!
         } else if (index === 1) {
           ons.notification.prompt({ message: 'Description for your location',title: 'Set Location' }).then(function(result) {
-            myApp.auth.location = name;
+            myApp.auth.location.value = name;
+            myApp.auth.location.type = "Custom";
           });
         }
       }

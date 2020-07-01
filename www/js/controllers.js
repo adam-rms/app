@@ -73,7 +73,7 @@ myApp.controllers = {
                 if (type === "Fake") {
                     type = "CODE_128";
                 }
-                myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type}, function (assetResult) {
+                myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
                     if (assetResult.asset === false) {
                         if (assetResult.barcode !== false) {
                             //Barcode exists but asset doesn't
