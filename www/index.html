@@ -99,7 +99,7 @@
         <div class="right">
           <!-- Toolbar-button  only visible for iOS/other. -->
           <ons-if platform="ios other">
-            <ons-toolbar-button onclick="myApp.controllers.assets.barcodeScanFAB()"><ons-icon icon="fa-camera" size="32px, material:24px"></ons-icon></ons-toolbar-button>
+            <ons-toolbar-button class="scanAssetBarcodeButton" onclick="myApp.controllers.assets.barcodeScanFAB()"><ons-icon icon="fa-camera" size="32px, material:24px"></ons-icon></ons-toolbar-button>
           </ons-if>
         </div>
       </ons-toolbar>
@@ -119,7 +119,7 @@
 
       <!-- Auto-positioned Tabbar: top on Android, bottom on iOS/other. -->
       <ons-tabbar id="page-assets" position="auto">
-        <ons-tab page="html/allAssets.html" label="Assets" active>
+        <ons-tab page="html/allAssets.html" label="All Assets" active>
         </ons-tab>
         <ons-tab page="html/assetsScanned.html" label="Recently Scanned">
         </ons-tab>

@@ -38,6 +38,8 @@ ons.ready(function() {
                         ons.notification.alert(request.statusText);
                     }
                 });
+            } else {
+                ons.notification.toast("Please enter a username and password", { timeout: 2000 });
             }
         }
     });

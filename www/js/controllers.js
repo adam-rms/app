@@ -55,6 +55,11 @@ myApp.controllers = {
                             if (myApp.auth.instanceHasPermission(17)) {
                                 $("#menu-asset-addNewButton").show();
                             }
+                            if (myApp.auth.instanceHasPermission(85)) {
+                                $(".scanAssetBarcodeButton").show();
+                            } else {
+                                $(".scanAssetBarcodeButton").hide();
+                            }
                         }
                     });
                 }
@@ -65,7 +70,47 @@ myApp.controllers = {
         barcodeScanFAB: function() {
             console.log("Starting barcode scan");
             myApp.functions.barcode.scan(false, function(text,type) {
-               console.log(text,type);
+                if (type === "Fake") {
+                    type = "CODE_128";
+                }
+                myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type}, function (assetResult) {
+                    if (assetResult.asset === false) {
+                        if (assetResult.barcode !== false) {
+                            //Barcode exists but asset doesn't
+                            var barcodeid = assetResult.barcode;
+                            if (myApp.auth.instanceHasPermission(88)) {
+                                ons.notification.confirm({
+                                    title: "Unassociated Barcode",
+                                    message: "Barcode not associated with an asset - would you like to associate it?"
+                                }).then(function (result) {
+                                    console.log(result);
+                                    if (result === 1) {
+                                        ons.notification.prompt({
+                                            title: "Associate Barcode",
+                                            message: 'What is the Asset Tag?'
+                                        }).then(function (tag) {
+                                            if (tag) {
+                                                myApp.functions.apiCall("assets/barcodes/assign.php", {
+                                                    "tag": tag,
+                                                    "barcodeid": barcodeid
+                                                }, function (result) {
+                                                    ons.notification.toast("Success", {timeout: 2000});
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                ons.notification.toast("Barcode not associated with an Asset", { timeout: 2000 });
+                            }
+                        } else {
+                            ons.notification.toast("Unknown Barcode", { timeout: 2000 });
+                        }
+                    } else {
+                        ons.notification.toast(assetResult.asset.assetTypes_name + "  " + assetResult.asset.tag, { timeout: 2000 });
+                        console.log(assetResult.asset);
+                    }
+                });
             });
         },
         fullAssetList: function(done, searchTerm) {

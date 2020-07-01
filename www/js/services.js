@@ -30,7 +30,7 @@ myApp.functions = {
               saveHistory: false, // Android, save scan history (default false)
               prompt : "Place an asset's barcode inside the scan area", // Android
               resultDisplayDuration: 0, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
-              formats : "CODE_128", // default: all but PDF_417 and RSS_EXPANDED
+              formats : "EAN_8,EAN_13,CODE_39,CODE_93,CODE_128", // chosen based on the overlap with the PHP lib
               disableAnimations : true, // iOS
               disableSuccessBeep: true // iOS and Android
             }
