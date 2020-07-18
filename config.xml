@@ -59,6 +59,9 @@
     <feature name="CDVWKWebViewEngine">
         <param name="ios-package" value="CDVWKWebViewEngine" />
     </feature>
+    <config-file parent="CFBundleDisplayName" platform="ios" target="*-Info.plist">
+        <string>AdamRMS</string>
+    </config-file>
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
 
 
