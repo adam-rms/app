@@ -34,7 +34,12 @@ myApp.auth.login = function () {
                     console.log(JSON.stringify(request));
                     console.log(JSON.stringify(error));
                     console.log(JSON.stringify(status));
-                    ons.notification.alert(request.statusText);
+                    if (request.statusText == "error" || requset.statusText == "") {
+                        ons.notification.alert("Error connecting to AdamRMS - Please check your connection");
+                    } else {
+                        ons.notification.alert(request.statusText);
+                    }
+
                 }
             });
         } else {
