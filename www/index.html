@@ -48,6 +48,7 @@
   <link rel="stylesheet" href="lib/onsen/css/onsenui.min.css">
   <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.min.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lib/pace.css">
 </head>
 
 <body>
@@ -102,7 +103,7 @@
             <ons-icon icon="fa-bars" size="32px, material:24px"></ons-icon>
           </ons-toolbar-button>
         </div>
-        <div class="center">AdamRMS</div>
+        <div class="center" id="tabbarPageTitle">AdamRMS</div>
         <div class="right">
           <!-- Toolbar-button  only visible for iOS/other. -->
           <ons-if platform="ios other">
@@ -120,8 +121,9 @@
       </ons-if>
 
       <ons-modal class="loadingDialog">
-        <ons-progress-circular indeterminate></ons-progress-circular><br/><br/>
-        Connecting to AdamRMS Servers
+        <div class="pace pace-active">
+          <div class="pace-activity"></div>
+        </div>
       </ons-modal>
 
       <!-- Auto-positioned Tabbar: top on Android, bottom on iOS/other. -->

@@ -2,6 +2,17 @@
  * App Services. This contains the logic of the application organised in modules/objects. *
  ***********************************************************************************/
 myApp.functions = {
+  escapeHtml: function(text) {
+    var map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+  },
   barcode: {
     scan: function(continuous,callback) {
       console.log("Triggtering cordova barcode scan");
