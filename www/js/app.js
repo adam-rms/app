@@ -13,7 +13,14 @@ myApp.data = {
   instance: [],
   projects: {},
   assetTypes: {},
-  assetTypesPages: null
+  assetTypesPages: null,
+  init: function() {
+    myApp.data.instances = [];
+    myApp.data.instance= [];
+    myApp.data.projects= {};
+    myApp.data.assetTypes= {};
+    myApp.data.assetTypesPages = null;
+  }
 }
 myApp.auth = {
   token: false,

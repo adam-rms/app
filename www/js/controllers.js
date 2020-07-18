@@ -2,6 +2,7 @@ myApp.controllers = {
     firstBoot: function() {
         //Called when app opened or when the instance is changed
         console.log("Running first boot");
+        myApp.data.init();
         myApp.controllers.menu.loadNavigation();
     },
     menu: {
@@ -17,7 +18,7 @@ myApp.controllers = {
                 } else {
                     myApp.controllers.assets.fullAssetList(function () {
                         console.log("First asset list logged");
-                    });
+                    },null,true);
 
                     myApp.data.instances = [];
                     $(result).each(function (index, element) {
@@ -113,15 +114,24 @@ myApp.controllers = {
                 });
             });
         },
-        fullAssetList: function(done, searchTerm) {
+        fullAssetList: function(done, searchTerm, clear) {
             $("#allAssetsListLoader").show();
+            if (typeof clear === undefined) {
+                clear = false;
+            }
+            if (clear) {
+                //Clear all assets
+                $("#allAssetsList").html("");
+                myApp.data.assetTypes = {};
+                myApp.data.assetTypesPages = null;
+            }
             var requestData = {"page": Math.floor(Object.keys(myApp.data.assetTypes).length / 20)+1};
             if (myApp.data.assetTypesPages != null && Object.keys(myApp.data.assetTypes).length > ((myApp.data.assetTypesPages-1)*20)) {
                 //Don't allow it to duplicate objects
                 $("#allAssetsListLoader").hide();
                 done();
             } else {
-                if (searchTerm !== undefined) {
+                if (searchTerm !== undefined && searchTerm != null) {
                     requestData['term'] = searchTerm;
                     requestData['all'] = "true";
                 }
@@ -145,12 +155,9 @@ myApp.controllers = {
             }
         },
         fullAssetListSearch: function(value) {
-            $("#allAssetsList").html("");
-            myApp.data.assetTypes = {};
-            myApp.data.assetTypesPages = null;
             myApp.controllers.assets.fullAssetList(function () {
                 console.log("Serach complete")
-            },value);
+            },value,true);
         },
         fullAssetListPullRefresh: null,
     },
@@ -253,10 +260,7 @@ ons.ready(function() {
         myApp.controllers.assets.fullAssetListPullRefresh.innerHTML = message;
     });
     myApp.controllers.assets.fullAssetListPullRefresh.onAction = function(done) {
-        $("#allAssetsList").html("");
-        myApp.data.assetTypes = {};
-        myApp.data.assetTypesPages = null;
-        myApp.controllers.assets.fullAssetList(done);
+        myApp.controllers.assets.fullAssetList(done, null, true);
     };
 });
 /*
