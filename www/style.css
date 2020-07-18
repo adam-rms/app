@@ -26,7 +26,18 @@ ons-splitter-side[side="left"][animation="overlay"] {
   color: #666
 }
 
+#login > .page__content {
+  background-color: white !important;
+}
 
+#login > .page__content > ons-card {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.list-item__thumbnail {
+  height: auto;
+}
 
 /********************
  *** Animation CSS ***
@@ -41,7 +52,7 @@ ons-splitter-side[side="left"][animation="overlay"] {
 
 #tabbarPage .list-item {
   min-height: 0;
-  height: 44px;
+  height: auto;
   background-color: white;
   margin: 1px 0 -1px 0;
 }
