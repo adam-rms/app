@@ -12,7 +12,8 @@ myApp.data = {
   instances: [],
   instance: [],
   projects: {},
-  assetTypes: {}
+  assetTypes: {},
+  assetTypesPages: null
 }
 myApp.auth = {
   token: false,

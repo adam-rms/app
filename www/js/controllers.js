@@ -116,26 +116,33 @@ myApp.controllers = {
         fullAssetList: function(done, searchTerm) {
             $("#allAssetsListLoader").show();
             var requestData = {"page": Math.floor(Object.keys(myApp.data.assetTypes).length / 20)+1};
-            if (searchTerm !== undefined) {
-                requestData['term'] = searchTerm;
-                requestData['all'] = "true";
-            }
-            myApp.functions.apiCall("assets/list.php", requestData, function (assetResult) {
-                $(assetResult['assets']).each(function (index, element) {
-                    myApp.data.assetTypes[element['assetTypes_id']] = element;
-                    $("#allAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
-                        '<div class="left">' +
-                        (element.thumbnailSuggested ? '<img class="list-item__thumbnail" src="' + element['thumbnailSuggested'] + '">' : '&nbsp;')+
-                        '</div>' +
-                        '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
-                        '<div class="right">' +
-                        '<div class="list-item__label">' + (element['tags'].length > 1 ? 'x' + element['tags'].length : element['tags'][0]['assets_tag_format'].replace("-","&#8209;"))+'</div>'+
-                        '</div>' +
-                        '</ons-list-item>');
-                });
+            if (myApp.data.assetTypesPages != null && Object.keys(myApp.data.assetTypes).length > ((myApp.data.assetTypesPages-1)*20)) {
+                //Don't allow it to duplicate objects
                 $("#allAssetsListLoader").hide();
                 done();
-            }, true);
+            } else {
+                if (searchTerm !== undefined) {
+                    requestData['term'] = searchTerm;
+                    requestData['all'] = "true";
+                }
+                myApp.functions.apiCall("assets/list.php", requestData, function (assetResult) {
+                    myApp.data.assetTypesPages = assetResult.pagination.total;
+                    $(assetResult['assets']).each(function (index, element) {
+                        myApp.data.assetTypes[element['assetTypes_id']] = element;
+                        $("#allAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
+                            '<div class="left">' +
+                            (element.thumbnailSuggested ? '<img class="list-item__thumbnail" src="' + element['thumbnailSuggested'] + '">' : '<span style="width: 40px;"></span>')+
+                            '</div>' +
+                            '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
+                            '<div class="right">' +
+                            '<div class="list-item__label">' + (element['tags'].length > 1 ? 'x' + element['tags'].length : element['tags'][0]['assets_tag_format'].replace("-","&#8209;"))+'</div>'+
+                            '</div>' +
+                            '</ons-list-item>');
+                    });
+                    $("#allAssetsListLoader").hide();
+                    done();
+                }, true);
+            }
         },
         fullAssetListSearch: function(value) {
             $("#allAssetsList").html("");
