@@ -147,6 +147,7 @@ myApp.controllers = {
         fullAssetListSearch: function(value) {
             $("#allAssetsList").html("");
             myApp.data.assetTypes = {};
+            myApp.data.assetTypesPages = null;
             myApp.controllers.assets.fullAssetList(function () {
                 console.log("Serach complete")
             },value);
@@ -254,6 +255,7 @@ ons.ready(function() {
     myApp.controllers.assets.fullAssetListPullRefresh.onAction = function(done) {
         $("#allAssetsList").html("");
         myApp.data.assetTypes = {};
+        myApp.data.assetTypesPages = null;
         myApp.controllers.assets.fullAssetList(done);
     };
 });
