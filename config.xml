@@ -9,11 +9,7 @@
     </author>
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
-    <preference name="android-minSdkVersion" value="28" />
-    <preference name="android-targetSdkVersion" value="28" />
-    <preference name="android-build-tool" value="gradle" />
     <preference name="phonegap-version" value="cli-9.0.0" />
-
 
     <plugin name="cordova-plugin-device" source="npm" spec="~1.1.6" />
     <plugin name="cordova-plugin-dialogs" source="npm" spec="~1.3.3" />
@@ -58,6 +54,12 @@
     <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
         <string>To scan barcodes</string>
     </edit-config>
+    <preference name="BackupWebStorage" value="none" />
+    <preference name="deployment-target" value="12.4" />
+    <feature name="CDVWKWebViewEngine">
+        <param name="ios-package" value="CDVWKWebViewEngine" />
+    </feature>
+    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
 
 
     <platform name="android">
@@ -85,6 +87,10 @@
         <uses-feature android:name="android.hardware.camera" android:required="true" />
     </edit-config>
     <preference name="android-installLocation" value="auto" />
+    <preference name="android-minSdkVersion" value="28" />
+    <preference name="android-targetSdkVersion" value="28" />
+    <preference name="android-build-tool" value="gradle" />
+
 
     <allow-navigation href="*" />
     <allow-intent href="*" />
