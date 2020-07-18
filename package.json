@@ -7,12 +7,12 @@
   "author": "Bithell Studios Ltd.",
   "repository": "https://github.com/Jbithell/adam-rms-app.git",
   "devDependencies": {
-    "cordova-plugin-device": "~1.1.6",
-    "cordova-plugin-dialogs": "~1.3.3",
-    "cordova-plugin-inappbrowser": "~1.7.1",
-    "cordova-plugin-network-information": "~1.3.3",
-    "cordova-plugin-vibration": "~2.1.5",
-    "cordova-plugin-whitelist": "1.1.0"
+    "cordova-plugin-device": "1.1.7",
+    "cordova-plugin-dialogs": "1.3.4",
+    "cordova-plugin-inappbrowser": "1.7.2",
+    "cordova-plugin-network-information": "1.3.4",
+    "cordova-plugin-vibration": "2.1.6",
+    "cordova-plugin-whitelist": "1.3.4"
   },
   "cordova": {
     "plugins": {
@@ -35,10 +35,11 @@
     ]
   },
   "dependencies": {
-    "cordova-android": "^8.1.0",
+    "cordova-android": "^9.0.0",
     "cordova-browser": "^6.0.0",
-    "cordova-ios": "^5.1.1",
+    "cordova-ios": "^6.1.0",
     "cordova-plugin-app-version": "^0.1.9",
+    "phonegap": "^9.0.0",
     "phonegap-plugin-barcodescanner": "8.1.0"
   }
 }
