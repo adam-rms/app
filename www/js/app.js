@@ -112,6 +112,8 @@ myApp.auth = {
 
 
 ons.ready(function() {
+  window.open = cordova.InAppBrowser.open; //Add inapp browser plugin
+
   //Check for iPhone X and apply a fix
   if (ons.platform.isIPhoneX()) {
     document.documentElement.setAttribute('onsflag-iphonex-portrait', '');
