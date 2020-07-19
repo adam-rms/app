@@ -48,7 +48,6 @@
   <link rel="stylesheet" href="lib/onsen/css/onsenui.min.css">
   <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.min.css">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="lib/pace.css">
 </head>
 
 <body>
@@ -84,8 +83,8 @@
   <!-- Second navigation component: Splitter. This will disappear if the first component changes its content. -->
   <template id="splitter.html">
     <ons-page>
-      <ons-splitter id="mySplitter">
-        <ons-splitter-side page="html/menu.html" swipeable width="250px" collapse swipe-target-width="50px">
+      <ons-splitter id="mySplitter"><!--collapse="portrait"-->
+        <ons-splitter-side page="html/menu.html" swipeable width="300px" collapse swipe-target-width="50px">
         </ons-splitter-side>
         <ons-splitter-content page="tabbar.html">
         </ons-splitter-content>
@@ -240,7 +239,13 @@
           </ons-if>
         </div>-->
       </ons-toolbar>
-
+      <ons-card style="text-align: center;max-height:70vh">
+        <ons-carousel swipeable auto-scroll overscrollable id="assetTypePageCarousel">
+          <div class="ons-swiper-target" id="assetTypePageCarouselTarget">
+          </div>
+        </ons-carousel>
+      </ons-card>
+      <ons-card style="text-align: center;" id="assetTypePageDescription" class="hide-empty"></ons-card>
       <ons-list>
         <ons-list-header>Manufacturer</ons-list-header>
         <ons-list-item modifier="nodivider">
@@ -252,11 +257,6 @@
           <div class="center" id="assetTypePageCategory">
           </div>
         </ons-list-item>
-        <ons-list-header>Description</ons-list-header>
-        <ons-list-item modifier="nodivider">
-          <div class="center" id="assetTypePageDescription">
-          </div>
-        </ons-list-item>
         <ons-list-header>Product Page</ons-list-header>
         <ons-list-item modifier="nodivider">
           <div class="center" id="assetTypePageProductLink">
@@ -265,6 +265,9 @@
       </ons-list>
       <ons-list-title>Individual Assets</ons-list-title>
       <ons-list id="assetTypePageAssetsList">
+      </ons-list>
+      <ons-list-title>Asset Type Files</ons-list-title>
+      <ons-list id="assetTypePageFilesList">
       </ons-list>
       <!--<ons-if platform="ios other">
         <ons-button modifier="large">Save</ons-button>
@@ -278,14 +281,11 @@
         <div class="center" id="assetPageTitle"></div>
       </ons-toolbar>
       <div id="assetPageFlagsBlocks"></div>
+
+      <ons-card style="text-align: center;" id="assetPageNotes" class="hide-empty"></ons-card>
       <ons-list id="assetPageDefinableFields">
       </ons-list>
       <ons-list>
-        <ons-list-header>Description</ons-list-header>
-        <ons-list-item modifier="nodivider">
-          <div class="center" id="assetPageNotes">
-          </div>
-        </ons-list-item>
         <ons-list-header>Mass</ons-list-header>
         <ons-list-item modifier="nodivider">
           <div class="center" id="assetPageMass">
@@ -307,6 +307,9 @@
           </div>
         </ons-list-item>
       </ons-list>
+      <ons-list-title>Asset Files</ons-list-title>
+      <ons-list id="assetPageFilesList">
+      </ons-list>
     </ons-page>
   </template>
   <template id="about.html">
@@ -326,6 +329,9 @@
           <ons-list>
             <ons-list-item tappable onclick="window.open('mailto:hi@jbithell.com','_system')">
               Contact Support
+            </ons-list-item>
+            <ons-list-item tappable onclick="myApp.functions.reset();">
+              Reset App
             </ons-list-item>
           </ons-list>
         </div>

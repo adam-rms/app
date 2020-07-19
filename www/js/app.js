@@ -79,10 +79,12 @@ myApp.auth = {
     }).then(function (index) {
       if (index >= 0 && index < 2) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
         if (index === 0) {
+          myApp.auth.location.name = "Whatever was scanned";
           //Do some scanning!
         } else if (index === 1) {
           ons.notification.prompt({ message: 'Description for your location',title: 'Set Location' }).then(function(result) {
             myApp.auth.location.value = myApp.functions.escapeHtml(result);
+            myApp.auth.location.name = myApp.functions.escapeHtml(result);
             myApp.auth.location.type = "Custom";
             $("#tabbarPageTitle").html("AdamRMS - " + myApp.functions.escapeHtml(result));
           });

@@ -39,6 +39,9 @@ ons-splitter-side[side="left"][animation="overlay"] {
   height: auto;
 }
 
+.hide-empty:empty {
+  display: none
+}
 .modal {
   display: inherit;
   transition: background-color ease;

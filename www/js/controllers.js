@@ -74,44 +74,89 @@ myApp.controllers = {
                 if (type === "Fake") {
                     type = "CODE_128";
                 }
-                myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
-                    if (assetResult.asset === false) {
-                        if (assetResult.barcode !== false) {
-                            //Barcode exists but asset doesn't
-                            var barcodeid = assetResult.barcode;
-                            if (myApp.auth.instanceHasPermission(88)) {
-                                ons.notification.confirm({
-                                    title: "Unassociated Barcode",
-                                    message: "Barcode not associated with an asset - would you like to associate it?"
-                                }).then(function (result) {
-                                    console.log(result);
-                                    if (result === 1) {
-                                        ons.notification.prompt({
-                                            title: "Associate Barcode",
-                                            message: 'What is the Asset Tag?'
-                                        }).then(function (tag) {
-                                            if (tag) {
-                                                myApp.functions.apiCall("assets/barcodes/assign.php", {
-                                                    "tag": tag,
-                                                    "barcodeid": barcodeid
-                                                }, function (result) {
-                                                    ons.notification.toast("Success", {timeout: 2000});
-                                                });
-                                            }
+                myApp.controllers.assets.barcodeScanPostScan(text,type);
+            });
+        },
+        barcodeScanPostScan: function(text,type) {
+            myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
+                if (assetResult.asset === false) {
+                    if (assetResult.barcode !== false) {
+                        //Barcode exists but asset doesn't
+                        var barcodeid = assetResult.barcode;
+                    } else {
+                        //This is a totally random new barcode
+                        var barcodeid = false;
+                    }
+
+                    if (myApp.auth.instanceHasPermission(88)) {
+                        ons.notification.confirm({
+                            title: "Unassociated Barcode",
+                            message: "Would you like to associate it with an asset in " + myApp.data.instance['instances_name'] + "?"
+                        }).then(function (result) {
+                            if (result === 1) {
+                                ons.notification.prompt({
+                                    title: "Associate Barcode",
+                                    message: 'What is the Asset\'s Tag?'
+                                }).then(function (tag) {
+                                    if (tag) {
+                                        myApp.functions.apiCall("assets/barcodes/assign.php", {
+                                            "tag": tag,
+                                            "barcodeid": barcodeid,
+                                            "text": text,
+                                            "type": type
+                                        }, function (result) {
+                                            myApp.controllers.assets.barcodeScanPostScan(text,type);
                                         });
                                     }
                                 });
-                            } else {
-                                ons.notification.toast("Barcode not associated with an Asset", { timeout: 2000 });
                             }
-                        } else {
-                            ons.notification.toast("Unknown Barcode", { timeout: 2000 });
-                        }
+                        });
                     } else {
-                        ons.notification.toast(assetResult.asset.assetTypes_name + "  " + assetResult.asset.tag, { timeout: 2000 });
-                        console.log(assetResult.asset);
+                        ons.notification.toast("Sorry barcode not found", { timeout: 2000 });
                     }
-                });
+                } else {
+                    if (typeof myApp.data.assetTypes[assetResult.asset.assetTypes_id] === "undefined") {
+                        //We don't currently have this one downloaded so lets go grab it
+                        var requestData = {"assetTypes_id": assetResult.asset.assetTypes_id };
+                        myApp.functions.apiCall("assets/list.php", requestData, function (assetResult) {
+                            $(assetResult['assets']).each(function (index, element) {
+                                if (typeof myApp.data.assetTypes[element['assetTypes_id']] === "undefined") { //Shouldn't realy be needed
+                                    myApp.data.assetTypes[element['assetTypes_id']] = element;
+                                    myApp.controllers.assets.fullAssetListAppend(element);
+                                }
+                            });
+                            if (Object.keys(assetResult['assets']).length > 0) {
+                                myApp.controllers.assets.barcodeScanAddToList(assetResult.asset.assetTypes_id, assetResult.asset.assets_id);
+                            } else {
+                                //Asset wasn't found
+                                ons.notification.toast("Sorry asset not found - is the correct business set?", { timeout: 2000 });
+                            }
+                        });
+                    } else {
+                        myApp.controllers.assets.barcodeScanAddToList(assetResult.asset.assetTypes_id, assetResult.asset.assets_id);
+                    }
+                }
+            });
+        },
+        barcodeScanAddToList: function(typeid, id) {
+            var thisAsset;
+            $(myApp.data.assetTypes[typeid]['tags']).each(function (index, element) {
+                if (element['assets_id'] == id) {
+                    thisAsset = element;
+                    return false;
+                }
+            });
+            $("#scanned-list").prepend('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + typeid + '}}).then(function() { document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + typeid + ', asset: ' + id + '}}) });">' +
+                '<div class="left">' +
+                (myApp.data.assetTypes[typeid].thumbnails.length > 0 ? '<img class="list-item__thumbnail" src="' + myApp.data.assetTypes[typeid].thumbnails[0]['url'] + '">' : '<span style="width: 40px;"></span>')+
+                '</div>' +
+                '<div class="center"><span class="list-item__title">' + thisAsset['assets_tag_format'].replace("-","&#8209;") + " - " + myApp.data.assetTypes[typeid]['assetTypes_name'] + '</span><span class="list-item__subtitle">' + myApp.data.assetTypes[typeid]['assetCategories_name'] + ' - ' + myApp.data.assetTypes[typeid]['manufacturers_name'] + '</span></div>' +
+                '<div class="right">' +
+                '<div class="list-item__label">' + (typeof myApp.auth.location.name !== "undefined" ? myApp.auth.location.name : "") + '</div>'+
+                '</div>' +
+                '</ons-list-item>');
+            document.querySelector('#myNavigator').pushPage('assetType.html', {data: {id: typeid}}).then(function () {
+                document.querySelector('#myNavigator').pushPage('asset.html', {data: {id: typeid, asset: id }});
             });
         },
         fullAssetList: function(done, searchTerm, clear) {
@@ -138,21 +183,27 @@ myApp.controllers = {
                 myApp.functions.apiCall("assets/list.php", requestData, function (assetResult) {
                     myApp.data.assetTypesPages = assetResult.pagination.total;
                     $(assetResult['assets']).each(function (index, element) {
-                        myApp.data.assetTypes[element['assetTypes_id']] = element;
-                        $("#allAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
-                            '<div class="left">' +
-                            (element.thumbnailSuggested ? '<img class="list-item__thumbnail" src="' + element['thumbnailSuggested'] + '">' : '<span style="width: 40px;"></span>')+
-                            '</div>' +
-                            '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
-                            '<div class="right">' +
-                            '<div class="list-item__label">' + (element['tags'].length > 1 ? 'x' + element['tags'].length : element['tags'][0]['assets_tag_format'].replace("-","&#8209;"))+'</div>'+
-                            '</div>' +
-                            '</ons-list-item>');
+                        if (typeof myApp.data.assetTypes[element['assetTypes_id']] === "undefined") {
+                            myApp.data.assetTypes[element['assetTypes_id']] = element;
+                            myApp.controllers.assets.fullAssetListAppend(element);
+                        }
                     });
                     $("#allAssetsListLoader").hide();
                     done();
                 }, true);
             }
+        },
+        fullAssetListAppend: function(element) {
+            $("#allAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
+                '<div class="left">' +
+                (element.thumbnails.length > 0 ? '<img class="list-item__thumbnail" src="' + element.thumbnails[0]['url'] + '">' : '<span style="width: 40px;"></span>')+
+                '</div>' +
+                '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
+                '<div class="right">' +
+                '<div class="list-item__label">' + (element['tags'].length > 1 ? 'x' + element['tags'].length : element['tags'][0]['assets_tag_format'].replace("-","&#8209;"))+'</div>'+
+                '</div>' +
+                '</ons-list-item>');
+            return true;
         },
         fullAssetListSearch: function(value) {
             myApp.controllers.assets.fullAssetList(function () {
@@ -176,17 +227,16 @@ myApp.controllers = {
         },
         assetTypePage: function (data) {
             var thisAsset = myApp.data.assetTypes[data.data.id];
-            console.log(thisAsset);
             $("#assetTypePageTitle").html(thisAsset['assetTypes_name']);
             $("#assetTypePageManufacturer").html(thisAsset['manufacturers_name']);
             $("#assetTypePageCategory").html(thisAsset['assetCategories_name']);
-            $("#assetTypePageDescription").html(thisAsset['assetTypes_description']);
+            $("#assetTypePageDescription").html(myApp.functions.nl2br(thisAsset['assetTypes_description']));
             $("#assetTypePageProductLink").html(thisAsset['assetTypes_productLink']);
             if (thisAsset['assetTypes_productLink'] !== null) {
                 $("#assetTypePageProductLink").attr("onclick", "window.open('" + thisAsset['assetTypes_productLink'] + "','_blank')");
             }
             $(thisAsset['tags']).each(function (index, element) {
-                $("#assetTypePageAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + data.data.id + ',asset: ' + index + '}});">' +
+                $("#assetTypePageAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + data.data.id + ',asset: ' + element['assets_id'] + '}});">' +
                     '<div class="left">' +
                     (element['flagsblocks']["COUNT"]["BLOCK"] > 0 ? '<ons-icon icon="fa-ban" style="color: #dc3545;"></ons-icon>&nbsp;' : '&nbsp;') +
                     (element['flagsblocks']["COUNT"]["FLAG"] > 0 ? '<ons-icon icon="fa-flag" style="color: #ffc107;"></ons-icon>' : '') +
@@ -194,13 +244,49 @@ myApp.controllers = {
                     '<div class="center">' + element['assets_tag_format'] + '</div>' +
                     '</ons-list-item>');
             });
+            //Thumbnails
+            var carousel = "";
+            $(thisAsset['thumbnails']).each(function (index, element) {
+                console.log(element);
+                carousel += ('<ons-carousel-item><div style="margin-top: 20px;">' +
+                '<img src="' + element.url + '" style="min-width:25%; height: auto; max-height:65vh;" />' +
+                '</div></ons-carousel-item>');
+            });
+            $("#assetTypePageCarouselTarget").html(carousel);
+            if (carousel != "") {
+                $("#assetTypePageCarousel").parent().show();
+                document.getElementById('assetTypePageCarousel').refresh();
+            } else {
+                $("#assetTypePageCarousel").parent().hide();
+            }
+
+            //Files
+            $("#assetTypePageFilesList").html("");
+            if (myApp.auth.instanceHasPermission(54)) {
+                $(thisAsset['files']).each(function (index, element) {
+                    console.log(element);
+                    $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',myApp.functions.openBrowser);">' +
+                        '<div class="left">' +
+                        '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
+                        '</div>' +
+                        '<div class="center">' + element['s3files_name'] + '</div>' +
+                        '<div class="right">' + myApp.functions.formatSize(element['s3files_meta_size']) + '</div>' +
+                        '</ons-list-item>');
+                });
+            }
         },
         assetPage: function (data) {
             var thisAssetType = myApp.data.assetTypes[data.data.id];
-            var thisAsset = thisAssetType['tags'][data.data.asset];
+            var thisAsset;
+            $(thisAssetType['tags']).each(function (index, element) {
+                if (element['assets_id'] == data.data.asset) {
+                    thisAsset = element;
+                    return false;
+                }
+            });
             console.log(thisAsset);
             $("#assetPageTitle").html(thisAsset['assets_tag_format']);
-            $("#assetPageNotes").html(thisAsset['assets_notes']);
+            $("#assetPageNotes").html(myApp.functions.nl2br(thisAsset['assets_notes']));
             $("#assetPageMass").html((thisAsset['assets_mass'] !== null ? thisAsset['assets_mass_format'] : thisAssetType['assetTypes_mass_format']));
             $("#assetPageValue").html((thisAsset['assets_value'] !== null ? thisAsset['assets_value_format'] : thisAssetType['assetTypes_value_format']));
             $("#assetPageWeekRate").html((thisAsset['assets_weekRate'] !== null ? thisAsset['assets_weekRate_format'] : thisAssetType['assetTypes_weekRate_format']));
@@ -239,6 +325,20 @@ myApp.controllers = {
                     '      </ons-card>');
             });
             //TODO associate with barcode
+            //Files
+            $("#assetPageFilesList").html("");
+            if (myApp.auth.instanceHasPermission(61)) {
+                $(thisAsset['files']).each(function (index, element) {
+                    console.log(element);
+                    $("#assetPageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',myApp.functions.openBrowser);">' +
+                        '<div class="left">' +
+                        '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
+                        '</div>' +
+                        '<div class="center">' + element['s3files_name'] + '</div>' +
+                        '<div class="right">' + myApp.functions.formatSize(element['s3files_meta_size']) + '</div>' +
+                        '</ons-list-item>');
+                });
+            }
         },
     }
 }

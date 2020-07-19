@@ -53,6 +53,15 @@ myApp.functions = {
       console.log("Attempted to trigger barcode scan");
     }
   },
+  s3url: function(fileid,callback) {
+    myApp.functions.apiCall("file/",{"f":fileid,"d":"force"}, function(response) {
+      callback(response.url);
+    });
+  },
+  openBrowser: function(url) {
+    window.open(url, '_system');
+    return false;
+  },
   apiCall: function (endpoint, data, callback, useCustomLoader) {
     if (typeof data !== 'object' || data === null) {
       data = {}
@@ -87,8 +96,9 @@ myApp.functions = {
           $('.loadingDialog').hide();
           console.log(JSON.stringify(error));
           ons.notification.alert({title: request.statusText + " - " + status, message: (request.responseText ? request.responseText : 'Error connecting to AdamRMS') }, function () {
+            myApp.controllers.firstBoot();
             if (navigator.app) {
-              navigator.app.exitApp();
+              myApp.controllers.firstBoot();
             }
           });
         }
@@ -99,6 +109,139 @@ myApp.functions = {
     myApp.controllers.firstBoot();
     $("#login").hide();
     $("#app-mainview").show();
+  },
+  fileExtensionToIcon: function(extension) {
+    switch (extension.toLowerCase()) {
+      case "gif":
+        return 'fa-file-image';
+        break;
+
+      case "jpeg":
+        return 'fa-file-image';
+        break;
+
+      case "jpg":
+        return 'fa-file-image';
+        break;
+
+      case "png":
+        return 'fa-file-image';
+        break;
+
+      case "pdf":
+        return 'fa-file-pdf';
+        break;
+
+      case "doc":
+        return 'fa-file-word';
+        break;
+
+      case "docx":
+        return 'fa-file-word';
+        break;
+
+      case "ppt":
+        return 'fa-file-powerpoint';
+        break;
+
+      case "pptx":
+        return 'fa-file-powerpoint';
+        break;
+
+      case "xls":
+        return 'fa-file-excel';
+        break;
+
+      case "xlsx":
+        return 'fa-file-excel';
+        break;
+
+      case "csv":
+        return 'fa-file-csv';
+        break;
+
+      case "aac":
+        return 'fa-file-audio';
+        break;
+
+      case "mp3":
+        return 'fa-file-audio';
+        break;
+
+      case "ogg":
+        return 'fa-file-audio';
+        break;
+
+      case "avi":
+        return 'fa-file-video';
+        break;
+
+      case "flv":
+        return 'fa-file-video';
+        break;
+
+      case "mkv":
+        return 'fa-file-video';
+        break;
+
+      case "mp4":
+        return 'fa-file-video';
+        break;
+
+      case "gz":
+        return 'fa-file-archive';
+        break;
+
+      case "zip":
+        return 'fa-file-archive';
+        break;
+
+      case "css":
+        return 'fa-file-code';
+        break;
+
+      case "html":
+        return 'fa-file-code';
+        break;
+
+      case "js":
+        return 'fa-file-code';
+        break;
+
+      case "txt":
+        return 'fa-file-alt';
+        break;
+      default:
+        return 'fa-file';
+        break;
+    }
+  },
+  formatSize: function(size) {
+      if (size >= 1073741824) {
+        size = (size / 1073741824).toFixed(1) + ' GB';
+      } else if (size >= 100000) {
+        size = (size / 1048576).toFixed(1) + ' MB';
+      } else if (size >= 1024) {
+        size = (size / 1024).toFixed(0) + ' KB';
+      } else if (size > 1) {
+        size = size + ' bytes';
+      } else if (size == 1) {
+        size = size + ' byte';
+      } else {
+        size = '0 bytes';
+      }
+      return size;
+  },
+  nl2br: function(text) {
+    if (text == null) {
+      return text;
+    } else {
+      return text.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    }
+  },
+  reset: function() {
+    localStorage.clear();
+    location.reload();
   }
 }
 
