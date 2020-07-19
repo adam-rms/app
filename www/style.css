@@ -39,6 +39,61 @@ ons-splitter-side[side="left"][animation="overlay"] {
   height: auto;
 }
 
+.modal {
+  display: inherit;
+  transition: background-color ease;
+  -webkit-animation: loader-cyc 10s linear infinite;
+  -moz-animation: loader-cyc 10s linear infinite;
+  -o-animation: loader-cyc 10s linear infinite;
+  animation: loader-cyc 10s linear infinite;
+}
+@-webkit-keyframes loader-cyc {
+  0%   { background-color: rgba(255, 0, 0, 0.7); }
+  12% { background-color: rgba(255, 111, 0, 0.7); }
+  25% { background-color: rgba(255, 242, 0, 0.7); }
+  37% { background-color: rgba(55, 255, 0, 0.7); }
+  50% { background-color: rgba(0, 255, 225, 0.7); }
+  62% { background-color: rgba(0, 42, 255, 0.7); }
+  75% { background-color: rgba(208, 0, 255, 0.7); }
+  87% { background-color: rgba(255, 0, 161, 0.7); }
+  100% { background-color: rgba(255, 0, 0, 0.7); }
+}
+@-moz-keyframes loader-cyc {
+  0%   { background-color: rgba(255, 0, 0, 0.7); }
+  12% { background-color: rgba(255, 111, 0, 0.7); }
+  25% { background-color: rgba(255, 242, 0, 0.7); }
+  37% { background-color: rgba(55, 255, 0, 0.7); }
+  50% { background-color: rgba(0, 255, 225, 0.7); }
+  62% { background-color: rgba(0, 42, 255, 0.7); }
+  75% { background-color: rgba(208, 0, 255, 0.7); }
+  87% { background-color: rgba(255, 0, 161, 0.7); }
+  100% { background-color: rgba(255, 0, 0, 0.7); }
+}
+@-o-keyframes loader-cyc {
+  0%   { background-color: rgba(255, 0, 0, 0.7); }
+  12% { background-color: rgba(255, 111, 0, 0.7); }
+  25% { background-color: rgba(255, 242, 0, 0.7); }
+  37% { background-color: rgba(55, 255, 0, 0.7); }
+  50% { background-color: rgba(0, 255, 225, 0.7); }
+  62% { background-color: rgba(0, 42, 255, 0.7); }
+  75% { background-color: rgba(208, 0, 255, 0.7); }
+  87% { background-color: rgba(255, 0, 161, 0.7); }
+  100% { background-color: rgba(255, 0, 0, 0.7); }
+}
+@keyframes loader-cyc {
+  0%   { background-color: rgba(255, 0, 0, 0.7); }
+  12% { background-color: rgba(255, 111, 0, 0.7); }
+  25% { background-color: rgba(255, 242, 0, 0.7); }
+  37% { background-color: rgba(55, 255, 0, 0.7); }
+  50% { background-color: rgba(0, 255, 225, 0.7); }
+  62% { background-color: rgba(0, 42, 255, 0.7); }
+  75% { background-color: rgba(208, 0, 255, 0.7); }
+  87% { background-color: rgba(255, 0, 161, 0.7); }
+  100% { background-color: rgba(255, 0, 0, 0.7); }
+}
+
+
+
 /********************
  *** Animation CSS ***
  ********************/
