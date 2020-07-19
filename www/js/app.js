@@ -79,8 +79,13 @@ myApp.auth = {
     }).then(function (index) {
       if (index >= 0 && index < 2) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
         if (index === 0) {
-          myApp.auth.location.name = "Whatever was scanned";
-          //Do some scanning!
+          myApp.functions.barcode.scan(false, function(text,type) {
+            if (type === "Fake") {
+              type = "CODE_128";
+            }
+            ons.notification.toast("Sorry location not found", { timeout: 2000 });
+          });
+          //myApp.auth.location.name = "Whatever was scanned";
         } else if (index === 1) {
           ons.notification.prompt({ message: 'Description for your location',title: 'Set Location' }).then(function(result) {
             myApp.auth.location.value = myApp.functions.escapeHtml(result);
