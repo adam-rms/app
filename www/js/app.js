@@ -46,7 +46,7 @@ myApp.auth = {
       icon: 'md-close'
     });
     ons.openActionSheet({
-      title: 'Change Instance',
+      title: 'Change Business',
       cancelable: true,
       buttons: listOfInstances
     }).then(function (index) {
