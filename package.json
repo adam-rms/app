@@ -9,7 +9,6 @@
   "devDependencies": {
     "cordova-plugin-device": "1.1.7",
     "cordova-plugin-dialogs": "1.3.4",
-    "cordova-plugin-inappbrowser": "1.7.2",
     "cordova-plugin-network-information": "1.3.4",
     "cordova-plugin-vibration": "2.1.6",
     "cordova-plugin-whitelist": "1.3.4"
@@ -19,14 +18,14 @@
       "cordova-plugin-device": {},
       "cordova-plugin-dialogs": {},
       "cordova-plugin-file": {},
-      "cordova-plugin-inappbrowser": {},
       "cordova-plugin-network-information": {},
       "cordova-plugin-vibration": {},
       "cordova-plugin-whitelist": {},
       "cordova-plugin-app-version": {},
       "phonegap-plugin-barcodescanner": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      }
+      },
+      "cordova-plugin-wkwebview-engine": {}
     },
     "platforms": [
       "browser",
@@ -41,6 +40,7 @@
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-file": "^4.3.3",
+    "cordova-plugin-wkwebview-engine": "^1.2.1",
     "phonegap": "^9.0.0",
     "phonegap-plugin-barcodescanner": "8.1.0"
   }
