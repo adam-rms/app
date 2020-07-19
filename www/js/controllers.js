@@ -71,10 +71,12 @@ myApp.controllers = {
         barcodeScanFAB: function() {
             console.log("Starting barcode scan");
             myApp.functions.barcode.scan(false, function(text,type) {
-                if (type === "Fake") {
-                    type = "CODE_128";
+                if (text !== false) {
+                    if (type === "Fake") {
+                        type = "CODE_128";
+                    }
+                    myApp.controllers.assets.barcodeScanPostScan(text,type);
                 }
-                myApp.controllers.assets.barcodeScanPostScan(text,type);
             });
         },
         barcodeScanPostScan: function(text,type) {
@@ -233,7 +235,7 @@ myApp.controllers = {
             $("#assetTypePageDescription").html(myApp.functions.nl2br(thisAsset['assetTypes_description']));
             $("#assetTypePageProductLink").html(thisAsset['assetTypes_productLink']);
             if (thisAsset['assetTypes_productLink'] !== null) {
-                $("#assetTypePageProductLink").attr("onclick", "window.open('" + thisAsset['assetTypes_productLink'] + "','_blank')");
+                $("#assetTypePageProductLink").attr("onclick", "cordova.InAppBrowser.open('" + thisAsset['assetTypes_productLink'] + "','_blank')");
             }
             $(thisAsset['tags']).each(function (index, element) {
                 $("#assetTypePageAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + data.data.id + ',asset: ' + element['assets_id'] + '}});">' +
@@ -249,7 +251,7 @@ myApp.controllers = {
             $(thisAsset['thumbnails']).each(function (index, element) {
                 console.log(element);
                 carousel += ('<ons-carousel-item><div style="margin-top: 20px;">' +
-                '<img src="' + element.url + '" style="min-width:25%; height: auto; max-height:65vh;" />' +
+                '<img src="' + element.url + '" style="min-width:25%; max-width:100%;height: auto; max-height:65vh;" />' +
                 '</div></ons-carousel-item>');
             });
             $("#assetTypePageCarouselTarget").html(carousel);

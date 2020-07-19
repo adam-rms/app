@@ -59,7 +59,7 @@ myApp.functions = {
     });
   },
   openBrowser: function(url) {
-    window.open(url, '_system');
+    cordova.InAppBrowser.open(url, '_system');
     return false;
   },
   apiCall: function (endpoint, data, callback, useCustomLoader) {

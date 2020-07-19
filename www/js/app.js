@@ -80,10 +80,12 @@ myApp.auth = {
       if (index >= 0 && index < 2) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
         if (index === 0) {
           myApp.functions.barcode.scan(false, function(text,type) {
-            if (type === "Fake") {
-              type = "CODE_128";
+            if (text !== false) {
+              if (type === "Fake") {
+                type = "CODE_128";
+              }
+              ons.notification.toast("Sorry location not found", { timeout: 2000 });
             }
-            ons.notification.toast("Sorry location not found", { timeout: 2000 });
           });
           //myApp.auth.location.name = "Whatever was scanned";
         } else if (index === 1) {
@@ -112,10 +114,8 @@ myApp.auth = {
 
 
 ons.ready(function() {
-  window.open = cordova.InAppBrowser.open; //Add inapp browser plugin
-
   //Check for iPhone X and apply a fix
-  if (ons.platform.isIPhoneX()) {
+  if (ons.platform.isIPhoneX() && false) { //Disabled as works without
     document.documentElement.setAttribute('onsflag-iphonex-portrait', '');
     document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
   }

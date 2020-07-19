@@ -33,8 +33,7 @@
 	style-src 'self' 'unsafe-inline' *">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
-  <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-
+  <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=contain">
 
   <script src="cordova.js"></script>
 
@@ -69,7 +68,7 @@
             <ons-input id="login-password" modifier="underbar" type="password" placeholder="Password" float autocomplete="current-password"></ons-input>
           </p>
           <p style="margin-top: 30px;">
-            <ons-button modifier="quiet" onclick="window.open('https://adam-rms.com','_system')">Forgot password</ons-button>
+            <ons-button modifier="quiet" onclick="cordova.InAppBrowser.open('https://adam-rms.com','_system')">Forgot password</ons-button>
             <ons-button type="submit" value="Submit" onclick="myApp.auth.login()">Sign in</ons-button>
           </p>
         </form>
@@ -327,7 +326,7 @@
       <ons-card>
         <div class="content">
           <ons-list>
-            <ons-list-item tappable onclick="window.open('mailto:hi@jbithell.com','_system')">
+            <ons-list-item tappable onclick="cordova.InAppBrowser.open('mailto:hi@jbithell.com','_system')">
               Contact Support
             </ons-list-item>
             <ons-list-item tappable onclick="myApp.functions.reset();">
