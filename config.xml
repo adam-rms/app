@@ -56,7 +56,7 @@
         <preference name="AllowBackForwardNavigationGestures" value="true" />
         <preference name="Allow3DTouchLinkPreview" value="false" />
         <preference name="scheme" value="app" />
-        <preference name="hostname" value="localhost"  />
+        <preference name="hostname" value="localhost" />
     </platform>
     <config-file parent="CFBundleDisplayName" platform="ios" target="*-Info.plist">
         <string>AdamRMS</string>
