@@ -13,24 +13,18 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-  <!--
-  Causing major ios issues
+
   <meta http-equiv="Content-Security-Policy" content="
      default-src 'self' https://*.phonegap.com data: gap: https://ssl.gstatic.com file://* 'unsafe-eval' *;
      base-uri 'self' *;
-     style-src 'self' 'unsafe-inline';
+     style-src 'self' 'unsafe-inline' *;
      media-src *;
      img-src 'self' data: * https://adam-rms.com https://*.adam-rms.com data: content:;
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com;
      script-src-elem 'self' 'unsafe-inline' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com;
      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.phonegap.com;
      frame-src *;
-  ">-->
-  <meta http-equiv="Content-Security-Policy" content="
-	default-src gap://ready file://* *;
-	script-src 'self' 'unsafe-inline' 'unsafe-eval' *;
-	img-src 'self' data: *;
-	style-src 'self' 'unsafe-inline' *">
+  ">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=contain">
