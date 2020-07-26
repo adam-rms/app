@@ -11,11 +11,13 @@ myApp.config = {
 myApp.data = {
   instances: [],
   instance: [],
+  instanceID: null,
   projects: {},
   assetTypes: {},
   assetTypesPages: null,
   init: function() {
     myApp.data.instances = [];
+    myApp.data.instanceID = localStorage.getItem('instanceID');
     myApp.data.instance= [];
     myApp.data.projects= {};
     myApp.data.assetTypes= {};
@@ -51,10 +53,9 @@ myApp.auth = {
       buttons: listOfInstances
     }).then(function (index) {
       if (index >= 0 && index < myApp.data.instances.length) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
-        myApp.functions.apiCall("instances/change.php", {"instances_id": myApp.data.instances[index]['instances_id']}, function (result) {
-            console.log("Calling first boot");
-            myApp.controllers.firstBoot();
-        });
+        myApp.data.instanceID = myApp.data.instances[index]['instances_id']
+        localStorage.setItem('instanceID',myApp.data.instanceID)
+        myApp.controllers.firstBoot();
       }
     });
   },

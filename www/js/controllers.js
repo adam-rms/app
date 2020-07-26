@@ -38,6 +38,7 @@ myApp.controllers = {
                         if (element['this']) {
                             //This instance
                             myApp.data.instance = element;
+                            myApp.data.instanceID = element['instances_id'];
                             $("#menu-title").html(element['instances_name']);
                             if (myApp.auth.instanceHasPermission(20)) {
                                 myApp.functions.apiCall("projects/list.php", {}, function (projectResult) {

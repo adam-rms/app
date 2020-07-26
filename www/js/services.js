@@ -67,6 +67,9 @@ myApp.functions = {
       data = {}
     }
     data['jwt'] = myApp.auth.token;
+    if (myApp.data.instanceID !== null) {
+        data['instances_id'] = myApp.data.instanceID;
+    }
     if (navigator.connection.type === Connection.NONE) {
       ons.notification.toast("No Network Connection", { timeout: 2000 });
     } else {
