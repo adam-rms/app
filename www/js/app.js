@@ -167,13 +167,57 @@ ons.ready(function() {
     }
   })
 
-  $( "#loginButton" ).on( "click", function() {
-    alert("Login Button");
+  //Register all event handlers
+  $( ".toolbarToggleButton" ).on( "click", function() {
+    document.querySelector('#mySplitter').left.toggle();
   });
-  $( "#loginButton" ).on( "click", function() {
-    alert("Login Button tap");
+  $( "#loginFormLoginButton" ).on( "click", function() {
+    myApp.auth.login();
+  });
+  $( ".forgotPasswordButton" ).on( "click", function() {
+    cordova.InAppBrowser.open('https://adam-rms.com','_system');
+  });
+  $( ".contactSupportButton" ).on( "click", function() {
+    cordova.InAppBrowser.open('mailto:hi@jbithell.com','_system')
+  });
+  $( ".resetAppButton" ).on( "click", function() {
+    myApp.functions.reset();
+  });
+  $( ".logoutAppButton" ).on( "click", function() {
+    myApp.auth.logout();
+  });
+  //Menu
+  $( "#menuButtonDashboard" ).on( "click", function() {
+    cordova.InAppBrowser.open('https://adam-rms.com','_system');
+  });
+  $( "#menuButtonChangeBusiness" ).on( "click", function() {
+    myApp.auth.changeInstance();
+  });
+  $( "#menuButtonSetLocation" ).on( "click", function() {
+    myApp.auth.setLocation()
+  });
+  $( "#menu-asset-addNewButton" ).on( "click", function() {
+    document.querySelector('#myNavigator').pushPage('newAssetPage.html', {data: {title: 'Page 2'}});
+  });
+  $( "#menuButtonAbout" ).on( "click", function() {
+    document.querySelector('#myNavigator').pushPage('about.html', {data: {title: 'Page 2'}});
   });
 
+
+  $( "#scanSpeedDialTrash" ).on( "click", function() {
+    myApp.controllers.assets.barcodeDeleteFAB();
+  });
+  $( "#scanSpeedDialCamera" ).on( "click", function() {
+    myApp.controllers.assets.barcodeScanFAB();
+  });
+  $( "#scanSpeedDialMap" ).on( "click", function() {
+    myApp.auth.setLocation();
+  });
+
+
+
+
+  //Register app token
   myApp.auth.token = localStorage.getItem('token');
   if (myApp.auth.token && myApp.auth.token != '') {
     myApp.functions.launchApp();

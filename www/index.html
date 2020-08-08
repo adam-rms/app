@@ -60,8 +60,8 @@
             <ons-input id="login-password" modifier="underbar" type="password" placeholder="Password" float autocomplete="current-password"></ons-input>
           </p>
           <p style="margin-top: 30px;">
-            <ons-button modifier="quiet" onclick="cordova.InAppBrowser.open('https://adam-rms.com','_system')">Forgot password</ons-button>
-            <ons-button id="loginButton" onclick="myApp.auth.login()">Sign in</ons-button>
+            <ons-button modifier="quiet" class="forgotPasswordButton">Forgot password</ons-button>
+            <ons-button id="loginFormLoginButton">Sign in</ons-button>
           </p>
         </form>
     </div>
@@ -89,7 +89,7 @@
       <ons-toolbar>
         <div class="left">
           <!-- Toolbar-button with different icons depending on the platform. -->
-          <ons-toolbar-button onclick="document.querySelector('#mySplitter').left.toggle()">
+          <ons-toolbar-button class="toolbarToggleButton">
             <ons-icon icon="fa-bars" size="32px, material:24px"></ons-icon>
           </ons-toolbar-button>
         </div>
@@ -106,13 +106,13 @@
         <ons-fab>
           <ons-icon icon="fa-barcode"></ons-icon>
         </ons-fab>
-        <ons-speed-dial-item onclick="myApp.controllers.assets.barcodeDeleteFAB()">
+        <ons-speed-dial-item id="scanSpeedDialTrash">
           <ons-icon icon="fa-trash"></ons-icon>
         </ons-speed-dial-item>
-        <ons-speed-dial-item onclick="myApp.controllers.assets.barcodeScanFAB()">
+        <ons-speed-dial-item id="scanSpeedDialCamera">
           <ons-icon icon="fa-camera"></ons-icon>
         </ons-speed-dial-item>
-        <ons-speed-dial-item onclick="myApp.auth.setLocation()">
+        <ons-speed-dial-item id="scanSpeedDialMap">
           <ons-icon icon="fa-map-pin"></ons-icon>
         </ons-speed-dial-item>
       </ons-speed-dial>
@@ -324,10 +324,10 @@
       <ons-card>
         <div class="content">
           <ons-list>
-            <ons-list-item tappable onclick="cordova.InAppBrowser.open('mailto:hi@jbithell.com','_system')">
+            <ons-list-item tappable class="contactSupportButton">
               Contact Support
             </ons-list-item>
-            <ons-list-item tappable onclick="myApp.functions.reset();">
+            <ons-list-item tappable class="resetAppButton">
               Reset App
             </ons-list-item>
           </ons-list>

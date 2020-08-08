@@ -3,7 +3,7 @@
     <div class="center" id="menu-title"></div>
   </ons-toolbar>
   <ons-list>
-    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" onclick="cordova.InAppBrowser.open('https://adam-rms.com','_system')">
+    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" id="menuButtonDashboard">
       <div class="left">
         <ons-icon icon="fa-external-link" style="color: grey;"></ons-icon>
       </div>
@@ -11,7 +11,7 @@
         Dashboard
       </div>
     </ons-list-item>
-    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" onclick="myApp.auth.changeInstance()">
+    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" id="menuButtonChangeBusiness">
       <div class="left">
         <ons-icon icon="fa-building" style="color: grey;"></ons-icon>
       </div>
@@ -19,7 +19,7 @@
         Change Business
       </div>
     </ons-list-item>
-    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" onclick="myApp.auth.setLocation()">
+    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" id="menuButtonSetLocation">
       <div class="left">
         <ons-icon icon="fa-map-marker" style="color: grey;"></ons-icon>
       </div>
@@ -30,7 +30,7 @@
   </ons-list>
   <ons-list-title>Assets</ons-list-title>
   <ons-list>
-    <ons-list-item tappable modifier="longdivider" onclick="document.querySelector('#myNavigator').pushPage('newAssetPage.html', {data: {title: 'Page 2'}});" id="menu-asset-addNewButton" style="display:none;">
+    <ons-list-item tappable modifier="longdivider" id="menu-asset-addNewButton" style="display:none;">
       <div class="left">
         <ons-icon icon="fa-plus" style="color: grey;"></ons-icon>
       </div>
@@ -44,7 +44,7 @@
     </ons-list>
   <ons-list-title>Settings</ons-list-title>
   <ons-list>
-    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" onclick="myApp.auth.logout()">
+    <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" class="logoutAppButton">
       <div class="left">
         <ons-icon icon="fa-sign-out" style="color: grey;"></ons-icon>
       </div>
@@ -52,7 +52,7 @@
         Logout
       </div>
     </ons-list-item>
-    <ons-list-item tappable modifier="longdivider chevron" onclick="document.querySelector('#myNavigator').pushPage('about.html', {data: {title: 'Page 2'}});">
+    <ons-list-item tappable modifier="longdivider chevron" id="menuButtonAbout">
       <div class="left">
         <ons-icon icon="fa-info" style="color: grey;"></ons-icon>
       </div>
