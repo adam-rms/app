@@ -167,6 +167,13 @@ ons.ready(function() {
     }
   })
 
+  $( "#loginButton" ).on( "click", function() {
+    alert("Login Button");
+  });
+  $( "#loginButton" ).on( "click", function() {
+    alert("Login Button tap");
+  });
+
   myApp.auth.token = localStorage.getItem('token');
   if (myApp.auth.token && myApp.auth.token != '') {
     myApp.functions.launchApp();
