@@ -14,4 +14,4 @@ Password in LastPass under `AdamRMS Android App Certificate Keystore`
 
 https://stackoverflow.com/a/19490759 
 
-After making changes `phonegap prepare ios && phonegap build ios`
+After making changes `phonegap prepare ios` then rebuild in Xcode
