@@ -15,9 +15,8 @@
         -->
 
   <meta http-equiv="Content-Security-Policy" content="
-     default-src 'self' https://*.phonegap.com data: gap: https://ssl.gstatic.com file://* 'unsafe-eval' *;
+     default-src 'self' https://*.phonegap.com data: gap: https://ssl.gstatic.com file://* 'unsafe-eval' 'unsafe-inline' *;
      base-uri 'self' *;
-     style-src 'self' 'unsafe-inline' *;
      media-src *;
      img-src 'self' data: * https://adam-rms.com https://*.adam-rms.com data: content:;
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com;
@@ -63,7 +62,7 @@
           </p>
           <p style="margin-top: 30px;">
             <ons-button modifier="quiet" onclick="cordova.InAppBrowser.open('https://adam-rms.com','_system')">Forgot password</ons-button>
-            <ons-button type="submit" value="Submit" onclick="myApp.auth.login()">Sign in</ons-button>
+            <ons-button onclick="myApp.auth.login()">Sign in</ons-button>
           </p>
         </form>
     </div>
