@@ -121,14 +121,14 @@ myApp.controllers = {
                     if (typeof myApp.data.assetTypes[assetResult.asset.assetTypes_id] === "undefined") {
                         //We don't currently have this one downloaded so lets go grab it
                         var requestData = {"assetTypes_id": assetResult.asset.assetTypes_id };
-                        myApp.functions.apiCall("assets/list.php", requestData, function (assetResult) {
-                            $(assetResult['assets']).each(function (index, element) {
+                        myApp.functions.apiCall("assets/list.php", requestData, function (assetDownloadResult) {
+                            $(assetDownloadResult['assets']).each(function (index, element) {
                                 if (typeof myApp.data.assetTypes[element['assetTypes_id']] === "undefined") { //Shouldn't realy be needed
                                     myApp.data.assetTypes[element['assetTypes_id']] = element;
                                     myApp.controllers.assets.fullAssetListAppend(element);
                                 }
                             });
-                            if (Object.keys(assetResult['assets']).length > 0) {
+                            if (Object.keys(assetDownloadResult['assets']).length > 0) {
                                 myApp.controllers.assets.barcodeScanAddToList(assetResult.asset.assetTypes_id, assetResult.asset.assets_id);
                             } else {
                                 //Asset wasn't found
