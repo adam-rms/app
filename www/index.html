@@ -14,17 +14,15 @@
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
 
-  <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' * ">
-
-  <!--
-  default-src 'self' https://*.phonegap.com data: gap: https://ssl.gstatic.com file://* 'unsafe-eval' 'unsafe-inline' *;
+  <meta http-equiv="Content-Security-Policy" content="
+     default-src 'self' 'unsafe-eval' 'unsafe-inline' data: gap: https://*.phonegap.com https://adam-rms.com https://*.adam-rms.com https://ssl.gstatic.com file://*;
      base-uri 'self' *;
      media-src *;
-     img-src 'self' data: * https://adam-rms.com https://*.adam-rms.com data: content:;
+     img-src 'self' data: https://adam-rms.com https://*.adam-rms.com content:;
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com;
-     script-src-elem 'self' 'unsafe-inline' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com;
-     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.phonegap.com;
-     frame-src *;-->
+     script-src-elem 'self' https://*.phonegap.com;
+     script-src 'self' 'unsafe-hashes' https://*.phonegap.com;
+    " />
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=contain">
