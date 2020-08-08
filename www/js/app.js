@@ -175,6 +175,3 @@ ons.ready(function() {
     $("#login").show();
   }
 });
-setInterval(function () {
-  console.log("Alive");
-}, 1000);
