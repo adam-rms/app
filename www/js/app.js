@@ -55,10 +55,14 @@ myApp.auth = {
       if (index >= 0 && index < myApp.data.instances.length) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
         myApp.data.instanceID = myApp.data.instances[index]['instances_id']
         localStorage.setItem('instanceID',myApp.data.instanceID)
+
+        //reset location
         myApp.auth.location = {
           type:false,
           value:"Not set"
         };
+        $("#tabbarPageTitle").html("AdamRMS");
+
         myApp.controllers.firstBoot();
       }
     });
@@ -89,11 +93,21 @@ myApp.auth = {
               if (type === "Fake") {
                 type = "CODE_128";
               }
-              ons.notification.toast("Sorry location not found", { timeout: 2000 });
-              //myApp.auth.location.value = myApp.functions.escapeHtml(result);
-              //myApp.auth.location.name = myApp.functions.escapeHtml(result);
-              //myApp.auth.location.type = "Custom";
-              $("#tabbarPageTitle").html("AdamRMS - " + myApp.auth.location.name);
+              myApp.functions.apiCall("assets/barcodes/search.php", {"text":text,"type":type}, function (result) {
+                if (result.location) {
+                  myApp.auth.location.value = result.location['barcode']["locationsBarcodes_id"];
+                  myApp.auth.location.name = result.location['locations_name'];
+                  myApp.auth.location.type = "barcode";
+                } else if (result.asset) {
+                  console.log(result.asset);
+                  myApp.auth.location.value = result.asset['assets_id'];
+                  myApp.auth.location.name = result.asset['tag'] + " " + result.asset['assetTypes_name'];
+                  myApp.auth.location.type = "asset";
+                } else {
+                  ons.notification.toast("Sorry location not found", { timeout: 2000 });
+                }
+                $("#tabbarPageTitle").html("AdamRMS - " + myApp.auth.location.name);
+              });
             }
           });
         } else if (index === 1) {

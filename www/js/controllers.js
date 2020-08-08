@@ -58,9 +58,9 @@ myApp.controllers = {
                                 $("#menu-asset-addNewButton").show();
                             }
                             if (myApp.auth.instanceHasPermission(85)) {
-                                $("#scanSpeedDial").show();
+                                $(".scanSpeedDial").show();
                             } else {
-                                $("#scanSpeedDial").hide();
+                                $(".scanSpeedDial").hide();
                             }
                         }
                     });
@@ -77,7 +77,7 @@ myApp.controllers = {
                             if (type === "Fake") {
                                 type = "CODE_128";
                             }
-                            myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
+                            myApp.functions.apiCall("assets/barcodes/search.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
                                 if (assetResult.asset === false) {
                                     ons.notification.toast("Sorry barcode not found", {timeout: 2000});
                                 } else {
@@ -117,7 +117,7 @@ myApp.controllers = {
             }
         },
         barcodeScanPostScan: function(text,type) {
-            myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
+            myApp.functions.apiCall("assets/barcodes/search.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
                 if (assetResult.asset === false) {
                     if (assetResult.barcode !== false) {
                         //Barcode exists but asset doesn't
@@ -206,6 +206,7 @@ myApp.controllers = {
             if (clear) {
                 //Clear all assets
                 $("#allAssetsList").html("");
+                $("#scanned-list").html("");
                 myApp.data.assetTypes = {};
                 myApp.data.assetTypesPages = null;
             }
@@ -266,52 +267,56 @@ myApp.controllers = {
         },
         assetTypePage: function (data) {
             var thisAsset = myApp.data.assetTypes[data.data.id];
-            $("#assetTypePageTitle").html(thisAsset['assetTypes_name']);
-            $("#assetTypePageManufacturer").html(thisAsset['manufacturers_name']);
-            $("#assetTypePageCategory").html(thisAsset['assetCategories_name']);
-            $("#assetTypePageDescription").html(myApp.functions.nl2br(thisAsset['assetTypes_description']));
-            $("#assetTypePageProductLink").html(thisAsset['assetTypes_productLink']);
-            if (thisAsset['assetTypes_productLink'] !== null) {
-                $("#assetTypePageProductLink").attr("onclick", "cordova.InAppBrowser.open('" + thisAsset['assetTypes_productLink'] + "','_blank')");
-            }
-            $(thisAsset['tags']).each(function (index, element) {
-                $("#assetTypePageAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + data.data.id + ',asset: ' + element['assets_id'] + '}});">' +
-                    '<div class="left">' +
-                    (element['flagsblocks']["COUNT"]["BLOCK"] > 0 ? '<ons-icon icon="fa-ban" style="color: #dc3545;"></ons-icon>&nbsp;' : '&nbsp;') +
-                    (element['flagsblocks']["COUNT"]["FLAG"] > 0 ? '<ons-icon icon="fa-flag" style="color: #ffc107;"></ons-icon>' : '') +
-                    '</div>' +
-                    '<div class="center">' + element['assets_tag_format'] + '</div>' +
-                    '</ons-list-item>');
-            });
-            //Thumbnails
-            var carousel = "";
-            $(thisAsset['thumbnails']).each(function (index, element) {
-                console.log(element);
-                carousel += ('<ons-carousel-item><div style="margin-top: 20px;">' +
-                '<img src="' + element.url + '" style="min-width:25%; max-width:100%;height: auto; max-height:65vh;" />' +
-                '</div></ons-carousel-item>');
-            });
-            $("#assetTypePageCarouselTarget").html(carousel);
-            if (carousel != "") {
-                $("#assetTypePageCarousel").parent().show();
-                document.getElementById('assetTypePageCarousel').refresh();
-            } else {
-                $("#assetTypePageCarousel").parent().hide();
-            }
-
-            //Files
-            $("#assetTypePageFilesList").html("");
-            if (myApp.auth.instanceHasPermission(54)) {
-                $(thisAsset['files']).each(function (index, element) {
-                    console.log(element);
-                    $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',myApp.functions.openBrowser);">' +
+            if (thisAsset) {
+                $("#assetTypePageTitle").html(thisAsset['assetTypes_name']);
+                $("#assetTypePageManufacturer").html(thisAsset['manufacturers_name']);
+                $("#assetTypePageCategory").html(thisAsset['assetCategories_name']);
+                $("#assetTypePageDescription").html(myApp.functions.nl2br(thisAsset['assetTypes_description']));
+                $("#assetTypePageProductLink").html(thisAsset['assetTypes_productLink']);
+                if (thisAsset['assetTypes_productLink'] !== null) {
+                    $("#assetTypePageProductLink").attr("onclick", "cordova.InAppBrowser.open('" + thisAsset['assetTypes_productLink'] + "','_blank')");
+                }
+                $(thisAsset['tags']).each(function (index, element) {
+                    $("#assetTypePageAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + data.data.id + ',asset: ' + element['assets_id'] + '}});">' +
                         '<div class="left">' +
-                        '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
+                        (element['flagsblocks']["COUNT"]["BLOCK"] > 0 ? '<ons-icon icon="fa-ban" style="color: #dc3545;"></ons-icon>&nbsp;' : '&nbsp;') +
+                        (element['flagsblocks']["COUNT"]["FLAG"] > 0 ? '<ons-icon icon="fa-flag" style="color: #ffc107;"></ons-icon>' : '') +
                         '</div>' +
-                        '<div class="center">' + element['s3files_name'] + '</div>' +
-                        '<div class="right">' + myApp.functions.formatSize(element['s3files_meta_size']) + '</div>' +
+                        '<div class="center">' + element['assets_tag_format'] + '</div>' +
                         '</ons-list-item>');
                 });
+                //Thumbnails
+                var carousel = "";
+                $(thisAsset['thumbnails']).each(function (index, element) {
+                    console.log(element);
+                    carousel += ('<ons-carousel-item><div style="margin-top: 20px;">' +
+                        '<img src="' + element.url + '" style="min-width:25%; max-width:100%;height: auto; max-height:65vh;" />' +
+                        '</div></ons-carousel-item>');
+                });
+                $("#assetTypePageCarouselTarget").html(carousel);
+                if (carousel != "") {
+                    $("#assetTypePageCarousel").parent().show();
+                    document.getElementById('assetTypePageCarousel').refresh();
+                } else {
+                    $("#assetTypePageCarousel").parent().hide();
+                }
+
+                //Files
+                $("#assetTypePageFilesList").html("");
+                if (myApp.auth.instanceHasPermission(54)) {
+                    $(thisAsset['files']).each(function (index, element) {
+                        console.log(element);
+                        $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',myApp.functions.openBrowser);">' +
+                            '<div class="left">' +
+                            '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
+                            '</div>' +
+                            '<div class="center">' + element['s3files_name'] + '</div>' +
+                            '<div class="right">' + myApp.functions.formatSize(element['s3files_meta_size']) + '</div>' +
+                            '</ons-list-item>');
+                    });
+                }
+            } else {
+
             }
         },
         assetPage: function (data) {
