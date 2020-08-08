@@ -98,19 +98,27 @@
         <div class="center" id="tabbarPageTitle">AdamRMS</div>
         <div class="right">
           <!-- Toolbar-button  only visible for iOS/other. -->
-          <ons-if platform="ios other">
+          <!--<ons-if platform="ios other">
             <ons-toolbar-button class="scanAssetBarcodeButton" onclick="myApp.controllers.assets.barcodeScanFAB()"><ons-icon icon="fa-camera" size="32px, material:24px"></ons-icon></ons-toolbar-button>
-          </ons-if>
+          </ons-if>-->
         </div>
       </ons-toolbar>
 
 
-      <!-- Floating Action Button only visible for Android. -->
-      <ons-if platform="android">
-        <ons-fab position="right bottom" onclick="myApp.controllers.assets.barcodeScanFAB()">
-          <ons-icon icon="fa-camera"></ons-icon>
+      <ons-speed-dial position="bottom right" direction="up" id="scanSpeedDial">
+        <ons-fab>
+          <ons-icon icon="fa-barcode"></ons-icon>
         </ons-fab>
-      </ons-if>
+        <ons-speed-dial-item onclick="myApp.controllers.assets.barcodeDeleteFAB()">
+          <ons-icon icon="fa-trash"></ons-icon>
+        </ons-speed-dial-item>
+        <ons-speed-dial-item onclick="myApp.controllers.assets.barcodeScanFAB()">
+          <ons-icon icon="fa-camera"></ons-icon>
+        </ons-speed-dial-item>
+        <ons-speed-dial-item onclick="myApp.auth.setLocation()">
+          <ons-icon icon="fa-map-pin"></ons-icon>
+        </ons-speed-dial-item>
+      </ons-speed-dial>
 
       <ons-modal class="loadingDialog">
         <img src='assets/cyc-fixture-loader.png' style="min-width:100%;height:25vh;" />

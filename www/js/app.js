@@ -55,6 +55,10 @@ myApp.auth = {
       if (index >= 0 && index < myApp.data.instances.length) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
         myApp.data.instanceID = myApp.data.instances[index]['instances_id']
         localStorage.setItem('instanceID',myApp.data.instanceID)
+        myApp.auth.location = {
+          type:false,
+          value:"Not set"
+        };
         myApp.controllers.firstBoot();
       }
     });
@@ -86,15 +90,18 @@ myApp.auth = {
                 type = "CODE_128";
               }
               ons.notification.toast("Sorry location not found", { timeout: 2000 });
+              //myApp.auth.location.value = myApp.functions.escapeHtml(result);
+              //myApp.auth.location.name = myApp.functions.escapeHtml(result);
+              //myApp.auth.location.type = "Custom";
+              $("#tabbarPageTitle").html("AdamRMS - " + myApp.auth.location.name);
             }
           });
-          //myApp.auth.location.name = "Whatever was scanned";
         } else if (index === 1) {
           ons.notification.prompt({ message: 'Description for your location',title: 'Set Location' }).then(function(result) {
             myApp.auth.location.value = myApp.functions.escapeHtml(result);
             myApp.auth.location.name = myApp.functions.escapeHtml(result);
             myApp.auth.location.type = "Custom";
-            $("#tabbarPageTitle").html("AdamRMS - " + myApp.functions.escapeHtml(result));
+            $("#tabbarPageTitle").html("AdamRMS - " + myApp.auth.location.name);
           });
         }
       }

@@ -58,9 +58,9 @@ myApp.controllers = {
                                 $("#menu-asset-addNewButton").show();
                             }
                             if (myApp.auth.instanceHasPermission(85)) {
-                                $(".scanAssetBarcodeButton").show();
+                                $("#scanSpeedDial").show();
                             } else {
-                                $(".scanAssetBarcodeButton").hide();
+                                $("#scanSpeedDial").hide();
                             }
                         }
                     });
@@ -69,16 +69,52 @@ myApp.controllers = {
         }
     },
     assets: {
-        barcodeScanFAB: function() {
-            console.log("Starting barcode scan");
-            myApp.functions.barcode.scan(false, function(text,type) {
-                if (text !== false) {
-                    if (type === "Fake") {
-                        type = "CODE_128";
-                    }
-                    myApp.controllers.assets.barcodeScanPostScan(text,type);
+        barcodeDeleteFAB: function() {
+            if (myApp.auth.location.type !== false) {
+                if (myApp.auth.instanceHasPermission(86)) {
+                    myApp.functions.barcode.scan(false, function(text,type) {
+                        if (text !== false) {
+                            if (type === "Fake") {
+                                type = "CODE_128";
+                            }
+                            myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
+                                if (assetResult.asset === false) {
+                                    ons.notification.toast("Sorry barcode not found", {timeout: 2000});
+                                } else {
+                                    ons.notification.confirm({
+                                        title: "Delete Barcode",
+                                        message: "Are you sure you'd like to delete the association for this barcode?"
+                                    }).then(function (result) {
+                                        if (result === 1) {
+                                            myApp.functions.apiCall("assets/barcodes/delete.php", {"barcodes_id": assetResult.barcode}, function (result) {
+                                                ons.notification.toast("Barcode deleted", {timeout: 2000});
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    ons.notification.toast("Sorry you can't delete barcodes in this business", { timeout: 2000 });
                 }
-            });
+            } else {
+                ons.notification.toast("Please set a location before attempting to scan a barcode", { timeout: 2000 });
+            }
+        },
+        barcodeScanFAB: function() {
+            if (myApp.auth.location.type !== false) {
+                myApp.functions.barcode.scan(false, function(text,type) {
+                    if (text !== false) {
+                        if (type === "Fake") {
+                            type = "CODE_128";
+                        }
+                        myApp.controllers.assets.barcodeScanPostScan(text,type);
+                    }
+                });
+            } else {
+                ons.notification.toast("Please set a location before attempting to scan a barcode", { timeout: 2000 });
+            }
         },
         barcodeScanPostScan: function(text,type) {
             myApp.functions.apiCall("assets/searchAssetsBarcode.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
