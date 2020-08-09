@@ -2,19 +2,19 @@
 
 https://about.adam-rms.com
 
-#Android Builds
+# Android
+
+## Builds
 
 `phonegap prepare android && phonegap build android && phonegap run android --debug`
 
 Open to debug [chrome://inspect/#devices](chrome://inspect/#devices)
 
-## Android Signing
+## Releases 
 
-Name: `adamrmsapp.keystore`
+Copy `build.json.example` to `build.json` and set all 4 passwords in from LastPass under `AdamRMS Android App Certificate Keystore`
 
-Alias: `AdamRMSAppAlias`
-
-Password in LastPass under `AdamRMS Android App Certificate Keystore`
+Run `phonegap build android --release`
 
 # iOS Builds
 
