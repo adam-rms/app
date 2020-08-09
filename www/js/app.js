@@ -153,83 +153,13 @@ ons.ready(function() {
           }
         });
   });
-});
-$( document ).ready(function() {
-  //Seemingly often fires after ons ready
-  document.querySelector('#myNavigator').addEventListener('postpush', function(e) {
+
+ document.querySelector('#myNavigator').addEventListener('postpush', function(e) {
     if (myApp.controllers.pages[e.enterPage.id] !== undefined && typeof myApp.controllers.pages[e.enterPage.id] === "function") {
       myApp.controllers.pages[e.enterPage.id](document.querySelector('#myNavigator').topPage.pushedOptions);
     }
   })
 
-
-  //Register all event handlers
-  $( document ).on( "click", ".pagePusherButton", function() {
-    console.log($(this).data("pagedata"));
-    document.querySelector('#myNavigator').pushPage($(this).data("page") + '.html', $(this).data("pagedata"));
-  });
-  $( document ).on( "click", ".s3URLButton", function() {
-    myApp.functions.s3url($(this).data("pagedata"),myApp.functions.openBrowser);
-  });
-  $( document ).on( "click", ".externalURLButton", function() {
-    if ($(this).data("pagedata") != null) {
-      cordova.InAppBrowser.open($(this).data("pagedata"),'_system');
-    }
-  });
-
-  $( ".toolbarToggleButton" ).on( "click", function() {
-    document.querySelector('#mySplitter').left.toggle();
-  });
-  $( "#loginFormLoginButton" ).on( "click", function() {
-    myApp.auth.login();
-  });
-  $("#loginFormForm").submit(function(e){
-    myApp.auth.login();
-    return false;
-  });
-  $( ".forgotPasswordButton" ).on( "click", function() {
-    cordova.InAppBrowser.open('https://adam-rms.com','_system');
-  });
-  $( ".contactSupportButton" ).on( "click", function() {
-    cordova.InAppBrowser.open('mailto:hi@jbithell.com','_system')
-  });
-  $( ".resetappButton" ).on( "click", function() {
-    alert("resetting");
-    myApp.functions.reset();
-  });
-  $( ".logoutAppButton" ).on( "click", function() {
-    myApp.auth.logout();
-  });
-  //Menu
-  $( "#menuButtonDashboard" ).on( "click", function() {
-    cordova.InAppBrowser.open('https://adam-rms.com','_system');
-  });
-  $( "#menuButtonChangeBusiness" ).on( "click", function() {
-    myApp.auth.changeInstance();
-  });
-  $( "#menuButtonSetLocation" ).on( "click", function() {
-    myApp.auth.setLocation()
-  });
-  $( "#menu-asset-addNewButton" ).on( "click", function() {
-    document.querySelector('#myNavigator').pushPage('newAssetPage.html', {data: {title: 'Page 2'}});
-  });
-  $( "#menuButtonAbout" ).on( "click", function() {
-    document.querySelector('#myNavigator').pushPage('about.html', {data: {title: 'Page 2'}});
-  });
-
-
-  $( "#scanSpeedDialTrash" ).on( "click", function() {
-    myApp.controllers.assets.barcodeDeleteFAB();
-  });
-  $( "#scanSpeedDialCamera" ).on( "click", function() {
-    myApp.controllers.assets.barcodeScanFAB();
-  });
-  $( "#scanSpeedDialMap" ).on( "click", function() {
-    myApp.auth.setLocation();
-  });
-
-
-  //Register app token
   myApp.auth.token = localStorage.getItem('token');
   if (myApp.auth.token && myApp.auth.token != '') {
     myApp.functions.launchApp();
