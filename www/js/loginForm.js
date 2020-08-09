@@ -1,8 +1,6 @@
 myApp.auth.login = function () {
-    alert("Here's login");
     var username = $("#login-username").val();
     var password = $("#login-password").val();
-    alert("Got details");
     var networkState = navigator.connection.type;
     alert("Got network");
     if (networkState === Connection.NONE) {
