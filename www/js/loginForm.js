@@ -1,4 +1,6 @@
+alert("Hello from login form");
 myApp.auth.login = function () {
+    alert("Here's login");
     var username = $("#login-username").val();
     var password = $("#login-password").val();
     var networkState = navigator.connection.type;
