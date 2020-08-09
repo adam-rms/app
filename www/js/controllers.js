@@ -261,8 +261,8 @@ myApp.controllers = {
             console.log(data);
         },
         about: function (data) {
-            $('#aboutPageVersion').text(myApp.config.version.number);
-            $('#aboutPageCode').text(myApp.config.version.code);
+            $('.versionNumber').text(myApp.config.version.number);
+            $('.versionCode').text(myApp.config.version.code);
             $('#aboutPagePlatform').text(device.platform + " (" + device.model + ")");
         },
         assetTypePage: function (data) {
