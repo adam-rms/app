@@ -187,7 +187,9 @@ ons.ready(function() {
     document.querySelector('#mySplitter').left.toggle();
   });
   $( "#loginFormLoginButton" ).on( "click", function() {
+    alert("Login button going");
     myApp.auth.login();
+    alert("Triggered login");
   });
   $("#loginFormForm").submit(function(e){
     myApp.auth.login();
