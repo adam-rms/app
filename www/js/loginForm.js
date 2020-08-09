@@ -2,7 +2,6 @@ myApp.auth.login = function () {
     var username = $("#login-username").val();
     var password = $("#login-password").val();
     var networkState = navigator.connection.type;
-    alert("Got network");
     var connected = true;
     try {
         //For some unknown reason Android gets upset about this
@@ -12,11 +11,11 @@ myApp.auth.login = function () {
     }
     catch(err) {
         console.log(err.message);
+        ons.notification.toast(err.message, {timeout: 2000});
     }
     if (connected !== true) {
         ons.notification.toast("No Network Connection", {timeout: 2000});
     } else {
-        alert("Got past network state");
         if (username != '' && password != '') {
             $.ajax({
                 type: "POST",

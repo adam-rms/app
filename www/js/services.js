@@ -70,7 +70,16 @@ myApp.functions = {
     if (myApp.data.instanceID !== null) {
         data['instances_id'] = myApp.data.instanceID;
     }
-    if (navigator.connection.type === Connection.NONE) {
+    var connected = true;
+    try {
+      //For some unknown reason Android gets upset about this
+      if (navigator.connection.type === Connection.NONE) {
+        connected = false;
+      }
+    } catch(err) {
+      console.log(err.message);
+    }
+    if (connected !== true) {
       ons.notification.toast("No Network Connection", { timeout: 2000 });
     } else {
       if (useCustomLoader !== true) {
