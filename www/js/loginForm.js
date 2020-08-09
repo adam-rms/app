@@ -3,7 +3,17 @@ myApp.auth.login = function () {
     var password = $("#login-password").val();
     var networkState = navigator.connection.type;
     alert("Got network");
-    if (networkState === Connection.NONE) {
+    var connected = true;
+    try {
+        //For some unknown reason Android gets upset about this
+        if (networkState === Connection.NONE) {
+            connected = false;
+        }
+    }
+    catch(err) {
+        console.log(err.message);
+    }
+    if (connected !== true) {
         ons.notification.toast("No Network Connection", {timeout: 2000});
     } else {
         alert("Got past network state");
