@@ -86,7 +86,7 @@
     </edit-config>
     <preference name="android-installLocation" value="auto" />
     <preference name="android-minSdkVersion" value="28" />
-    <preference name="android-targetSdkVersion" value="28" />
+    <preference name="android-targetSdkVersion" value="30" />
     <preference name="android-build-tool" value="gradle" />
 
     <allow-navigation href="*" />
