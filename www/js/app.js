@@ -144,9 +144,11 @@ ons.ready(function() {
   //Check version number of the app
   cordova.getAppVersion.getVersionNumber().then(function (version) {
     myApp.config.version.number = version;
+    $('.versionNumber').text(myApp.config.version.number);
   });
   cordova.getAppVersion.getVersionCode().then(function (version) {
     myApp.config.version.code = version;
+    $('.versionCode').text(myApp.config.version.code);
   });
 
 
@@ -185,6 +187,7 @@ ons.ready(function() {
     document.querySelector('#mySplitter').left.toggle();
   });
   $( "#loginFormLoginButton" ).on( "click", function() {
+    alert("Login button");
     myApp.auth.login();
   });
   $("#loginFormForm").submit(function(e){
