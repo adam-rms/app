@@ -45,7 +45,7 @@ myApp.controllers = {
                                     $("#menu-projects-list").html("");
                                     $(projectResult).each(function (index, element) {
                                         myApp.data.projects[element['projects_id']] = element;
-                                        $("#menu-projects-list").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'project.html\', {data: {id: ' + element['projects_id'] + '}});">' +
+                                        $("#menu-projects-list").append('<ons-list-item tappable modifier="longdivider" class="pagePusherButton" data-page="project" data-pagedata=\'{"data":{"id": ' + element['projects_id'] + '}}\'>' +
                                             '<div class="left">' +
                                             (element.thisProjectManager ? '<ons-icon icon="fa-dot-circle" style="color: #ffc107;"></ons-icon>' : '<ons-icon icon="fa-circle" style="color: grey;"></ons-icon>')+
                                             '</div>' +
@@ -185,7 +185,7 @@ myApp.controllers = {
                     return false;
                 }
             });
-            $("#scanned-list").prepend('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + typeid + '}}).then(function() { document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + typeid + ', asset: ' + id + '}}) });">' +
+            $("#scanned-list").prepend('<ons-list-item tappable modifier="longdivider" class="pagePusherButton" data-page="assetType" data-pagedata=\'{"data":{"id":' + typeid + '}}\'>' +
                 '<div class="left">' +
                 (myApp.data.assetTypes[typeid].thumbnails.length > 0 ? '<img class="list-item__thumbnail" src="' + myApp.data.assetTypes[typeid].thumbnails[0]['url'] + '">' : '<span style="width: 40px;"></span>')+
                 '</div>' +
@@ -234,7 +234,7 @@ myApp.controllers = {
             }
         },
         fullAssetListAppend: function(element) {
-            $("#allAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
+            $("#allAssetsList").append('<ons-list-item tappable modifier="longdivider" class="pagePusherButton" data-page="assetType" data-pagedata=\'{"data":{"id":' + element['assetTypes_id'] + '}}\'>' +
                 '<div class="left">' +
                 (element.thumbnails.length > 0 ? '<img class="list-item__thumbnail" src="' + element.thumbnails[0]['url'] + '">' : '<span style="width: 40px;"></span>')+
                 '</div>' +
@@ -274,10 +274,10 @@ myApp.controllers = {
                 $("#assetTypePageDescription").html(myApp.functions.nl2br(thisAsset['assetTypes_description']));
                 $("#assetTypePageProductLink").html(thisAsset['assetTypes_productLink']);
                 if (thisAsset['assetTypes_productLink'] !== null) {
-                    $("#assetTypePageProductLink").attr("onclick", "cordova.InAppBrowser.open('" + thisAsset['assetTypes_productLink'] + "','_blank')");
+                    $("#assetTypePageProductLink").data("pagedata",thisAsset['assetTypes_productLink']);
                 }
                 $(thisAsset['tags']).each(function (index, element) {
-                    $("#assetTypePageAssetsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'asset.html\', {data: {id: ' + data.data.id + ',asset: ' + element['assets_id'] + '}});">' +
+                    $("#assetTypePageAssetsList").append('<ons-list-item tappable modifier="longdivider" class="pagePusherButton" data-page="asset" data-pagedata=\'{"data":{"id":' + data.data.id + ',"asset":' + element['assets_id'] + '}}\'>' +
                         '<div class="left">' +
                         (element['flagsblocks']["COUNT"]["BLOCK"] > 0 ? '<ons-icon icon="fa-ban" style="color: #dc3545;"></ons-icon>&nbsp;' : '&nbsp;') +
                         (element['flagsblocks']["COUNT"]["FLAG"] > 0 ? '<ons-icon icon="fa-flag" style="color: #ffc107;"></ons-icon>' : '') +
@@ -306,7 +306,7 @@ myApp.controllers = {
                 if (myApp.auth.instanceHasPermission(54)) {
                     $(thisAsset['files']).each(function (index, element) {
                         console.log(element);
-                        $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',myApp.functions.openBrowser);">' +
+                        $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" class="s3URLButton" data-pagedata="' + element['s3files_id'] + '">' +
                             '<div class="left">' +
                             '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
                             '</div>' +
@@ -374,7 +374,7 @@ myApp.controllers = {
             if (myApp.auth.instanceHasPermission(61)) {
                 $(thisAsset['files']).each(function (index, element) {
                     console.log(element);
-                    $("#assetPageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',myApp.functions.openBrowser);">' +
+                    $("#assetPageFilesList").append('<ons-list-item tappable modifier="longdivider" class="s3URLButton" data-pagedata="' + element['s3files_id'] + '">' +
                         '<div class="left">' +
                         '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
                         '</div>' +

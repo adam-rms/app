@@ -168,11 +168,28 @@ ons.ready(function() {
   })
 
   //Register all event handlers
+  $( document ).on( "click", ".pagePusherButton", function() {
+    console.log($(this).data("pagedata"));
+    document.querySelector('#myNavigator').pushPage($(this).data("page") + '.html', $(this).data("pagedata"));
+  });
+  $( document ).on( "click", ".s3URLButton", function() {
+    myApp.functions.s3url($(this).data("pagedata"),myApp.functions.openBrowser);
+  });
+  $( document ).on( "click", ".externalURLButton", function() {
+    if ($(this).data("pagedata") != null) {
+      cordova.InAppBrowser.open($(this).data("pagedata"),'_system');
+    }
+  });
+
   $( ".toolbarToggleButton" ).on( "click", function() {
     document.querySelector('#mySplitter').left.toggle();
   });
   $( "#loginFormLoginButton" ).on( "click", function() {
     myApp.auth.login();
+  });
+  $("#loginFormForm").submit(function(e){
+    myApp.auth.login();
+    return false;
   });
   $( ".forgotPasswordButton" ).on( "click", function() {
     cordova.InAppBrowser.open('https://adam-rms.com','_system');

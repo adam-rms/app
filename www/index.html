@@ -22,7 +22,9 @@
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com http://localhost;
      script-src-elem 'self' https://*.phonegap.com;
      script-src 'self' 'unsafe-inline' https://*.phonegap.com;
+     frame-src *;
     " />
+  <!-- Frame-src is to allow links -->
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=contain">
@@ -52,7 +54,7 @@
       Login
     </div>
     <div class="content">
-        <form>
+        <form id="loginFormForm">
            <p>
             <ons-input id="login-username" modifier="underbar" placeholder="Username" float autocomplete="username"></ons-input>
           </p>
@@ -256,7 +258,7 @@
         </ons-list-item>
         <ons-list-header>Product Page</ons-list-header>
         <ons-list-item modifier="nodivider">
-          <div class="center" id="assetTypePageProductLink">
+          <div class="center externalURLButton" id="assetTypePageProductLink" data-pagedata="">
           </div>
         </ons-list-item>
       </ons-list>
