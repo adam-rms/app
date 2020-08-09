@@ -1,0 +1,18 @@
+{
+  "android": {
+    "debug": {
+      "keystore": "adamrmsapp.keystore",
+      "storePassword": "",
+      "alias": "AdamRMSAppAlias",
+      "password" : "",
+      "keystoreType": "jks"
+    },
+    "release": {
+      "keystore": "adamrmsapp.keystore",
+      "storePassword": "",
+      "alias": "AdamRMSAppAlias",
+      "password" : "",
+      "keystoreType": "jks"
+    }
+  }
+}
