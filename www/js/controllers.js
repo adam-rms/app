@@ -386,24 +386,3 @@ myApp.controllers = {
         },
     }
 }
-ons.ready(function() {
-    myApp.controllers.assets.fullAssetListPullRefresh = document.getElementById('allAssetsListLoaderPullHook');
-    myApp.controllers.assets.fullAssetListPullRefresh.addEventListener('changestate', function(event) {
-        var message = '';
-        switch (event.state) {
-            case 'initial':
-                message = 'Pull to refresh';
-                break;
-            case 'preaction':
-                message = 'Release';
-                break;
-            case 'action':
-                message = 'Loading...';
-                break;
-        }
-        myApp.controllers.assets.fullAssetListPullRefresh.innerHTML = message;
-    });
-    myApp.controllers.assets.fullAssetListPullRefresh.onAction = function(done) {
-        myApp.controllers.assets.fullAssetList(done, null, true);
-    };
-});
