@@ -386,7 +386,7 @@ myApp.controllers = {
         },
     }
 }
-$( document ).ready(function() {
+ons.ready(function() {
     myApp.controllers.assets.fullAssetListPullRefresh = document.getElementById('allAssetsListLoaderPullHook');
     myApp.controllers.assets.fullAssetListPullRefresh.addEventListener('changestate', function(event) {
         var message = '';
