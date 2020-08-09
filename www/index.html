@@ -20,7 +20,6 @@
      media-src *;
      img-src 'self' data: https://adam-rms.com https://*.adam-rms.com content:;
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com http://localhost;
-     script-src-elem 'self' https://*.phonegap.com;
      script-src 'self' 'unsafe-inline' https://*.phonegap.com;
      frame-src *;
     " />
@@ -67,7 +66,7 @@
           </p>
         </form>
     </div>
-    <div class="footer">
+    <div class="footer" style="display:none;">
       <ons-list>
         <ons-list-item>
           <span class="list-item__title">Version Number</span><span class="list-item__subtitle versionNumber" id=""></span>
@@ -339,7 +338,7 @@
             <ons-list-item tappable class="contactSupportButton">
               Contact Support
             </ons-list-item>
-            <ons-list-item tappable class="resetAppButton">
+            <ons-list-item tappable class="resetappButton">
               Reset App
             </ons-list-item>
           </ons-list>

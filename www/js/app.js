@@ -133,14 +133,7 @@ myApp.auth = {
   }
 }
 
-
-
 ons.ready(function() {
-  //Check for iPhone X and apply a fix
-  if (ons.platform.isIPhoneX() && false) { //Disabled as works without
-    document.documentElement.setAttribute('onsflag-iphonex-portrait', '');
-    document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
-  }
   //Check version number of the app
   cordova.getAppVersion.getVersionNumber().then(function (version) {
     myApp.config.version.number = version;
@@ -151,8 +144,6 @@ ons.ready(function() {
     $('.versionCode').text(myApp.config.version.code);
   });
 
-
-
   ons.enableDeviceBackButtonHandler();
   ons.setDefaultDeviceBackButtonListener(function(event) {
     ons.notification.confirm('Do you want to close the app?') // Ask for confirmation
@@ -162,12 +153,15 @@ ons.ready(function() {
           }
         });
   });
-
+});
+$( document ).ready(function() {
+  //Seemingly often fires after ons ready
   document.querySelector('#myNavigator').addEventListener('postpush', function(e) {
     if (myApp.controllers.pages[e.enterPage.id] !== undefined && typeof myApp.controllers.pages[e.enterPage.id] === "function") {
       myApp.controllers.pages[e.enterPage.id](document.querySelector('#myNavigator').topPage.pushedOptions);
     }
   })
+
 
   //Register all event handlers
   $( document ).on( "click", ".pagePusherButton", function() {
@@ -199,7 +193,8 @@ ons.ready(function() {
   $( ".contactSupportButton" ).on( "click", function() {
     cordova.InAppBrowser.open('mailto:hi@jbithell.com','_system')
   });
-  $( ".resetAppButton" ).on( "click", function() {
+  $( ".resetappButton" ).on( "click", function() {
+    alert("resetting");
     myApp.functions.reset();
   });
   $( ".logoutAppButton" ).on( "click", function() {
@@ -232,8 +227,6 @@ ons.ready(function() {
   $( "#scanSpeedDialMap" ).on( "click", function() {
     myApp.auth.setLocation();
   });
-
-
 
 
   //Register app token

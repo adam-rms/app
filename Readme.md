@@ -2,6 +2,12 @@
 
 https://about.adam-rms.com
 
+#Android Builds
+
+`phonegap prepare android && phonegap build android && phonegap run android --debug`
+
+Open to debug [chrome://inspect/#devices](chrome://inspect/#devices)
+
 ## Android Signing
 
 Name: `adamrmsapp.keystore`
