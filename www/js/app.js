@@ -2,7 +2,7 @@
 window.myApp = {};
 myApp.config = {
   //endpoint: 'http://localhost/api/',
-  endpoint: 'https://adam-rms.com/api/',
+  endpoint: 'https://dash.adam-rms.com/api/',
   version: {
     code: 'WEB',
     number: 'WEB'
