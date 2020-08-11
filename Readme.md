@@ -14,7 +14,7 @@ Open to debug [chrome://inspect/#devices](chrome://inspect/#devices)
 
 Copy `build.json.example` to `build.json` and set all 4 passwords in from LastPass under `AdamRMS Android App Certificate Keystore`
 
-Run `phonegap build android --release`
+Run `phonegap prepare android && phonegap build android --release`
 
 # iOS Builds
 
