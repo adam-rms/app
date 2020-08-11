@@ -3,7 +3,7 @@
     <div class="center" id="menu-title"></div>
   </ons-toolbar>
   <ons-list>
-    <ons-if platform="android other"><!-- iOS dont' allow links to the dashboard as that could allow payment to be encouraged off their platform-->
+    <ons-if platform="android windows"><!-- iOS dont' allow links to the dashboard as that could allow payment to be encouraged off their platform-->
       <ons-list-item tappable style="cursor: pointer" modifier="longdivider chevron" onclick="cordova.InAppBrowser.open('https://adam-rms.com','_system')">
         <div class="left">
           <ons-icon icon="fa-external-link" style="color: grey;"></ons-icon>
