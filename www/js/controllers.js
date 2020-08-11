@@ -255,7 +255,8 @@ myApp.controllers = {
     pages: {
         projectPage: function (data) {
             $("#projectPage-title").html(myApp.data.projects[data.data.id]['projects_name']);
-            console.log(data);
+            $("#projectPageTitle").html(myApp.data.projects[data.data.id]['projects_name']);
+            $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['clients_name']);
         },
         newAssetPage: function (data) {
             console.log(data);
