@@ -100,7 +100,12 @@ myApp.functions = {
             console.log("Calling callback");
             callback(response.response);
           } else {
-            ons.notification.toast(response.error.message, {timeout: 3000});
+            if (response.error.code && response.error.code == "AUTH") {
+              //They need to login again - token probably expired
+              myApp.auth.logout();
+            } else {
+              ons.notification.toast(response.error.message, {timeout: 3000});
+            }
           }
           console.log(JSON.stringify(response));
         },
