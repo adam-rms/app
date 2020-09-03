@@ -156,7 +156,7 @@ myApp.controllers = {
                 } else {
                     if (typeof myApp.data.assetTypes[assetResult.asset.assetTypes_id] === "undefined") {
                         //We don't currently have this one downloaded so lets go grab it
-                        var requestData = {"assetTypes_id": assetResult.asset.assetTypes_id };
+                        var requestData = {"assetTypes_id": assetResult.asset.assetTypes_id,"all":true };
                         myApp.functions.apiCall("assets/list.php", requestData, function (assetDownloadResult) {
                             $(assetDownloadResult['assets']).each(function (index, element) {
                                 if (typeof myApp.data.assetTypes[element['assetTypes_id']] === "undefined") { //Shouldn't realy be needed
