@@ -49,7 +49,7 @@ myApp.controllers = {
                                             '<div class="left">' +
                                             (element.thisProjectManager ? '<ons-icon icon="fa-dot-circle" style="color: #ffc107;"></ons-icon>' : '<ons-icon icon="fa-circle" style="color: grey;"></ons-icon>')+
                                             '</div>' +
-                                            '<div class="center"><span class="list-item__title">' + element['projects_name'] + '</span><span class="list-item__subtitle">' + element['clients_name'] + '</span></div>' +
+                                            '<div class="center"><span class="list-item__title">' + element['projects_name'] + '</span><span class="list-item__subtitle">' + (element['clients_name'] || "") + '</span></div>' +
                                             '</ons-list-item>');
                                     });
                                 });
