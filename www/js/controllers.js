@@ -307,7 +307,7 @@ myApp.controllers = {
                 if (myApp.auth.instanceHasPermission(54)) {
                     $(thisAsset['files']).each(function (index, element) {
                         console.log(element);
-                        $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',myApp.functions.openBrowser);">' +
+                        $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',false,myApp.functions.openBrowser);">' +
                             '<div class="left">' +
                             '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
                             '</div>' +
@@ -375,7 +375,7 @@ myApp.controllers = {
             if (myApp.auth.instanceHasPermission(61)) {
                 $(thisAsset['files']).each(function (index, element) {
                     console.log(element);
-                    $("#assetPageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',myApp.functions.openBrowser);">' +
+                    $("#assetPageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',false,myApp.functions.openBrowser);">' +
                         '<div class="left">' +
                         '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
                         '</div>' +

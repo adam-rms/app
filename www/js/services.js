@@ -53,8 +53,8 @@ myApp.functions = {
       console.log("Attempted to trigger barcode scan");
     }
   },
-  s3url: function(fileid,callback) {
-    myApp.functions.apiCall("file/",{"f":fileid,"d":"force"}, function(response) {
+  s3url: function(fileid,size,callback) {
+    myApp.functions.apiCall("file/",{"f":fileid,"d":"force","s":size}, function(response) {
       callback(response.url);
     });
   },
