@@ -18,7 +18,7 @@
      default-src 'self' 'unsafe-eval' 'unsafe-inline' data: gap: https://*.phonegap.com https://adam-rms.com https://*.adam-rms.com https://ssl.gstatic.com file://*;
      base-uri 'self' *;
      media-src *;
-     img-src 'self' data: https://adam-rms.com https://*.adam-rms.com content:;
+     img-src 'self' data: https://adam-rms.com https://*.adam-rms.com https://*.backblazeb2.com content:;
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com https://*.phonegap.com http://localhost;
      script-src 'self' 'unsafe-inline' https://*.phonegap.com;
      frame-src *;
@@ -61,7 +61,7 @@
             <ons-input id="login-password" modifier="underbar" type="password" placeholder="Password" float autocomplete="current-password"></ons-input>
           </p>
           <p style="margin-top: 30px;">
-            <ons-button modifier="quiet" onclick="cordova.InAppBrowser.open('https://adam-rms.com','_system')">Forgot password</ons-button>
+            <ons-button modifier="quiet" onclick="cordova.InAppBrowser.open('https://dash.adam-rms.com','_system')">Forgot password</ons-button>
             <ons-button id="loginButton" onclick="myApp.auth.login()">Sign in</ons-button>
           </p>
         </form>
@@ -132,12 +132,22 @@
         <img src='assets/cyc-fixture-loader.png' style="min-width:100%;height:25vh;" />
       </ons-modal>
 
-      <ons-tabbar id="page-assets" position="top">
-        <ons-tab page="html/allAssets.html" label="All Assets" active>
-        </ons-tab>
-        <ons-tab page="html/assetsScanned.html" label="Recently Scanned">
-        </ons-tab>
-      </ons-tabbar>
+      <ons-page on-infinite-scroll="myApp.controllers.assets.fullAssetList">
+        <ons-pull-hook id="allAssetsListLoaderPullHook">
+          Pull to refresh
+        </ons-pull-hook>
+        <p style="text-align: center; margin-top: 10px;margin-bottom:10px;">
+          <ons-search-input
+                  placeholder="Search"
+                  onchange="myApp.controllers.assets.fullAssetListSearch(this.value)"
+          ></ons-search-input>
+        </p>
+        <ons-list id="allAssetsList">
+        </ons-list>
+        <div style="text-align: center;padding:10px;" id="allAssetsListLoader">
+          <ons-progress-circular indeterminate></ons-progress-circular>
+        </div>
+      </ons-page>
     </ons-page>
   </template>
   <template id="project.html">
@@ -169,17 +179,17 @@
       </ons-card>
     </ons-page>
   </template>
-  <template id="newAssetPage.html">
-    <ons-page id="newAssetPage">
+  <template id="editAssetPage.html">
+    <ons-page id="editAssetPage">
       <ons-toolbar>
         <div class="left"><ons-back-button>Back</ons-back-button></div>
-        <div class="center">New Asset</div>
+        <div class="center" id="editAssetPageTitle">New Asset</div>
         <div class="right">
-          <!--<ons-if platform="android">
+          <ons-if platform="android">
             <ons-toolbar-button component="button/save-task">
               <ons-icon icon="md-save"></ons-icon>
             </ons-toolbar-button>
-          </ons-if>-->
+          </ons-if>
         </div>
       </ons-toolbar>
       <ons-card style="text-align:center;">
@@ -190,7 +200,7 @@
           Sorry, adding assets isn't available in the app just yet
         </div>
       </ons-card>
-      <!--<ons-list-title>Add a new task</ons-list-title>
+      <ons-list-title>Add a new task</ons-list-title>
       <ons-list>
         <ons-list-item modifier="nodivider">
           <div class="center">
@@ -231,7 +241,7 @@
 
       <ons-if platform="ios other">
         <ons-button modifier="large" component="button/save-task">Add New Task</ons-button>
-      </ons-if>-->
+      </ons-if>
     </ons-page>
   </template>
   <template id="assetType.html">
@@ -247,6 +257,12 @@
           </ons-if>
         </div>-->
       </ons-toolbar>
+      <ons-modal class="loadingDialog">
+        <img src='assets/cyc-fixture-loader.png' style="min-width:100%;height:25vh;" />
+      </ons-modal>
+      <ons-pull-hook id="assetTypePagePullHook">
+        Pull to refresh
+      </ons-pull-hook>
       <ons-card style="text-align: center;max-height:70vh">
         <ons-carousel swipeable auto-scroll overscrollable id="assetTypePageCarousel">
           <div class="ons-swiper-target" id="assetTypePageCarouselTarget">
@@ -288,8 +304,10 @@
         <div class="left"><ons-back-button>Asset Type</ons-back-button></div>
         <div class="center" id="assetPageTitle"></div>
       </ons-toolbar>
+      <ons-modal class="loadingDialog">
+        <img src='assets/cyc-fixture-loader.png' style="min-width:100%;height:25vh;" />
+      </ons-modal>
       <div id="assetPageFlagsBlocks"></div>
-
       <ons-card style="text-align: center;" id="assetPageNotes" class="hide-empty"></ons-card>
       <ons-list id="assetPageDefinableFields">
       </ons-list>
@@ -329,7 +347,7 @@
       <ons-card style="text-align: center;">
       <img src="assets/logo.svg" alt="AdamRMS" style="max-width: 100%; max-height: 100px;">
       <div class="content">
-        <p>&copy;2020 Bithell Studios Ltd. All rights reserved.</p>
+        <p>&copy;2020-2021 Bithell Studios Ltd. All rights reserved.</p>
       </div>
       </ons-card>
       <ons-card>

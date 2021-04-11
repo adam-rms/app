@@ -2,6 +2,10 @@
 
 https://about.adam-rms.com
 
+# Debugging
+
+`phonegap serve`
+
 # Android
 
 ## Builds
