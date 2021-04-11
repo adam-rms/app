@@ -20,6 +20,8 @@ Copy `build.json.example` to `build.json` and set all 4 passwords in from LastPa
 
 Run `phonegap prepare android && phonegap build android --release`
 
+Upload `platforms/android/app/build/outputs/apk/release/app-release.apk`
+
 # iOS Builds
 
 https://stackoverflow.com/a/19490759 
