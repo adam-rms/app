@@ -1,8 +1,9 @@
 // App logic.
 window.myApp = {};
 myApp.config = {
-  //endpoint: 'http://localhost/api/',
   endpoint: 'https://dash.adam-rms.com/api/',
+  //endpoint: 'http://localhost/admin/api/',
+  debug: false,
   version: {
     code: 'WEB',
     number: 'WEB'
@@ -182,6 +183,7 @@ ons.ready(function() {
         };
       }
     }, (myApp.controllers.assets.fullAssetListPullRefresh ? 1 : 10000));
+
 
   myApp.auth.token = localStorage.getItem('token');
   if (myApp.auth.token && myApp.auth.token != '') {

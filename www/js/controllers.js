@@ -54,13 +54,23 @@ myApp.controllers = {
                                     });
                                 });
                             }
-                            if (myApp.auth.instanceHasPermission(17) && false) {
+                            if (myApp.auth.instanceHasPermission(17)) {
                                 $("#menu-asset-addNewButton").show();
                             }
                             if (myApp.auth.instanceHasPermission(85)) {
                                 $(".scanSpeedDial").show();
                             } else {
                                 $(".scanSpeedDial").hide();
+                            }
+                            if (myApp.auth.instanceHasPermission(58)) {
+                                $(".assetTypePageEditButton").show();
+                            } else {
+                                $(".assetTypePageEditButton").hide();
+                            }
+                            if (myApp.auth.instanceHasPermission(59) && false) {
+                                $(".assetPageEditButton").show();
+                            } else {
+                                $(".assetPageEditButton").hide();
                             }
                         }
                     });
@@ -261,6 +271,119 @@ myApp.controllers = {
                 $("#editAssetPageTitle").html("New Asset");
             }
         },
+        editAssetTypePage: function (data) {
+            if (data.data.id == "NEW") {
+                $("#editAssetTypePageTitle").html("New Asset Type");
+            } else {
+                var thisAsset = myApp.data.assetTypes[data.data.id];
+                $("#editAssetTypePageTitle").html("Edit " + thisAsset['assetTypes_name']);
+                //$("#assetTypePageManufacturer").html(thisAsset['manufacturers_name']);
+                //$("#assetTypePageCategory").html(thisAsset['assetCategories_name']);
+                $("#editAssetTypePageDescription").val(myApp.functions.nl2br(thisAsset['assetTypes_description']));
+                //$("#assetTypePageProductLink").html(thisAsset['assetTypes_productLink']);
+
+                $("#editAssetTypePageThumbList").html("");
+                $(thisAsset['thumbnails']).each(function (index, element) {
+                    $("#editAssetTypePageThumbList").append('<ons-list-item modifier="longdivider">' +
+                        '<div class="left">' +
+                       '<img loading="lazy" class="list-item__thumbnail" src="' + element.url + '">' +
+                        '</div>' +
+                        '<div class="center">' + element['s3files_name'] + '</div>' +
+                        '<div class="right">' + myApp.functions.formatSize(element['s3files_meta_size']) + '</div>' +
+                        '</ons-list-item>');
+                });
+
+
+                myApp.functions.uppy.editAssetTypePageThumbUppy = new Uppy.Core({
+                    debug: true,
+                    allowMultipleUploads: true,
+                    autoProceed: false,
+                    restrictions: {
+                        //maxNumberOfFiles: {{  fileLimit }},
+                        allowedFileTypes: ['image/gif', 'image/jpeg', 'image/png', 'image/jpg']
+                    },
+                    meta: {
+                        "typeid": 2,
+                        "subtype": data.data.id
+                    },
+                    onBeforeFileAdded: (currentFile, files) => {
+                        var updatedFile = currentFile;
+                        var safeFilename = currentFile.name.replace(/[^a-z0-9]/gi, '').toLowerCase() + "." + myApp.functions.uppy.getExtension(currentFile.name);
+                        updatedFile.name = "uploads/" + "ASSET-THUMBNAIL" + "/" + Date.now() + "-" + (Math.floor(Math.random() * (99999999999999999999 - 9999999999 + 1)) + 9999999999) + "." + myApp.functions.uppy.getExtension(currentFile.name);
+                        return updatedFile;
+                    },
+                    onBeforeUpload: (files) => {
+                        for (const [key, value] of Object.entries(files)) {
+                        }
+                    }
+                }).use(Uppy.Dashboard, {
+                    inline: true,
+                    target: '#editAssetTypePageThumbUppy',
+                    height: 300,
+                    plugins: ['Webcam'],
+                    locale: {
+                        strings: {
+                            dropHint: 'Drop an image here',
+                            dropPaste: '%{browse}',
+                            dropPasteImport: '%{browse} or import from:',
+                            browse: 'Browse Images',
+                        }
+                    },
+                    browserBackButtonClose: false,
+                    showLinkToFileUploadResult: false,
+                    proudlyDisplayPoweredByUppy: false,
+                    hideProgressAfterFinish: true,
+                    showProgressDetails: true,
+                    metaFields: []
+                /*}).use(Uppy.Webcam, {
+                    mirror: true,
+                    preferredImageMimeType: "image/jpeg",
+                    modes: [
+                        'picture'
+                    ],
+                    facingMode: 'environment',*/
+                }).use(Uppy.AwsS3, {
+                    metaFields: ['name', 'typeid', 'subtype'],
+                    getUploadParameters(file) {
+                        // Send a request to our PHP signing endpoint.
+                        return fetch(myApp.config.endpoint + 's3files/generateSignatureUppy.php', {
+                            method: 'POST',
+                            headers: {
+                                accept: 'application/json',
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                jwt: myApp.auth.token,
+                                filename: file.name,
+                                contentType: file.type
+                            })
+                        }).then((response) => {
+                            // Parse the JSON response.
+                            return response.json()
+                        }).then((data) => {
+                            // Return an object in the correct shape.
+                            return {
+                                method: data.method,
+                                url: data.url,
+                                fields: data.fields,
+                                headers: data.headers
+                            }
+                        })
+                    }
+                }).on('upload-success', (file, response) => {
+                    myApp.functions.apiCall("s3files/uploadSuccess.php", {
+                        "name": file.name,
+                        "public": 0,
+                        "size": file.size,
+                        "typeid": file.meta.typeid,
+                        "subtype": file.meta.subtype,
+                        "originalName": file.data.name
+                    }, function (result) {
+                        ons.notification.toast("Thumbnail Added Successfully", { timeout: 2000 });
+                    }, true);
+                });
+            }
+        },
         about: function (data) {
             $('.versionNumber').text(myApp.config.version.number);
             $('.versionCode').text(myApp.config.version.code);
@@ -297,6 +420,7 @@ myApp.controllers = {
                     $("#assetTypePageCategory").html(thisAsset['assetCategories_name']);
                     $("#assetTypePageDescription").html(myApp.functions.nl2br(thisAsset['assetTypes_description']));
                     $("#assetTypePageProductLink").html(thisAsset['assetTypes_productLink']);
+                    $(".assetTypePageEditButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'editAssetTypePage.html\', {data: {id: ' + data.data.id + '}});');
                     if (thisAsset['assetTypes_productLink'] !== null) {
                         $("#assetTypePageProductLink").attr("onclick", "cordova.InAppBrowser.open('" + thisAsset['assetTypes_productLink'] + "','_blank')");
                     }
@@ -313,7 +437,6 @@ myApp.controllers = {
                     //Thumbnails
                     var carousel = "";
                     $(thisAsset['thumbnails']).each(function (index, element) {
-                        myApp.functions.log(element);
                         carousel += ('<ons-carousel-item><div style="margin-top: 20px;">' +
                             '<img src="' + element.url + '" style="min-width:25%; max-width:100%;height: auto; max-height:65vh;" />' +
                             '</div></ons-carousel-item>');
@@ -359,6 +482,7 @@ myApp.controllers = {
             $("#assetPageValue").html((thisAsset['assets_value'] !== null ? thisAsset['assets_value_format'] : thisAssetType['assetTypes_value_format']));
             $("#assetPageWeekRate").html((thisAsset['assets_weekRate'] !== null ? thisAsset['assets_weekRate_format'] : thisAssetType['assetTypes_weekRate_format']));
             $("#assetPageDayRate").html((thisAsset['assets_dayRate'] !== null ? thisAsset['assets_dayRate_format'] : thisAssetType['assetTypes_dayRate_format']));
+            $(".assetPageEditButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'editAssetPage.html\', {data: {id: ' + data.data.id + ',asset: ' + data.data.asset + '}});');
             $("#assetPageDefinableFields").html("");
             for (i = 1; i <= thisAssetType['fields'].length; i++) {
                 if (thisAssetType['fields'][i-1] !== "" && thisAsset["asset_definableFields_" + i] !== "") {

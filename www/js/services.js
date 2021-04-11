@@ -2,10 +2,12 @@
  * App Services. This contains the logic of the application organised in modules/objects. *
  ***********************************************************************************/
 myApp.functions = {
-  log: function(data) {
-    console.log(data); //TODO disable this on devices
+  log: function (data) {
+    if (myApp.config.debug) {
+      console.log(data);
+    }
   },
-  escapeHtml: function(text) {
+  escapeHtml: function (text) {
     var map = {
       '&': '&amp;',
       '<': '&lt;',
@@ -14,54 +16,55 @@ myApp.functions = {
       "'": '&#039;'
     };
 
-    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    return text.replace(/[&<>"']/g, function (m) {
+      return map[m];
+    });
   },
   barcode: {
-    scan: function(continuous,callback) {
+    scan: function (continuous, callback) {
       myApp.functions.log("Triggtering cordova barcode scan");
       try {
         cordova.plugins.barcodeScanner.scan(
             function (result) {
               myApp.functions.log(result);
               if (!result.cancelled) {
-                callback(result.text,result.format);
+                callback(result.text, result.format);
                 if (continuous) {
-                  myApp.functions.barcode.scan(true,callback);
+                  myApp.functions.barcode.scan(true, callback);
                 }
               } else {
-                callback(false,false);
+                callback(false, false);
               }
             },
             function (error) {
               myApp.functions.log(error);
-              ons.notification.toast("Scanning failed: " + error, { timeout: 2000 });
+              ons.notification.toast("Scanning failed: " + error, {timeout: 2000});
             },
             {
-              preferFrontCamera : false, // iOS and Android
-              showFlipCameraButton : false, // iOS and Android
-              showTorchButton : true, // iOS and Android
+              preferFrontCamera: false, // iOS and Android
+              showFlipCameraButton: false, // iOS and Android
+              showTorchButton: true, // iOS and Android
               torchOn: false, // Android, launch with the torch switched on (if available)
               saveHistory: false, // Android, save scan history (default false)
-              prompt : "Place an asset's barcode inside the scan area", // Android
+              prompt: "Place an asset's barcode inside the scan area", // Android
               resultDisplayDuration: 0, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
-              formats : "EAN_8,EAN_13,CODE_39,CODE_93,CODE_128", // chosen based on the overlap with the PHP lib
-              disableAnimations : true, // iOS
+              formats: "EAN_8,EAN_13,CODE_39,CODE_93,CODE_128", // chosen based on the overlap with the PHP lib
+              disableAnimations: true, // iOS
               disableSuccessBeep: true // iOS and Android
             }
         );
-      }
-      catch(err) {
+      } catch (err) {
         myApp.functions.log(JSON.stringify(err));
       }
       myApp.functions.log("Attempted to trigger barcode scan");
     }
   },
-  s3url: function(fileid,size,callback) {
-    myApp.functions.apiCall("file/",{"f":fileid,"d":"force","s":size}, function(response) {
+  s3url: function (fileid, size, callback) {
+    myApp.functions.apiCall("file/", {"f": fileid, "d": "force", "s": size}, function (response) {
       callback(response.url);
     });
   },
-  openBrowser: function(url) {
+  openBrowser: function (url) {
     cordova.InAppBrowser.open(url, '_system');
     return false;
   },
@@ -71,7 +74,7 @@ myApp.functions = {
     }
     data['jwt'] = myApp.auth.token;
     if (myApp.data.instanceID !== null) {
-        data['instances_id'] = myApp.data.instanceID;
+      data['instances_id'] = myApp.data.instanceID;
     }
     var connected = true;
     try {
@@ -79,11 +82,11 @@ myApp.functions = {
       if (navigator.connection.type === Connection.NONE) {
         connected = false;
       }
-    } catch(err) {
+    } catch (err) {
       myApp.functions.log(err.message);
     }
     if (connected !== true) {
-      ons.notification.toast("No Network Connection", { timeout: 2000 });
+      ons.notification.toast("No Network Connection", {timeout: 2000});
     } else {
       if (useCustomLoader !== true) {
         $(".loadingDialog").show();
@@ -115,7 +118,10 @@ myApp.functions = {
         error: function (request, status, error) {
           $('.loadingDialog').hide();
           myApp.functions.log(JSON.stringify(error));
-          ons.notification.alert({title: request.statusText + " - " + status, message: (request.responseText ? request.responseText : 'Error connecting to AdamRMS') }, function () {
+          ons.notification.alert({
+            title: request.statusText + " - " + status,
+            message: (request.responseText ? request.responseText : 'Error connecting to AdamRMS')
+          }, function () {
             myApp.controllers.firstBoot();
             if (navigator.app) {
               myApp.controllers.firstBoot();
@@ -130,7 +136,7 @@ myApp.functions = {
     $("#login").hide();
     $("#app-mainview").show();
   },
-  fileExtensionToIcon: function(extension) {
+  fileExtensionToIcon: function (extension) {
     switch (extension.toLowerCase()) {
       case "gif":
         return 'fa-file-image';
@@ -236,36 +242,42 @@ myApp.functions = {
         break;
     }
   },
-  formatSize: function(size) {
-      if (size >= 1073741824) {
-        size = (size / 1073741824).toFixed(1) + ' GB';
-      } else if (size >= 100000) {
-        size = (size / 1048576).toFixed(1) + ' MB';
-      } else if (size >= 1024) {
-        size = (size / 1024).toFixed(0) + ' KB';
-      } else if (size > 1) {
-        size = size + ' bytes';
-      } else if (size == 1) {
-        size = size + ' byte';
-      } else {
-        size = '0 bytes';
-      }
-      return size;
+  formatSize: function (size) {
+    if (size >= 1073741824) {
+      size = (size / 1073741824).toFixed(1) + ' GB';
+    } else if (size >= 100000) {
+      size = (size / 1048576).toFixed(1) + ' MB';
+    } else if (size >= 1024) {
+      size = (size / 1024).toFixed(0) + ' KB';
+    } else if (size > 1) {
+      size = size + ' bytes';
+    } else if (size == 1) {
+      size = size + ' byte';
+    } else {
+      size = '0 bytes';
+    }
+    return size;
   },
-  nl2br: function(text) {
+  nl2br: function (text) {
     if (text == null) {
       return text;
     } else {
       return text.replace(/(?:\r\n|\r|\n)/g, '<br>');
     }
   },
-  reset: function() {
+  reset: function () {
     localStorage.clear();
     location.reload();
+  },
+  uppy: {
+    editAssetTypePageThumbUppy: false,
+    getExtension: function (fileName) {
+      var re = /(?:\.([^.]+))?$/;
+      var extension = re.exec(fileName)[1];
+      return extension.toLowerCase();
+    }
   }
 }
-
-
 
 /*
 myApp.services = {
