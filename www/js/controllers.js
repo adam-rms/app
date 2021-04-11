@@ -57,20 +57,10 @@ myApp.controllers = {
                             if (myApp.auth.instanceHasPermission(17)) {
                                 $("#menu-asset-addNewButton").show();
                             }
-                            if (myApp.auth.instanceHasPermission(85)) {
+                            if (myApp.auth.instanceHasPermission(85) && false) {
                                 $(".scanSpeedDial").show();
                             } else {
                                 $(".scanSpeedDial").hide();
-                            }
-                            if (myApp.auth.instanceHasPermission(58)) {
-                                $(".assetTypePageEditButton").show();
-                            } else {
-                                $(".assetTypePageEditButton").hide();
-                            }
-                            if (myApp.auth.instanceHasPermission(59) && false) {
-                                $(".assetPageEditButton").show();
-                            } else {
-                                $(".assetPageEditButton").hide();
                             }
                         }
                     });
@@ -415,6 +405,11 @@ myApp.controllers = {
                     };
                     var thisAsset = assetDownloadResult['assets'][0];
                     myApp.data.assetTypes[thisAsset['assetTypes_id']] = thisAsset;
+                    if (myApp.auth.instanceHasPermission(58)) {
+                        $(".assetTypePageEditButton").show();
+                    } else {
+                        $(".assetTypePageEditButton").hide();
+                    }
                     $("#assetTypePageTitle").html(thisAsset['assetTypes_name']);
                     $("#assetTypePageManufacturer").html(thisAsset['manufacturers_name']);
                     $("#assetTypePageCategory").html(thisAsset['assetCategories_name']);
@@ -476,6 +471,11 @@ myApp.controllers = {
                 }
             });
             myApp.functions.log(thisAsset);
+            if (myApp.auth.instanceHasPermission(59) && false) {
+                $(".assetPageEditButton").show();
+            } else {
+                $(".assetPageEditButton").hide();
+            }
             $("#assetPageTitle").html(thisAsset['assets_tag_format']);
             $("#assetPageNotes").html(myApp.functions.nl2br(thisAsset['assets_notes']));
             $("#assetPageMass").html((thisAsset['assets_mass'] !== null ? thisAsset['assets_mass_format'] : thisAssetType['assetTypes_mass_format']));
