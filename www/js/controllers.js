@@ -54,8 +54,10 @@ myApp.controllers = {
                                     });
                                 });
                             }
-                            if (myApp.auth.instanceHasPermission(17)) {
+                            if (myApp.auth.instanceHasPermission(17) && false) {
                                 $("#menu-asset-addNewButton").show();
+                            } else {
+                                $("#menu-asset-addNewButton").hide();
                             }
                             if (myApp.auth.instanceHasPermission(85) && false) {
                                 $(".scanSpeedDial").show();
