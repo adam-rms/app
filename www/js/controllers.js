@@ -1,13 +1,13 @@
 myApp.controllers = {
     firstBoot: function() {
         //Called when app opened or when the instance is changed
-        console.log("Running first boot");
+        myApp.functions.log("Running first boot");
         myApp.data.init();
         myApp.controllers.menu.loadNavigation();
     },
     menu: {
         loadNavigation: function () {
-            console.log("Loading navigation");
+            myApp.functions.log("Loading navigation");
             myApp.functions.apiCall("instances/list.php", {}, function (result) {
                 if (result.length < 1) {
                     //User has no instances so can't use the app
@@ -17,7 +17,7 @@ myApp.controllers = {
                         });
                 } else {
                     myApp.controllers.assets.fullAssetList(function () {
-                        console.log("First asset list logged");
+                        myApp.functions.log("First asset list logged");
                     },null,true);
 
                     myApp.data.instances = [];
@@ -247,7 +247,7 @@ myApp.controllers = {
         },
         fullAssetListSearch: function(value) {
             myApp.controllers.assets.fullAssetList(function () {
-                console.log("Serach complete")
+                myApp.functions.log("Serach complete")
             },value,true);
         },
         fullAssetListPullRefresh: null,
@@ -256,10 +256,12 @@ myApp.controllers = {
         projectPage: function (data) {
             $("#projectPage-title").html(myApp.data.projects[data.data.id]['projects_name']);
             $("#projectPageTitle").html(myApp.data.projects[data.data.id]['projects_name']);
-            $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['clients_name']);
+            if (myApp.data.projects[data.data.id]['clients_name'] != null) {
+                $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['clients_name']);
+            } else $("#projectPageDescription").html("");
         },
         newAssetPage: function (data) {
-            console.log(data);
+            myApp.functions.log(data);
         },
         about: function (data) {
             $('.versionNumber').text(myApp.config.version.number);
@@ -289,7 +291,7 @@ myApp.controllers = {
                 //Thumbnails
                 var carousel = "";
                 $(thisAsset['thumbnails']).each(function (index, element) {
-                    console.log(element);
+                    myApp.functions.log(element);
                     carousel += ('<ons-carousel-item><div style="margin-top: 20px;">' +
                         '<img src="' + element.url + '" style="min-width:25%; max-width:100%;height: auto; max-height:65vh;" />' +
                         '</div></ons-carousel-item>');
@@ -306,7 +308,7 @@ myApp.controllers = {
                 $("#assetTypePageFilesList").html("");
                 if (myApp.auth.instanceHasPermission(54)) {
                     $(thisAsset['files']).each(function (index, element) {
-                        console.log(element);
+                        myApp.functions.log(element);
                         $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',false,myApp.functions.openBrowser);">' +
                             '<div class="left">' +
                             '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
@@ -329,7 +331,7 @@ myApp.controllers = {
                     return false;
                 }
             });
-            console.log(thisAsset);
+            myApp.functions.log(thisAsset);
             $("#assetPageTitle").html(thisAsset['assets_tag_format']);
             $("#assetPageNotes").html(myApp.functions.nl2br(thisAsset['assets_notes']));
             $("#assetPageMass").html((thisAsset['assets_mass'] !== null ? thisAsset['assets_mass_format'] : thisAssetType['assetTypes_mass_format']));
@@ -374,7 +376,7 @@ myApp.controllers = {
             $("#assetPageFilesList").html("");
             if (myApp.auth.instanceHasPermission(61)) {
                 $(thisAsset['files']).each(function (index, element) {
-                    console.log(element);
+                    myApp.functions.log(element);
                     $("#assetPageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',false,myApp.functions.openBrowser);">' +
                         '<div class="left">' +
                         '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +

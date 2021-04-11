@@ -2,6 +2,9 @@
  * App Services. This contains the logic of the application organised in modules/objects. *
  ***********************************************************************************/
 myApp.functions = {
+  log: function(data) {
+    console.log(data); //TODO disable this on devices
+  },
   escapeHtml: function(text) {
     var map = {
       '&': '&amp;',
@@ -15,11 +18,11 @@ myApp.functions = {
   },
   barcode: {
     scan: function(continuous,callback) {
-      console.log("Triggtering cordova barcode scan");
+      myApp.functions.log("Triggtering cordova barcode scan");
       try {
         cordova.plugins.barcodeScanner.scan(
             function (result) {
-              console.log(result);
+              myApp.functions.log(result);
               if (!result.cancelled) {
                 callback(result.text,result.format);
                 if (continuous) {
@@ -30,7 +33,7 @@ myApp.functions = {
               }
             },
             function (error) {
-              console.log(error);
+              myApp.functions.log(error);
               ons.notification.toast("Scanning failed: " + error, { timeout: 2000 });
             },
             {
@@ -48,9 +51,9 @@ myApp.functions = {
         );
       }
       catch(err) {
-        console.log(JSON.stringify(err));
+        myApp.functions.log(JSON.stringify(err));
       }
-      console.log("Attempted to trigger barcode scan");
+      myApp.functions.log("Attempted to trigger barcode scan");
     }
   },
   s3url: function(fileid,size,callback) {
@@ -77,7 +80,7 @@ myApp.functions = {
         connected = false;
       }
     } catch(err) {
-      console.log(err.message);
+      myApp.functions.log(err.message);
     }
     if (connected !== true) {
       ons.notification.toast("No Network Connection", { timeout: 2000 });
@@ -95,9 +98,9 @@ myApp.functions = {
           if (useCustomLoader !== true) {
             $('.loadingDialog').hide();
           }
-          console.log("Got ajax data - going to call callback");
+          myApp.functions.log("Got ajax data - going to call callback");
           if (response.result) {
-            console.log("Calling callback");
+            myApp.functions.log("Calling callback");
             callback(response.response);
           } else {
             if (response.error.code && response.error.code == "AUTH") {
@@ -107,11 +110,11 @@ myApp.functions = {
               ons.notification.toast(response.error.message, {timeout: 3000});
             }
           }
-          console.log(JSON.stringify(response));
+          myApp.functions.log(JSON.stringify(response));
         },
         error: function (request, status, error) {
           $('.loadingDialog').hide();
-          console.log(JSON.stringify(error));
+          myApp.functions.log(JSON.stringify(error));
           ons.notification.alert({title: request.statusText + " - " + status, message: (request.responseText ? request.responseText : 'Error connecting to AdamRMS') }, function () {
             myApp.controllers.firstBoot();
             if (navigator.app) {

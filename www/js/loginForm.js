@@ -10,7 +10,7 @@ myApp.auth.login = function () {
         }
     }
     catch(err) {
-        console.log(err.message);
+        myApp.functions.log(err.message);
         ons.notification.toast(err.message, {timeout: 2000});
     }
     if (connected !== true) {
@@ -42,9 +42,9 @@ myApp.auth.login = function () {
                     }
                 },
                 error: function (request, status, error) {
-                    console.log(JSON.stringify(request));
-                    console.log(JSON.stringify(error));
-                    console.log(JSON.stringify(status));
+                    myApp.functions.log(JSON.stringify(request));
+                    myApp.functions.log(JSON.stringify(error));
+                    myApp.functions.log(JSON.stringify(status));
                     if (request.statusText == "error" || requset.statusText == "") {
                         ons.notification.alert("Error connecting to AdamRMS - Please check your connection");
                     } else {

@@ -99,7 +99,6 @@ myApp.auth = {
                   myApp.auth.location.name = result.location['locations_name'];
                   myApp.auth.location.type = "barcode";
                 } else if (result.asset) {
-                  console.log(result.asset);
                   myApp.auth.location.value = result.asset['assets_id'];
                   myApp.auth.location.name = result.asset['tag'] + " " + result.asset['assetTypes_name'];
                   myApp.auth.location.type = "asset";
