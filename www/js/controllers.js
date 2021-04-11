@@ -285,7 +285,7 @@ myApp.controllers = {
 
 
                 myApp.functions.uppy.editAssetTypePageThumbUppy = new Uppy.Core({
-                    debug: true,
+                    debug: myApp.config.debug,
                     allowMultipleUploads: true,
                     autoProceed: false,
                     restrictions: {
