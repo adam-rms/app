@@ -59,7 +59,7 @@ myApp.controllers = {
                             } else {
                                 $("#menu-asset-addNewButton").hide();
                             }
-                            if (myApp.auth.instanceHasPermission(85) && false) {
+                            if (myApp.auth.instanceHasPermission(85)) {
                                 $(".scanSpeedDial").show();
                             } else {
                                 $(".scanSpeedDial").hide();
