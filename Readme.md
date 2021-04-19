@@ -4,13 +4,13 @@ https://about.adam-rms.com
 
 # Debugging
 
-`phonegap serve`
+`cordova serve`
 
 # Android
 
 ## Builds
 
-`phonegap prepare android && phonegap build android && phonegap run android --debug`
+`cordova prepare android && cordova build android && cordova run android --debug`
 
 Open to debug [chrome://inspect/#devices](chrome://inspect/#devices)
 
@@ -18,7 +18,7 @@ Open to debug [chrome://inspect/#devices](chrome://inspect/#devices)
 
 Copy `build.json.example` to `build.json` and set all 4 passwords in from LastPass under `AdamRMS Android App Certificate Keystore`
 
-Run `phonegap prepare android && phonegap build android --release`
+Run `cordova prepare android && cordova build android --release`
 
 Upload `platforms/android/app/build/outputs/apk/release/app-release.apk`
 
@@ -26,4 +26,4 @@ Upload `platforms/android/app/build/outputs/apk/release/app-release.apk`
 
 https://stackoverflow.com/a/19490759 
 
-After making changes `phonegap prepare ios` then rebuild in Xcode
+After making changes `cordova prepare ios` then rebuild in Xcode
