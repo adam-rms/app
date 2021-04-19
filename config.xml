@@ -61,6 +61,9 @@
         <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
             <string>need photo library access to get pictures from there</string>
         </edit-config>
+        <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
+            <string>need photo library access to get pictures from there</string>
+        </edit-config>
         <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
             <string>need location access to verify your location when scanning barcodes</string>
         </edit-config>

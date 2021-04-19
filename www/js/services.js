@@ -286,53 +286,62 @@ myApp.functions = {
       if (connected !== true) {
         ons.notification.toast("No Network Connection", {timeout: 2000});
       } else {
-        $(".loadingDialog").show();
-        document.querySelector('#mySplitter').left.close();
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
-          myApp.functions.log('file system open: ' + fs.name);
-          fs.root.getFile(imageURI, {create: true, exclusive: false}, function (fileEntry) {
-            fileEntry.file(function (file) {
-              var reader = new FileReader();
-              reader.onloadend = function () {
-                // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
-                var formData = new FormData();
-                formData.append("file", new Blob([new Uint8Array(this.result)], {type: "image/jpg"}));
-                formData.append("jwt", myApp.auth.token);
-                formData.append("typeid", typeid);
-                formData.append("typename", typename);
-                formData.append("subtype", subtype);
-                var oReq = new XMLHttpRequest();
-                oReq.open("POST", myApp.config.endpoint + "s3files/appUploader.php", true);
-                oReq.onload = function (oEvent) {
-                  $('.loadingDialog').hide();
-                  myApp.functions.log(oEvent);
-                  if (response.error.code && response.error.code == "AUTH") {
-                    //They need to login again - token probably expired
-                    myApp.auth.logout();
-                  } else {
-                    ons.notification.toast(response.error.message, {timeout: 3000});
-                  }
+          window.resolveLocalFileSystemURL(imageURI, fileEntryResolved => {
+            myApp.functions.log('file system open: ' + fs.name);
+              fileEntryResolved.file(function (file) {
+                var reader = new FileReader();
+                reader.onloadend = function () {
+                  document.querySelector('#mySplitter').left.close();
+                  $(".loadingDialog").show();
+                  // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
+                  var formData = new FormData();
+                  formData.append("file", new Blob([new Uint8Array(this.result)], {type: "image/jpg"}));
+                  formData.append("jwt", myApp.auth.token);
+                  formData.append("typeid", typeid);
+                  formData.append("filename",imageURI.split(/(\\|\/)/g).pop())
+                  formData.append("typename", typename);
+                  formData.append("subtype", subtype);
+                  formData.append("public", 0);
+                  formData.append("extension", "jpg");
+                  var oReq = new XMLHttpRequest();
+                  oReq.open("POST", myApp.config.endpoint + "s3files/appUploader.php", true);
+                  oReq.onload = function (oEvent) {
+                    $('.loadingDialog').hide();
+                    var response = $.parseJSON(oReq.responseText);
+                    if (response.error.code && response.error.code == "AUTH") {
+                      //They need to login again - token probably expired
+                      myApp.auth.logout();
+                    } else if (response.error.code) {
+                      ons.notification.toast(response.error.message, {timeout: 3000});
+                    } else if (response.result) {
+                      ons.notification.toast("Image uploaded & saved successfully", {timeout: 2000});
+                    }
 
-                  //Delete the image
-                  navigator.camera.cleanup(function () {
-                    myApp.functions.log("Cleanup successful");
-                  }, function (error) {
-                    myApp.functions.log(error);
-                  });
+                    //Delete the image
+                    navigator.camera.cleanup(function () {
+                      myApp.functions.log("Cleanup successful");
+                    }, function (error) {
+                      myApp.functions.log(error);
+                    });
+                  };
+                  oReq.onerror = function(error) {
+                    $('.loadingDialog').hide();
+                    ons.notification.toast("Error uploading file - please check your connection", {timeout: 3000});
+                  }
+                  // Pass the blob in to XHR's send method
+                  oReq.send(formData);
                 };
-                // Pass the blob in to XHR's send method
-                oReq.send(formData);
-              };
-              // Read the file as an ArrayBuffer
-              reader.readAsArrayBuffer(file);
+                // Read the file as an ArrayBuffer
+                reader.readAsArrayBuffer(file);
+              }, function (err) {
+                myApp.functions.log('error getting fileentry file!');
+              });
             }, function (err) {
-              myApp.functions.log('error getting fileentry file!' + err);
+              myApp.functions.log('error getting file!');
             });
-          }, function (err) {
-            myApp.functions.log('error getting file! ' + err);
-          });
         }, function (err) {
-          myApp.functions.log('error getting persistent fs! ' + err);
+          myApp.functions.log('error getting persistent fs!');
         });
       }
     }, function(errorMessage) {
@@ -345,7 +354,7 @@ myApp.functions = {
         encodingType: navigator.camera.EncodingType.JPEG,
         mediaType: navigator.camera.MediaType.PICTURE,
         correctOrientation: true,
-        saveToPhotoAlbum: true, //Save them a copy in their gallery as a backup
+        saveToPhotoAlbum: (camera ? true : false), //Save them a copy in their gallery as a backup
         allowEdit: false //Does weird stuff on Android
     });
   }
