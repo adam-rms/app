@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.bstudios.adamrms" version="1.2.2" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.bstudios.adamrms" version="1.3.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>AdamRMS</name>
     <description>
         Rental Management System for Theatre, AV and Broadcast
@@ -51,11 +51,18 @@
         <preference name="Allow3DTouchLinkPreview" value="false" />
         <preference name="scheme" value="app" />
         <preference name="hostname" value="localhost" />
+        <preference name="CameraUsesGeolocation" value="false" />
         <config-file parent="CFBundleDisplayName" target="*-Info.plist">
             <string>AdamRMS</string>
         </config-file>
         <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
-            <string>To scan barcodes</string>
+            <string>To scan barcodes and add photos of assets</string>
+        </edit-config>
+        <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
+            <string>need photo library access to get pictures from there</string>
+        </edit-config>
+        <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
+            <string>need location access to verify your location when scanning barcodes</string>
         </edit-config>
         <preference name="BackupWebStorage" value="none" />
         <preference name="deployment-target" value="12.4" />

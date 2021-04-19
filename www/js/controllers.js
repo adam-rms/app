@@ -266,6 +266,8 @@ myApp.controllers = {
         editAssetTypePage: function (data) {
             if (data.data.id == "NEW") {
                 $("#editAssetTypePageTitle").html("New Asset Type");
+                $("#editAssetTypePageThumbAddTake").attr("onclick", "myApp.functions.uploadPhoto(true, 2,'ASSET-THUMBNAIL')");
+                $("#editAssetTypePageThumbAddSelect").attr("onclick", "myApp.functions.uploadPhoto(false, 2,'ASSET-THUMBNAIL')");
             } else {
                 var thisAsset = myApp.data.assetTypes[data.data.id];
                 $("#editAssetTypePageTitle").html("Edit " + thisAsset['assetTypes_name']);
@@ -284,96 +286,8 @@ myApp.controllers = {
                         '<div class="right">' + myApp.functions.formatSize(element['s3files_meta_size']) + '</div>' +
                         '</ons-list-item>');
                 });
-
-
-                myApp.functions.uppy.editAssetTypePageThumbUppy = new Uppy.Core({
-                    debug: myApp.config.debug,
-                    allowMultipleUploads: true,
-                    autoProceed: false,
-                    restrictions: {
-                        //maxNumberOfFiles: {{  fileLimit }},
-                        allowedFileTypes: ['image/gif', 'image/jpeg', 'image/png', 'image/jpg']
-                    },
-                    meta: {
-                        "typeid": 2,
-                        "subtype": data.data.id
-                    },
-                    onBeforeFileAdded: (currentFile, files) => {
-                        var updatedFile = currentFile;
-                        var safeFilename = currentFile.name.replace(/[^a-z0-9]/gi, '').toLowerCase() + "." + myApp.functions.uppy.getExtension(currentFile.name);
-                        updatedFile.name = "uploads/" + "ASSET-THUMBNAIL" + "/" + Date.now() + "-" + (Math.floor(Math.random() * (99999999999999999999 - 9999999999 + 1)) + 9999999999) + "." + myApp.functions.uppy.getExtension(currentFile.name);
-                        return updatedFile;
-                    },
-                    onBeforeUpload: (files) => {
-                        for (const [key, value] of Object.entries(files)) {
-                        }
-                    }
-                }).use(Uppy.Dashboard, {
-                    inline: true,
-                    target: '#editAssetTypePageThumbUppy',
-                    height: 300,
-                    plugins: ['Webcam'],
-                    locale: {
-                        strings: {
-                            dropHint: 'Drop an image here',
-                            dropPaste: '%{browse}',
-                            dropPasteImport: '%{browse} or import from:',
-                            browse: 'Browse Images',
-                        }
-                    },
-                    browserBackButtonClose: false,
-                    showLinkToFileUploadResult: false,
-                    proudlyDisplayPoweredByUppy: false,
-                    hideProgressAfterFinish: true,
-                    showProgressDetails: true,
-                    metaFields: []
-                /*}).use(Uppy.Webcam, {
-                    mirror: true,
-                    preferredImageMimeType: "image/jpeg",
-                    modes: [
-                        'picture'
-                    ],
-                    facingMode: 'environment',*/
-                }).use(Uppy.AwsS3, {
-                    metaFields: ['name', 'typeid', 'subtype'],
-                    getUploadParameters(file) {
-                        // Send a request to our PHP signing endpoint.
-                        return fetch(myApp.config.endpoint + 's3files/generateSignatureUppy.php', {
-                            method: 'POST',
-                            headers: {
-                                accept: 'application/json',
-                                'content-type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                jwt: myApp.auth.token,
-                                filename: file.name,
-                                contentType: file.type
-                            })
-                        }).then((response) => {
-                            // Parse the JSON response.
-                            return response.json()
-                        }).then((data) => {
-                            // Return an object in the correct shape.
-                            return {
-                                method: data.method,
-                                url: data.url,
-                                fields: data.fields,
-                                headers: data.headers
-                            }
-                        })
-                    }
-                }).on('upload-success', (file, response) => {
-                    myApp.functions.apiCall("s3files/uploadSuccess.php", {
-                        "name": file.name,
-                        "public": 0,
-                        "size": file.size,
-                        "typeid": file.meta.typeid,
-                        "subtype": file.meta.subtype,
-                        "originalName": file.data.name
-                    }, function (result) {
-                        ons.notification.toast("Thumbnail Added Successfully", { timeout: 2000 });
-                    }, true);
-                });
+                $("#editAssetTypePageThumbAddTake").attr("onclick", "myApp.functions.uploadPhoto(true, 2,'ASSET-THUMBNAIL'," + thisAsset['assetTypes_id'] + ")");
+                $("#editAssetTypePageThumbAddSelect").attr("onclick", "myApp.functions.uploadPhoto(false, 2,'ASSET-THUMBNAIL'," + thisAsset['assetTypes_id'] + ")");
             }
         },
         about: function (data) {

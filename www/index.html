@@ -275,7 +275,24 @@
       <ons-list-title>Thumbnails</ons-list-title>
       <ons-list id="editAssetTypePageThumbList"></ons-list>
       <ons-list-title>Add Thumbnails</ons-list-title>
-      <div id="editAssetTypePageThumbUppy"></div>
+      <ons-list>
+        <ons-list-item tappable style="cursor: pointer" id="editAssetTypePageThumbAddTake" onclick="myApp.functions.uploadPhoto(true, 2,'ASSET-THUMBNAIL')">
+          <div class="left">
+            <ons-icon icon="fa-camera-retro" style="color: grey;"></ons-icon>
+          </div>
+          <div class="center">
+            Take Photo
+          </div>
+        </ons-list-item>
+        <ons-list-item tappable style="cursor: pointer" id="editAssetTypePageThumbAddSelect" onclick="myApp.functions.uploadPhoto(false, 2,'ASSET-THUMBNAIL')">
+          <div class="left">
+            <ons-icon icon="fa-file-image-o" style="color: grey;"></ons-icon>
+          </div>
+          <div class="center">
+            Select Photo
+          </div>
+        </ons-list-item>
+      </ons-list>
 
       <!--<ons-if platform="ios other">
         <ons-button modifier="large" component="button/save-task">Save</ons-button>

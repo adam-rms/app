@@ -269,16 +269,87 @@ myApp.functions = {
     localStorage.clear();
     location.reload();
   },
-  uppy: {
-    editAssetTypePageThumbUppy: false,
-    getExtension: function (fileName) {
-      var re = /(?:\.([^.]+))?$/;
-      var extension = re.exec(fileName)[1];
-      return extension.toLowerCase();
+  uploadPhoto: function (camera, typeid, typename, subtype) {
+    if (typeof subtype === "undefined") {
+      var subtype = "";
     }
+    navigator.camera.getPicture(function (imageURI) {
+      var connected = true;
+      try {
+        //For some unknown reason Android gets upset about this
+        if (navigator.connection.type === Connection.NONE) {
+          connected = false;
+        }
+      } catch (err) {
+        myApp.functions.log(err.message);
+      }
+      if (connected !== true) {
+        ons.notification.toast("No Network Connection", {timeout: 2000});
+      } else {
+        $(".loadingDialog").show();
+        document.querySelector('#mySplitter').left.close();
+        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+          myApp.functions.log('file system open: ' + fs.name);
+          fs.root.getFile(imageURI, {create: true, exclusive: false}, function (fileEntry) {
+            fileEntry.file(function (file) {
+              var reader = new FileReader();
+              reader.onloadend = function () {
+                // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
+                var formData = new FormData();
+                formData.append("file", new Blob([new Uint8Array(this.result)], {type: "image/jpg"}));
+                formData.append("jwt", myApp.auth.token);
+                formData.append("typeid", typeid);
+                formData.append("typename", typename);
+                formData.append("subtype", subtype);
+                var oReq = new XMLHttpRequest();
+                oReq.open("POST", myApp.config.endpoint + "s3files/appUploader.php", true);
+                oReq.onload = function (oEvent) {
+                  $('.loadingDialog').hide();
+                  myApp.functions.log(oEvent);
+                  if (response.error.code && response.error.code == "AUTH") {
+                    //They need to login again - token probably expired
+                    myApp.auth.logout();
+                  } else {
+                    ons.notification.toast(response.error.message, {timeout: 3000});
+                  }
+
+                  //Delete the image
+                  navigator.camera.cleanup(function () {
+                    myApp.functions.log("Cleanup successful");
+                  }, function (error) {
+                    myApp.functions.log(error);
+                  });
+                };
+                // Pass the blob in to XHR's send method
+                oReq.send(formData);
+              };
+              // Read the file as an ArrayBuffer
+              reader.readAsArrayBuffer(file);
+            }, function (err) {
+              myApp.functions.log('error getting fileentry file!' + err);
+            });
+          }, function (err) {
+            myApp.functions.log('error getting file! ' + err);
+          });
+        }, function (err) {
+          myApp.functions.log('error getting persistent fs! ' + err);
+        });
+      }
+    }, function(errorMessage) {
+      //Error function
+      myApp.functions.log(errorMessage);
+    }, {
+        quality: 80,
+        destinationType: navigator.camera.DestinationType.FILE_URI,
+        sourceType: (camera ? navigator.camera.PictureSourceType.CAMERA : navigator.camera.PictureSourceType.PHOTOLIBRARY),
+        encodingType: navigator.camera.EncodingType.JPEG,
+        mediaType: navigator.camera.MediaType.PICTURE,
+        correctOrientation: true,
+        saveToPhotoAlbum: true, //Save them a copy in their gallery as a backup
+        allowEdit: false //Does weird stuff on Android
+    });
   }
 }
-
 /*
 myApp.services = {
 
