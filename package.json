@@ -5,6 +5,7 @@
   "description": "Rental Management System for Theatre, AV & Broadcast",
   "main": "index.js",
   "author": "Bithell Studios Ltd.",
+  "licence": "AGPL-3.0-only",
   "repository": "https://github.com/Jbithell/adam-rms-app.git",
   "cordova": {
     "plugins": {
