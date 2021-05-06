@@ -1,10 +1,10 @@
 # AdamRMS App
 
-https://about.adam-rms.com
+The AdamRMS app is a companion to the [AdamRMS Rental Management System](https://github.com/bstudios/adam-rms)
 
-# Debugging
+# Debugging locally
 
-`cordova serve`
+Install Cordova on your machine, then run `cordova serve`
 
 # Android
 
@@ -16,7 +16,7 @@ Open to debug [chrome://inspect/#devices](chrome://inspect/#devices)
 
 ## Releases 
 
-Copy `build.json.example` to `build.json` and set all 4 passwords in from LastPass under `AdamRMS Android App Certificate Keystore`
+Copy `build.json.example` to `build.json` and set all 4 passwords for the certificate under `AdamRMS Android App Certificate Keystore`
 
 Run `cordova prepare android && cordova build android --release`
 
