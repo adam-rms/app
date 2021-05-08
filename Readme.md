@@ -4,7 +4,7 @@ The AdamRMS app is a companion to the [AdamRMS Rental Management System](https:/
 
 # Debugging locally
 
-Install Cordova on your machine, then run `cordova serve`
+Install Cordova on your machine, then run `cordova run browser`
 
 # Android
 

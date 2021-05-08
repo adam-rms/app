@@ -94,7 +94,7 @@ myApp.functions = {
       }
       $.ajax({
         type: "POST",
-        url: myApp.config.endpoint + endpoint,
+        url: myApp.config.endpoint + "api/" + endpoint,
         dataType: 'json',
         data: data,
         success: function (response) {
@@ -330,7 +330,7 @@ myApp.functions = {
               formData.append("public", 0);
               formData.append("extension", "jpg");
               var oReq = new XMLHttpRequest();
-              oReq.open("POST", myApp.config.endpoint + "s3files/appUploader.php", true);
+              oReq.open("POST", myApp.config.endpoint + "api/s3files/appUploader.php", true);
               oReq.onload = function (oEvent) {
                 $('.loadingDialog').hide();
                 var response = $.parseJSON(oReq.responseText);

@@ -41,14 +41,16 @@ myApp.auth = {
     }
   },
   login: function () {
-    alert("login");
-    var endpoint = 'https://dash.adam-rms.com/login/?app-oauth=true';
-    window.open(endpoint, 'oauth:adamrms', '');
+    $("#login").show();
+    window.open(myApp.config.endpoint + 'login/?app-oauth=true', 'oauth:adamrms', '');
     window.addEventListener('message', function(event) {
       if (event.data.match(/^oauth::/)) {
         var data = JSON.parse(event.data.substring(7));
-        console.log(data);
-        alert("Login!");
+        if (typeof data.token !== "undefined") {
+          localStorage.setItem('token', data.token);
+          myApp.auth.token = data.token;
+          myApp.functions.launchApp();
+        }
       }
     });
   },
