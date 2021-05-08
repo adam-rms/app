@@ -34,10 +34,23 @@ myApp.auth = {
   logout: function() {
     localStorage.setItem('token','');
     $("#app-mainview").hide();
-    $("#login").show();
     if (navigator.app) {
       navigator.app.exitApp();
+    } else {
+      myApp.auth.login();
     }
+  },
+  login: function () {
+    alert("login");
+    var endpoint = 'https://dash.adam-rms.com/login/?app-oauth=true';
+    window.open(endpoint, 'oauth:adamrms', '');
+    window.addEventListener('message', function(event) {
+      if (event.data.match(/^oauth::/)) {
+        var data = JSON.parse(event.data.substring(7));
+        console.log(data);
+        alert("Login!");
+      }
+    });
   },
   changeInstance: function() {
     var listOfInstances = [];
@@ -190,6 +203,6 @@ ons.ready(function() {
     myApp.functions.launchApp();
   } else {
     $("#app-mainview").hide();
-    $("#login").show();
+    myApp.auth.login();
   }
 });
