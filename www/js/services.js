@@ -273,6 +273,7 @@ myApp.functions = {
     if (typeof subtype === "undefined") {
       var subtype = "";
     }
+    myApp.functions.log("Attempting to use cam");
     navigator.camera.getPicture(function (imageURI) {
       var connected = true;
       try {
@@ -286,63 +287,82 @@ myApp.functions = {
       if (connected !== true) {
         ons.notification.toast("No Network Connection", {timeout: 2000});
       } else {
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
-          window.resolveLocalFileSystemURL(imageURI, fileEntryResolved => {
-            myApp.functions.log('file system open: ' + fs.name);
-              fileEntryResolved.file(function (file) {
-                var reader = new FileReader();
-                reader.onloadend = function () {
-                  document.querySelector('#mySplitter').left.close();
-                  $(".loadingDialog").show();
-                  // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
-                  var formData = new FormData();
-                  formData.append("file", new Blob([new Uint8Array(this.result)], {type: "image/jpg"}));
-                  formData.append("jwt", myApp.auth.token);
-                  formData.append("typeid", typeid);
-                  formData.append("filename",imageURI.split(/(\\|\/)/g).pop())
-                  formData.append("typename", typename);
-                  formData.append("subtype", subtype);
-                  formData.append("public", 0);
-                  formData.append("extension", "jpg");
-                  var oReq = new XMLHttpRequest();
-                  oReq.open("POST", myApp.config.endpoint + "s3files/appUploader.php", true);
-                  oReq.onload = function (oEvent) {
-                    $('.loadingDialog').hide();
-                    var response = $.parseJSON(oReq.responseText);
-                    if (response.error.code && response.error.code == "AUTH") {
-                      //They need to login again - token probably expired
-                      myApp.auth.logout();
-                    } else if (response.error.code) {
-                      ons.notification.toast(response.error.message, {timeout: 3000});
-                    } else if (response.result) {
-                      ons.notification.toast("Image uploaded & saved successfully", {timeout: 2000});
-                    }
-
-                    //Delete the image
-                    navigator.camera.cleanup(function () {
-                      myApp.functions.log("Cleanup successful");
-                    }, function (error) {
-                      myApp.functions.log(error);
-                    });
-                  };
-                  oReq.onerror = function(error) {
-                    $('.loadingDialog').hide();
-                    ons.notification.toast("Error uploading file - please check your connection", {timeout: 3000});
-                  }
-                  // Pass the blob in to XHR's send method
-                  oReq.send(formData);
-                };
-                // Read the file as an ArrayBuffer
-                reader.readAsArrayBuffer(file);
-              }, function (err) {
-                myApp.functions.log('error getting fileentry file!');
+        if (imageURI.indexOf('file:///') > -1) {
+          window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+            window.resolveLocalFileSystemURL(imageURI, fileEntryResolved => {
+              getFile(fs,fileEntryResolved);
+            }, function (err) {
+              myApp.functions.log('error getting file!');
+              console.log(err);
+            });
+          }, function (err) {
+            myApp.functions.log('error getting persistent fs!');
+          });
+        } else {
+          window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+            window.resolveLocalFileSystemURL(imageURI, fileEntryResolved => {
+              fs.root.getFile(imageURI, { create: true, exclusive: false }, function (fileEntry) {
+                getFile(fs, fileEntry);
               });
             }, function (err) {
               myApp.functions.log('error getting file!');
+              console.log(err);
             });
-        }, function (err) {
-          myApp.functions.log('error getting persistent fs!');
-        });
+          }, function (err) {
+            myApp.functions.log('error getting persistent fs!');
+          });
+        }
+        var getFile = function(fs,fileEntry) {
+          myApp.functions.log('file system open: ' + fs.name);
+          fileEntry.file(function (file) {
+            var reader = new FileReader();
+            reader.onloadend = function () {
+              document.querySelector('#mySplitter').left.close();
+              $(".loadingDialog").show();
+              // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
+              var formData = new FormData();
+              formData.append("file", new Blob([new Uint8Array(this.result)], {type: "image/jpg"}));
+              formData.append("jwt", myApp.auth.token);
+              formData.append("typeid", typeid);
+              formData.append("filename",imageURI.split(/(\\|\/)/g).pop())
+              formData.append("typename", typename);
+              formData.append("subtype", subtype);
+              formData.append("public", 0);
+              formData.append("extension", "jpg");
+              var oReq = new XMLHttpRequest();
+              oReq.open("POST", myApp.config.endpoint + "s3files/appUploader.php", true);
+              oReq.onload = function (oEvent) {
+                $('.loadingDialog').hide();
+                var response = $.parseJSON(oReq.responseText);
+                if (response.error.code && response.error.code == "AUTH") {
+                  //They need to login again - token probably expired
+                  myApp.auth.logout();
+                } else if (response.error.code) {
+                  ons.notification.toast(response.error.message, {timeout: 3000});
+                } else if (response.result) {
+                  ons.notification.toast("Image uploaded & saved successfully", {timeout: 2000});
+                }
+
+                //Delete the image
+                navigator.camera.cleanup(function () {
+                  myApp.functions.log("Cleanup successful");
+                }, function (error) {
+                  myApp.functions.log(error);
+                });
+              };
+              oReq.onerror = function(error) {
+                $('.loadingDialog').hide();
+                ons.notification.toast("Error uploading file - please check your connection", {timeout: 3000});
+              }
+              // Pass the blob in to XHR's send method
+              oReq.send(formData);
+            };
+            // Read the file as an ArrayBuffer
+            reader.readAsArrayBuffer(file);
+          }, function (err) {
+            myApp.functions.log('error getting fileentry file!');
+          });
+        }
       }
     }, function(errorMessage) {
       //Error function
