@@ -10,6 +10,8 @@ Install Cordova on your machine, then run `cordova serve`
 
 ## Builds
 
+Enable USB teathering on the device (might need to plug in and unplug a few times to get it to trust)
+
 `cordova prepare android && cordova build android && cordova run android --debug`
 
 Open to debug [chrome://inspect/#devices](chrome://inspect/#devices)
