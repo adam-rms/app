@@ -28,7 +28,6 @@
   <script src="js/app.js"></script>
   <script src="js/services.js"></script>
   <script src="js/controllers.js"></script>
-  <script src="js/loginForm.js"></script>
 
   <link rel="stylesheet" href="lib/onsen/css/onsenui.min.css">
   <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.min.css">
@@ -37,30 +36,10 @@
 </head>
 
 <body>
-<ons-page id="login" style="display:none;">
-  <ons-toolbar>
-    <div class="center">AdamRMS</div>
-  </ons-toolbar>
-  <ons-card style="text-align: center;">
-    <img src="assets/logoicon.svg" alt="AdamRMS" style="width: 30%; max-width: 200px;">
-    <div class="title">
-      Login
-    </div>
-    <div class="content">
-        <form id="loginFormForm">
-           <p>
-            <ons-input id="login-username" modifier="underbar" placeholder="Username" float autocomplete="username"></ons-input>
-          </p>
-          <p>
-            <ons-input id="login-password" modifier="underbar" type="password" placeholder="Password" float autocomplete="current-password"></ons-input>
-          </p>
-          <p style="margin-top: 30px;">
-            <ons-button modifier="quiet" onclick="cordova.InAppBrowser.open('https://dash.adam-rms.com','_system')">Forgot password</ons-button>
-            <ons-button id="loginButton" onclick="myApp.auth.login()">Sign in</ons-button>
-          </p>
-        </form>
-    </div>
-    <div class="footer" style="display:none;">
+<ons-page id="login" style="display:none;text-align: center;">
+
+    <img src="assets/logo.png" alt="AdamRMS" style="width: 85vw;" />
+      <ons-button modifier="large" onclick="myApp.auth.login()">Login</ons-button>
       <ons-list>
         <ons-list-item>
           <span class="list-item__title">Version Number</span><span class="list-item__subtitle versionNumber" id=""></span>
@@ -69,8 +48,6 @@
           <span class="list-item__title">Version Code</span><span class="list-item__subtitle versionCode"></span>
         </ons-list-item>
       </ons-list>
-    </div>
-  </ons-card>
 </ons-page>
 <div id="app-mainview" style="display:none;">
   <!-- First navigation component: Navigator. This will remain always on top of the app. -->

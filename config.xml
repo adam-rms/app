@@ -52,9 +52,9 @@
         <preference name="scheme" value="app" />
         <preference name="hostname" value="localhost" />
         <preference name="CameraUsesGeolocation" value="false" />
-        <config-file parent="CFBundleDisplayName" target="*-Info.plist">
+        <edit-config file="*-Info.plist" mode="merge" target="CFBundleDisplayName">
             <string>AdamRMS</string>
-        </config-file>
+        </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
             <string>To scan barcodes and add photos of assets</string>
         </edit-config>

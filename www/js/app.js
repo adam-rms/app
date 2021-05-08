@@ -34,10 +34,25 @@ myApp.auth = {
   logout: function() {
     localStorage.setItem('token','');
     $("#app-mainview").hide();
-    $("#login").show();
     if (navigator.app) {
       navigator.app.exitApp();
+    } else {
+      myApp.auth.login();
     }
+  },
+  login: function () {
+    $("#login").show();
+    window.open(myApp.config.endpoint + 'login/?app-oauth=true', 'oauth:adamrms', '');
+    window.addEventListener('message', function(event) {
+      if (event.data.match(/^oauth::/)) {
+        var data = JSON.parse(event.data.substring(7));
+        if (typeof data.token !== "undefined") {
+          localStorage.setItem('token', data.token);
+          myApp.auth.token = data.token;
+          myApp.functions.launchApp();
+        }
+      }
+    });
   },
   changeInstance: function() {
     var listOfInstances = [];
@@ -190,6 +205,6 @@ ons.ready(function() {
     myApp.functions.launchApp();
   } else {
     $("#app-mainview").hide();
-    $("#login").show();
+    myApp.auth.login();
   }
 });
