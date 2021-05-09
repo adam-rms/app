@@ -26,7 +26,8 @@
       "cordova-plugin-oauth": {
         "URL_SCHEME": "$PACKAGE_NAME",
         "ANDROID_SUPPORT_CUSTOM_TABS_VERSION": "28.+"
-      }
+      },
+      "cordova-plugin-androidx-adapter": {}
     },
     "platforms": [
       "browser",
@@ -41,7 +42,7 @@
     "cordova-plugin-device": "2.0.3",
     "cordova-plugin-dialogs": "2.0.2",
     "cordova-plugin-file": "6.0.2",
-    "cordova-plugin-inappbrowser": "4.0.0",
+    "cordova-plugin-inappbrowser": "^5.0.0",
     "cordova-plugin-network-information": "2.0.2",
     "cordova-plugin-oauth": "^3.0.1",
     "cordova-plugin-update": "^0.1.0",
@@ -53,6 +54,7 @@
   "devDependencies": {
     "cordova-android": "^9.1.0",
     "cordova-browser": "^6.0.0",
-    "cordova-ios": "^6.2.0"
+    "cordova-ios": "^6.2.0",
+    "cordova-plugin-androidx-adapter": "^1.1.3"
   }
 }
