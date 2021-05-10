@@ -9,7 +9,7 @@
      base-uri 'self' *;
      media-src *;
      img-src 'self' blob: data: https://adam-rms.com https://*.adam-rms.com https://*.backblazeb2.com content:;
-     connect-src 'self' https://adam-rms.com https://*.adam-rms.com http://localhost;
+     connect-src 'self' https://adam-rms.com https://*.adam-rms.com;
      script-src 'self' 'unsafe-inline' https://*.phonegap.com;
      frame-src *;
     " />
@@ -88,9 +88,6 @@
         <ons-fab>
           <ons-icon icon="fa-barcode"></ons-icon>
         </ons-fab>
-        <ons-speed-dial-item onclick="myApp.controllers.assets.barcodeDeleteFAB()">
-          <ons-icon icon="fa-trash"></ons-icon>
-        </ons-speed-dial-item>
         <ons-speed-dial-item onclick="myApp.controllers.assets.barcodeScanFAB()">
           <ons-icon icon="fa-camera"></ons-icon>
         </ons-speed-dial-item>

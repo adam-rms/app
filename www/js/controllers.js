@@ -61,8 +61,10 @@ myApp.controllers = {
                             }
                             if (myApp.auth.instanceHasPermission(85)) {
                                 $(".scanSpeedDial").show();
+                                $("#menu-asset-barcodeButton").show();
                             } else {
                                 $(".scanSpeedDial").hide();
+                                $("#menu-asset-barcodeButton").hide();
                             }
                         }
                     });
@@ -71,6 +73,35 @@ myApp.controllers = {
         }
     },
     assets: {
+        barcodeScanSelector: function() {
+            var options = [
+                {
+                    label: 'Associate Barcode',
+                    icon: 'fa-barcode'
+                },
+                {
+                    label: 'Delete Barcode',
+                    icon: 'fa-trash'
+                },
+                {
+                    label: 'Cancel',
+                    icon: 'md-close'
+                }
+            ];
+            ons.openActionSheet({
+                title: 'Barcode Manager',
+                cancelable: true,
+                buttons: options
+            }).then(function (index) {
+                if (index >= 0 && index < 2) { //-1 is used to show a cancel and a number greater than the length of the array means it's also cancel
+                    if (index === 0) {
+                        myApp.controllers.assets.barcodeScanFAB();
+                    } else if (index === 1) {
+                        myApp.controllers.assets.barcodeDeleteFAB();
+                    }
+                }
+            });
+        },
         barcodeDeleteFAB: function() {
             if (myApp.auth.location.type !== false) {
                 if (myApp.auth.instanceHasPermission(86)) {
@@ -122,34 +153,41 @@ myApp.controllers = {
             myApp.functions.apiCall("assets/barcodes/search.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
                 if (assetResult.asset === false) {
                     if (assetResult.barcode !== false) {
-                        //Barcode exists but asset doesn't
+                        //Barcode exists but asset doesn't - you can create blank barcodes on the RMS that then get associated manually
                         var barcodeid = assetResult.barcode;
                     } else {
                         //This is a totally random new barcode
                         var barcodeid = false;
                     }
-
                     if (myApp.auth.instanceHasPermission(88)) {
                         ons.notification.confirm({
                             title: "Unassociated Barcode",
-                            message: "Would you like to associate it with an asset in " + myApp.data.instance['instances_name'] + "?"
+                            message: "Would you like to associate it with an asset in " + myApp.data.instance['instances_name'] + "?",
+                            buttonLabels: ['No','Yes']
                         }).then(function (result) {
-                            if (result === 1) {
-                                ons.notification.prompt({
-                                    title: "Associate Barcode",
-                                    message: 'What is the Asset\'s Tag?'
-                                }).then(function (tag) {
-                                    if (tag) {
-                                        myApp.functions.apiCall("assets/barcodes/assign.php", {
-                                            "tag": tag,
-                                            "barcodeid": barcodeid,
-                                            "text": text,
-                                            "type": type
-                                        }, function (result) {
-                                            myApp.controllers.assets.barcodeScanPostScan(text,type);
-                                        });
-                                    }
-                                });
+                            if (result) {
+                                if (assetResult.assetSuggest != false) {
+                                    ons.notification.confirm({
+                                        title: "Change Asset Tag",
+                                        message: 'Would you like to assciate this barcode with the asset that has the Tag ' + assetResult.assetSuggest['assets_tag'] + '? The asset is a ' + assetResult.assetSuggest['assetTypes_name'] + ' (' + assetResult.assetSuggest['manufacturers_name'] + ')',
+                                        buttonLabels: ['No','Yes']
+                                    }).then(function (confirm) {
+                                        if (confirm) {
+                                            myApp.functions.apiCall("assets/barcodes/assign.php", {
+                                                "tag": assetResult.assetSuggest['assets_tag'],
+                                                "barcodeid": barcodeid,
+                                                "text": text,
+                                                "type": type
+                                            }, function (result) {
+                                                myApp.controllers.assets.barcodeScanPostScan(text,type);
+                                            });
+                                        } else {
+                                            myApp.controllers.assets.barcodeScanAssociate(barcodeid,text,type);
+                                        }
+                                    });
+                                } else {
+                                    myApp.controllers.assets.barcodeScanAssociate(barcodeid,text,type);
+                                }
                             }
                         });
                     } else {
@@ -170,6 +208,42 @@ myApp.controllers = {
                         } else {
                             //Asset wasn't found
                             ons.notification.toast("Sorry asset not found - is the correct business set?", { timeout: 2000 });
+                        }
+                    });
+                }
+            });
+        },
+        barcodeScanAssociate: function(barcodeid,text,type) {
+            ons.notification.prompt({
+                title: "Associate Barcode",
+                message: 'What is the Asset\'s Tag?'
+            }).then(function (tag) {
+                if (tag) {
+                    myApp.functions.apiCall("assets/barcodes/assign.php", {
+                        "tag": tag,
+                        "barcodeid": barcodeid,
+                        "text": text,
+                        "type": type
+                    }, function (result) {
+                        if (myApp.auth.instanceHasPermission(59)) {
+                            ons.notification.confirm({
+                                title: "Change Asset Tag",
+                                message: 'Would you like to change the Asset\'s Tag to ' + text + '?',
+                                buttonLabels: ['No','Yes']
+                            }).then(function (confirm) {
+                                if (confirm) {
+                                    myApp.functions.apiCall("assets/editAsset.php", {
+                                        "assets_id": result['assets_id'],
+                                        "assets_tag": text
+                                    }, function (result) {
+                                        myApp.controllers.assets.barcodeScanPostScan(text,type);
+                                    });
+                                } else {
+                                    myApp.controllers.assets.barcodeScanPostScan(text,type);
+                                }
+                            });
+                        } else {
+                            myApp.controllers.assets.barcodeScanPostScan(text,type);
                         }
                     });
                 }
