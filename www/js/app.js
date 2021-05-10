@@ -37,11 +37,14 @@ myApp.auth = {
     if (navigator.app) {
       navigator.app.exitApp();
     } else {
-      myApp.auth.login();
+      myApp.auth.showLogin();
     }
   },
-  login: function () {
+  showLogin: function () {
+    $("#app-mainview").hide();
     $("#login").show();
+  },
+  login: function () {
     window.open(myApp.config.endpoint + 'login/?app-oauth=true', 'oauth:adamrms', '');
     window.addEventListener('message', function(event) {
       if (event.data.match(/^oauth::/)) {
@@ -50,6 +53,8 @@ myApp.auth = {
           localStorage.setItem('token', data.token);
           myApp.auth.token = data.token;
           myApp.functions.launchApp();
+        } else {
+          ons.notification.toast("Sorry that login didn't work", {timeout: 2000});
         }
       }
     });
@@ -204,7 +209,6 @@ ons.ready(function() {
   if (myApp.auth.token && myApp.auth.token != '') {
     myApp.functions.launchApp();
   } else {
-    $("#app-mainview").hide();
-    myApp.auth.login();
+    myApp.auth.showLogin();
   }
 });
