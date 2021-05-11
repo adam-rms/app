@@ -54,6 +54,34 @@ myApp.controllers = {
                                     });
                                 });
                             }
+                            myApp.functions.apiCall("cms/list.php", {}, function (pagesResult) {
+                                let cmsPagesNavHtml = "";
+                                if (pagesResult.length > 0) {
+                                    cmsPagesNavHtml += '<ons-list-title>Pages</ons-list-title><ons-list>';
+                                }
+                                $(pagesResult).each(function (index, element) {
+                                    if (element.SUBPAGES.length > 0) {
+                                        cmsPagesNavHtml += '<ons-list-item expandable>' + element.cmsPages_name + '<div class="expandable-content">';
+                                        cmsPagesNavHtml += ('<ons-list-item tappable modifier="longdivider" onclick="document.querySelector(\'#myNavigator\').pushPage(\'cmsPage.html\', {data: {\'id\': ' + element.cmsPages_id + '}});">' +
+                                            element.cmsPages_name +
+                                            '</ons-list-item>');
+                                        $(element.SUBPAGES).each(function (index, element) {
+                                            cmsPagesNavHtml += ('<ons-list-item tappable modifier="longdivider" onclick="document.querySelector(\'#myNavigator\').pushPage(\'cmsPage.html\', {data: {\'id\': ' + element.cmsPages_id + '}});">' +
+                                                element.cmsPages_name +
+                                                '</ons-list-item>');
+                                        });
+                                        cmsPagesNavHtml += '</div></ons-list-item>';
+                                    } else {
+                                        cmsPagesNavHtml += ('<ons-list-item tappable modifier="longdivider" onclick="document.querySelector(\'#myNavigator\').pushPage(\'cmsPage.html\', {data: {\'id\': ' + element.cmsPages_id + '}});">' +
+                                            element.cmsPages_name +
+                                            '</ons-list-item>');
+                                    }
+                                });
+                                if (pagesResult.length > 0) {
+                                    cmsPagesNavHtml += '</ons-list>';
+                                }
+                                $("#cmsPages").html(cmsPagesNavHtml);
+                            });
                             if (myApp.auth.instanceHasPermission(17) && false) {
                                 $("#menu-asset-addNewButton").show();
                             } else {
@@ -331,6 +359,12 @@ myApp.controllers = {
             if (myApp.data.projects[data.data.id]['clients_name'] != null) {
                 $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['clients_name']);
             } else $("#projectPageDescription").html("");
+        },
+        cmsPage: function(data) {
+            myApp.functions.apiCall("cms/get.php", { "p" : data.data.id}, function (pageResult) {
+                $("#cmsPageTitle").html(pageResult.cmsPages_name);
+                $("#cmsPageContent").html(pageResult.CONTENT);
+            });
         },
         editAssetPage: function (data) {
             if (data.data.id == "NEW") {
