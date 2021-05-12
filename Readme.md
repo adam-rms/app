@@ -8,6 +8,10 @@ Install Cordova on your machine, then run `cordova run browser`
 
 # Android
 
+## Known Issues
+
+App fails if user has default browser set to firefox
+
 ## Builds
 
 Enable USB teathering on the device (might need to plug in and unplug a few times to get it to trust)
