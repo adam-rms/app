@@ -11,9 +11,6 @@
      img-src 'self' blob: data: https://adam-rms.com https://*.adam-rms.com https://*.backblazeb2.com content:;
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com;
      script-src 'self' 'unsafe-inline' https://*.phonegap.com;
-     connect-src 'self' https://adam-rms.com https://*.adam-rms.com https://192.168.1.143;
-     script-src 'self' 'unsafe-inline' https://*.phonegap.c
-     om;
      frame-src *;
     " />
   <!-- Frame-src is to allow links -->
@@ -180,14 +177,14 @@
       </ons-tabbar>
     </ons-page>
   </template>
-  <template id="editAssetPage.html">
-    <ons-page id="editAssetPage">
+  <template id="assetMaintenancePage.html">
+    <ons-page id="assetMaintenancePage">
       <ons-toolbar>
         <div class="left"><ons-back-button>Back</ons-back-button></div>
-        <div class="center" id="editAssetPageTitle"></div>
+        <div class="center">Add new Maintenance Job</div>
         <div class="right">
           <ons-if platform="android">
-            <ons-toolbar-button component="button/save-task">
+            <ons-toolbar-button component="button/save-task" onclick="myApp.controllers.assets.newMaintenanceJob()">
               <ons-icon icon="fa-save"></ons-icon>
             </ons-toolbar-button>
           </ons-if>
@@ -198,47 +195,24 @@
       </ons-modal>
 
 
-      <ons-list-title>Add a new task</ons-list-title>
-      <ons-list>
-        <ons-list-item modifier="nodivider">
-          <div class="center">
-            <ons-input id="title-input" type="text" placeholder="I want to..." float></ons-input>
-          </div>
-        </ons-list-item>
-        <ons-list-item modifier="nodivider">
-          <div class="center">
-            <ons-input id="category-input" type="text" placeholder="Category" float></ons-input>
-          </div>
-        </ons-list-item>
-        <ons-list-item modifier="nodivider">
-          <div class="center">
-            <ons-input id="description-input" type="text" placeholder="Description" float></ons-input>
-          </div>
-        </ons-list-item>
-      </ons-list>
-
-      <ons-list-title>Other options</ons-list-title>
-      <ons-list>
-        <ons-list-item modifier="nodivider">
-          <label class="center" for="inner-highlight-input">
-            Highlight?
-          </label>
-          <div class="right">
-            <ons-switch id="highlight-input" input-id="inner-highlight-input"></ons-switch>
-          </div>
-        </ons-list-item>
-        <ons-list-item modifier="nodivider">
-          <label class="center" for="inner-urgent-input">
-            Is it urgent?
-          </label>
-          <div class="right">
-            <ons-switch id="urgent-input" input-id="inner-urgent-input"></ons-switch>
-          </div>
-        </ons-list-item>
-      </ons-list>
-
+      <ons-list-title>Add a new maintenance job</ons-list-title>
+      <form id="assetMaintenancePage-form">
+        <input type="hidden" name="maintenanceJobs_assets" value="" />
+        <ons-list>
+          <ons-list-item modifier="nodivider">
+            <div class="center">
+              <ons-input type="text" name="maintenanceJobs_title" placeholder="Title" float></ons-input>
+            </div>
+          </ons-list-item>
+          <ons-list-item modifier="nodivider">
+            <div class="center">
+              <ons-input type="text" name="maintenanceJobs_faultDescription" placeholder="Description" float></ons-input>
+            </div>
+          </ons-list-item>
+        </ons-list>
+      </form>
       <ons-if platform="ios other">
-        <ons-button modifier="large" component="button/save-task">Add New Task</ons-button>
+        <ons-button modifier="large" component="button/save-task"  onclick="myApp.controllers.assets.newMaintenanceJob()">Add new job</ons-button>
       </ons-if>
     </ons-page>
   </template>
@@ -369,8 +343,8 @@
         <div class="center" id="assetPageTitle"></div>
         <div class="right">
           <ons-if platform="android other">
-            <ons-toolbar-button class="assetPageEditButton">
-              <ons-icon icon="fa-edit"></ons-icon>
+            <ons-toolbar-button class="assetPageMaintenanceButton">
+              <ons-icon icon="fa-ticket"></ons-icon>
             </ons-toolbar-button>
           </ons-if>
         </div>
@@ -408,7 +382,7 @@
       <ons-list id="assetPageFilesList">
       </ons-list>
       <ons-if platform="ios">
-        <ons-button class="assetPageEditButton" modifier="large">Edit</ons-button>
+        <ons-button class="assetPageMaintenanceButton" modifier="large">Add Maintenance Job</ons-button>
       </ons-if>
     </ons-page>
   </template>

@@ -82,11 +82,6 @@ myApp.controllers = {
                                 }
                                 $("#cmsPages").html(cmsPagesNavHtml);
                             });
-                            if (myApp.auth.instanceHasPermission(17) && false) {
-                                $("#menu-asset-addNewButton").show();
-                            } else {
-                                $("#menu-asset-addNewButton").hide();
-                            }
                             if (myApp.auth.instanceHasPermission(85)) {
                                 $(".scanSpeedDial").show();
                                 $("#menu-asset-barcodeButton").show();
@@ -366,6 +361,17 @@ myApp.controllers = {
             }
 
         },
+        newMaintenanceJob: function() {
+            var formData = {};
+            $("#assetMaintenancePage-form").find('[name]').each(function() {
+                formData[this.name] = this.value;
+            })
+            myApp.functions.apiCall("maintenance/newJob.php", formData, function () {
+                ons.notification.toast("Job added successfully", {timeout: 3000});
+                $("#assetMaintenancePage-form").trigger("reset");
+                document.querySelector('#myNavigator').popPage();
+            });
+        },
     },
     pages: {
         projectPage: function (data) {
@@ -460,10 +466,9 @@ myApp.controllers = {
                 $("#cmsPageContent").html(pageResult.CONTENT);
             });
         },
-        editAssetPage: function (data) {
-            if (data.data.id == "NEW") {
-                $("#editAssetPageTitle").html("New Asset");
-            }
+        assetMaintenancePage: function (data) {
+            $("#assetMaintenancePage-form").trigger("reset");
+            $("#assetMaintenancePage-form").children("input[name=maintenanceJobs_assets]").val(data.data.asset);
         },
         editAssetTypePage: function (data) {
             if (data.data.id == "NEW") {
@@ -589,10 +594,10 @@ myApp.controllers = {
                 }
             });
             myApp.functions.log(thisAsset);
-            if (myApp.auth.instanceHasPermission(59) && false) {
-                $(".assetPageEditButton").show();
+            if (myApp.auth.instanceHasPermission(18)) {
+                $(".assetPageMaintenanceButton").show();
             } else {
-                $(".assetPageEditButton").hide();
+                $(".assetPageMaintenanceButton").hide();
             }
             $("#assetPageTitle").html(thisAsset['assets_tag_format']);
             $("#assetPageNotes").html(myApp.functions.nl2br(thisAsset['assets_notes']));
@@ -600,7 +605,7 @@ myApp.controllers = {
             $("#assetPageValue").html((thisAsset['assets_value'] !== null ? thisAsset['assets_value_format'] : thisAssetType['assetTypes_value_format']));
             $("#assetPageWeekRate").html((thisAsset['assets_weekRate'] !== null ? thisAsset['assets_weekRate_format'] : thisAssetType['assetTypes_weekRate_format']));
             $("#assetPageDayRate").html((thisAsset['assets_dayRate'] !== null ? thisAsset['assets_dayRate_format'] : thisAssetType['assetTypes_dayRate_format']));
-            $(".assetPageEditButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'editAssetPage.html\', {data: {id: ' + data.data.id + ',asset: ' + data.data.asset + '}});');
+            $(".assetPageMaintenanceButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'assetMaintenancePage.html\', {data: {id: ' + data.data.id + ',asset: ' + data.data.asset + '}});');
             $("#assetPageDefinableFields").html("");
             for (i = 1; i <= thisAssetType['fields'].length; i++) {
                 if (thisAssetType['fields'][i-1] !== "" && thisAsset["asset_definableFields_" + i] !== "") {
