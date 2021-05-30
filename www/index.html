@@ -145,14 +145,20 @@
       <ons-list id="projectPageFilesList">
       </ons-list>
       <ons-list-title>Scan Assets</ons-list-title>
-      <div style="padding: 8px;">
-        <p>When I check off assets, set their status to</p>
-        <ons-select class="select">
-          <select class="select-input" id="projectPageAssetStatuses">
-          </select>
-        </ons-select>
-        <ons-button modifier="large" id="projectPageAssetButton">Assets</ons-button>
-      </div>
+      <ons-list id="projectPageScanAssets" style="display:none;">
+        <ons-list-item modifier="nodivider">
+          <p>When I check off assets, set their status to</p>
+        </ons-list-item>
+        <ons-list-item modifier="nodivider">
+          <ons-select class="select">
+            <select class="select-input" id="projectPageAssetStatuses">
+            </select>
+          </ons-select>
+        </ons-list-item>
+        <ons-list-item modifier="nodivider">
+          <ons-button modifier="large" id="projectPageAssetButton">Assets</ons-button>
+        </ons-list-item>
+      </ons-list>
     </ons-page>
   </template>
   <template id="projectAssets.html">
@@ -166,10 +172,10 @@
       <ons-modal class="loadingDialog">
         <img src='assets/cyc-fixture-loader.png' style="min-width:100%;height:25vh;" />
       </ons-modal>
-      <ons-tabbar position="auto">
+      <ons-tabbar position="auto" id="scannedProjectAssetsTabs">
         <ons-tab page="html/allProjectAssets.html" label="List" active>
         </ons-tab>
-        <ons-tab page="html/scannedProjectAssets.html" label="Checked">
+        <ons-tab page="html/scannedProjectAssets.html" label="Checked" id="scannedProjectAssetsTitle">
         </ons-tab>
       </ons-tabbar>
     </ons-page>
