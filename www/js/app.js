@@ -180,31 +180,6 @@ ons.ready(function() {
     }
   })
 
- myApp.controllers.assets.fullAssetListPullRefresh = document.getElementById('allAssetsListLoaderPullHook');
- setTimeout(function() {
-      if (myApp.controllers.assets.fullAssetListPullRefresh) {
-        myApp.controllers.assets.fullAssetListPullRefresh.addEventListener('changestate', function(event) {
-          var message = '';
-          switch (event.state) {
-            case 'initial':
-              message = 'Pull to refresh';
-              break;
-            case 'preaction':
-              message = 'Release';
-              break;
-            case 'action':
-              message = 'Loading...';
-              break;
-          }
-          myApp.controllers.assets.fullAssetListPullRefresh.innerHTML = message;
-        });
-        myApp.controllers.assets.fullAssetListPullRefresh.onAction = function(done) {
-          myApp.controllers.assets.fullAssetList(done, null, true);
-        };
-      }
-    }, (myApp.controllers.assets.fullAssetListPullRefresh ? 1 : 10000));
-
-
   myApp.auth.token = localStorage.getItem('token');
   if (myApp.auth.token && myApp.auth.token != '') {
     myApp.functions.launchApp();

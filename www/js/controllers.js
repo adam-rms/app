@@ -354,11 +354,78 @@ myApp.controllers = {
     },
     pages: {
         projectPage: function (data) {
-            $("#projectPage-title").html(myApp.data.projects[data.data.id]['projects_name']);
-            $("#projectPageTitle").html(myApp.data.projects[data.data.id]['projects_name']);
-            if (myApp.data.projects[data.data.id]['clients_name'] != null) {
-                $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['clients_name']);
-            } else $("#projectPageDescription").html("");
+            myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
+                myApp.data.projects[data.data.id] = projectData;
+                $("#projectPage-title").html(myApp.data.projects[data.data.id]['project']['projects_name']);
+                $("#projectPageTitle").html(myApp.data.projects[data.data.id]['project']['projects_name']);
+                $("#projectPageAssetButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'projectAssets.html\', {data: {id: ' + data.data.id + '}});');
+                $("#projectPageAssetStatuses").html('');
+                $(myApp.data.projects[data.data.id]['assetsAssignmentsStatus']).each(function (index, element) {
+                    $("#projectPageAssetStatuses").append("<option value='" + element['assetsAssignmentsStatus_id'] + "' " + (index == 0 ? 'selected' : '') + ">" + element['assetsAssignmentsStatus_name'] + "</option>");
+                });
+                $("#projectPageFilesList").html("");
+                if (myApp.auth.instanceHasPermission(121)) {
+                    $(myApp.data.projects[data.data.id]['files']).each(function (index, element) {
+                        $("#projectPageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',false,myApp.functions.openBrowser);">' +
+                            '<div class="left">' +
+                            '<ons-icon icon="' + myApp.functions.fileExtensionToIcon(element['s3files_extension']) + '"></ons-icon>' +
+                            '</div>' +
+                            '<div class="center">' + element['s3files_name'] + '</div>' +
+                            '<div class="right">' + myApp.functions.formatSize(element['s3files_meta_size']) + '</div>' +
+                            '</ons-list-item>');
+                    });
+                }
+                if (myApp.data.projects[data.data.id]['project']['clients_name'] != null) {
+                    $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['project']['clients_name']);
+                } else $("#projectPageDescription").html("");
+            });
+        },
+        projectAssetsPage: function (data) {
+            var newStatus = $("#projectPageAssetStatuses").val();
+            if (!newStatus || newStatus == null) {
+                document.querySelector('#myNavigator').popPage();
+            }
+
+            myApp.controllers.assets.projectAssetsPagePullRefresh = document.getElementById('projectAssetsPullHook');
+            myApp.controllers.assets.projectAssetsPageRefresh.addEventListener('changestate', function(event) {
+                var message = '';
+                switch (event.state) {
+                    case 'initial':
+                        message = 'Pull to refresh';
+                        break;
+                    case 'preaction':
+                        message = 'Release';
+                        break;
+                    case 'action':
+                        message = 'Loading...';
+                        break;
+                }
+                myApp.controllers.assets.projectAssetsPagePullRefresh.innerHTML = message;
+            });
+            myApp.controllers.assets.projectAssetsPagePullRefresh.onAction = function(done) {
+                myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
+                    myApp.data.projects[data.data.id] = projectData;
+                    myApp.controllers.pages.projectAssetsPage({"data": data.data});
+                    done();
+                });
+            };
+            $("#allProjectAssets").html("");
+            $("#scannedProjectAssets-list").html("");
+            $(myApp.data.projects[data.data.id]['FINANCIALS']['assetsAssigned']).each(function (assetType, assets) {
+                console.log(assets);
+                $(assets['assets']).each(function (index, element) {
+                    console.log(element);
+                    $((assetsAssignmentsStatus_name == newStatus ? "#scannedProjectAssets-list" : "#allProjectAssets")).append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
+                        '<div class="left">' +
+                        (element.thumbnails.length > 0 ? '<img loading="lazy" class="list-item__thumbnail" src="' + element.thumbnails[0]['url'] + '">' : '<span style="width: 40px;"></span>') +
+                        '</div>' +
+                        '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
+                        '<div class="right">' +
+                        '<div class="list-item__label">' + (element['count'] > 1 ? 'x' + element['count'] : element['tags'][0]['assets_tag_format'].replace("-", "&#8209;")) + '</div>' +
+                        '</div>' +
+                        '</ons-list-item>');
+                });
+            });
         },
         cmsPage: function(data) {
             myApp.functions.apiCall("cms/get.php", { "p" : data.data.id}, function (pageResult) {
@@ -558,3 +625,28 @@ myApp.controllers = {
         },
     }
 }
+ons.ready(function() {
+    myApp.controllers.assets.fullAssetListPullRefresh = document.getElementById('allAssetsListLoaderPullHook');
+    setTimeout(function() {
+        if (myApp.controllers.assets.fullAssetListPullRefresh) {
+            myApp.controllers.assets.fullAssetListPullRefresh.addEventListener('changestate', function(event) {
+                var message = '';
+                switch (event.state) {
+                    case 'initial':
+                        message = 'Pull to refresh';
+                        break;
+                    case 'preaction':
+                        message = 'Release';
+                        break;
+                    case 'action':
+                        message = 'Loading...';
+                        break;
+                }
+                myApp.controllers.assets.fullAssetListPullRefresh.innerHTML = message;
+            });
+            myApp.controllers.assets.fullAssetListPullRefresh.onAction = function(done) {
+                myApp.controllers.assets.fullAssetList(done, null, true);
+            };
+        }
+    }, (myApp.controllers.assets.fullAssetListPullRefresh ? 1 : 10000));
+});
