@@ -351,6 +351,21 @@ myApp.controllers = {
             },value,true);
         },
         fullAssetListPullRefresh: null,
+        checkOffAsset: function(assetAssignment,newStatus,originalStatus) {
+            if ($(".asset-assignment[data-assetassignmentid=" + assetAssignment + "]").find("input[type=checkbox]").is(':checked')) {
+                myApp.functions.apiCall("projects/assets/setStatus.php", {"assetsAssignments_id":assetAssignment,"assetsAssignments_status":newStatus}, function (projectData) {
+                    $(".asset-assignment[data-assetassignmentid=" + assetAssignment + "]").detach().appendTo('#scannedProjectAssetsList');
+                });
+            } else {
+                if (!originalStatus || originalStatus == null) {
+                    originalStatus = 0;
+                }
+                myApp.functions.apiCall("projects/assets/setStatus.php", {"assetsAssignments_id":assetAssignment,"assetsAssignments_status":originalStatus}, function (projectData) {
+                    $(".asset-assignment[data-assetassignmentid=" + assetAssignment + "]").detach().appendTo("#allProjectAssets");
+                });
+            }
+
+        },
     },
     pages: {
         projectPage: function (data) {
@@ -378,6 +393,10 @@ myApp.controllers = {
                 if (myApp.data.projects[data.data.id]['project']['clients_name'] != null) {
                     $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['project']['clients_name']);
                 } else $("#projectPageDescription").html("");
+
+                if (myApp.auth.instanceHasPermission(53)) {
+                    $("#projectPageScanAssets").show();
+                }
             });
         },
         projectAssetsPage: function (data) {
@@ -385,9 +404,10 @@ myApp.controllers = {
             if (!newStatus || newStatus == null) {
                 document.querySelector('#myNavigator').popPage();
             }
+            $("#scannedProjectAssetsTitle").prop('label',$( "#projectPageAssetStatuses option:selected" ).text());
 
             myApp.controllers.assets.projectAssetsPagePullRefresh = document.getElementById('projectAssetsPullHook');
-            myApp.controllers.assets.projectAssetsPageRefresh.addEventListener('changestate', function(event) {
+            myApp.controllers.assets.projectAssetsPagePullRefresh.addEventListener('changestate', function(event) {
                 var message = '';
                 switch (event.state) {
                     case 'initial':
@@ -409,22 +429,29 @@ myApp.controllers = {
                     done();
                 });
             };
-            $("#allProjectAssets").html("");
-            $("#scannedProjectAssets-list").html("");
-            $(myApp.data.projects[data.data.id]['FINANCIALS']['assetsAssigned']).each(function (assetType, assets) {
-                console.log(assets);
-                $(assets['assets']).each(function (index, element) {
-                    console.log(element);
-                    $((assetsAssignmentsStatus_name == newStatus ? "#scannedProjectAssets-list" : "#allProjectAssets")).append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
-                        '<div class="left">' +
-                        (element.thumbnails.length > 0 ? '<img loading="lazy" class="list-item__thumbnail" src="' + element.thumbnails[0]['url'] + '">' : '<span style="width: 40px;"></span>') +
-                        '</div>' +
-                        '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
-                        '<div class="right">' +
-                        '<div class="list-item__label">' + (element['count'] > 1 ? 'x' + element['count'] : element['tags'][0]['assets_tag_format'].replace("-", "&#8209;")) + '</div>' +
-                        '</div>' +
-                        '</ons-list-item>');
+            myApp.controllers.assets.projectAssetsPageTabs = document.querySelector('#scannedProjectAssetsTabs');
+            myApp.controllers.assets.projectAssetsPageTabs.addEventListener('prechange', function() {
+                myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
+                    myApp.data.projects[data.data.id] = projectData;
+                    myApp.controllers.pages.projectAssetsPage({"data": data.data});
                 });
+            })
+            $("#allProjectAssets").html("");
+            $("#scannedProjectAssetsList").html("");
+            $(myApp.data.projects[data.data.id]['FINANCIALS']['assetsAssigned']).each(function (assetType, assets) {
+                for (const thisAssignment in assets) {
+                    $(assets[thisAssignment]['assets']).each(function (index, element) {
+                        $((element.assetsAssignmentsStatus_id == newStatus ? "#scannedProjectAssetsList" : "#allProjectAssets")).append('<ons-list-item tappable modifier="longdivider" class="asset-assignment" data-assetassignmentid="' + element['assetsAssignments_id'] + '">' +
+                            '<div class="left">' +
+                            (element.assetsAssignmentsStatus_id != newStatus ? '<ons-checkbox onclick="myApp.controllers.assets.checkOffAsset(' + element['assetsAssignments_id'] + ',' + newStatus + ',' + element['assetsAssignmentsStatus_id'] + ')"></ons-checkbox>' : '') +
+                            '</div>' +
+                            '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + (element['assetsAssignmentsStatus_name'] ? ' - ' + element['assetsAssignmentsStatus_name'] : '') + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
+                            '<div class="right" onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
+                            '<div class="list-item__label">' + element['assets_tag'].replace("-", "&#8209;") + '</div>' +
+                            '</div>' +
+                            '</ons-list-item>');
+                    });
+                }
             });
         },
         cmsPage: function(data) {

@@ -16,7 +16,7 @@ App fails if user has default browser set to firefox
 
 Enable USB teathering on the device (might need to plug in and unplug a few times to get it to trust)
 
-`cordova prepare android && cordova build android && cordova run android --debug`
+`cordova prepare android && cordova build android && cordova run android --debug --device`
 
 Open to debug [chrome://inspect/#devices](chrome://inspect/#devices)
 

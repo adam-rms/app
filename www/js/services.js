@@ -109,8 +109,10 @@ myApp.functions = {
             if (response.error.code && response.error.code == "AUTH") {
               //They need to login again - token probably expired
               myApp.auth.logout();
-            } else {
+            } else if (response.error.message) {
               ons.notification.toast(response.error.message, {timeout: 3000});
+            } else {
+              ons.notification.toast("Error getting response - please check your internet connection", {timeout: 3000});
             }
           }
           myApp.functions.log(JSON.stringify(response));
