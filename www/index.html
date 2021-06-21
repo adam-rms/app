@@ -94,6 +94,9 @@
         <ons-speed-dial-item onclick="myApp.auth.setLocation()">
           <ons-icon icon="fa-map-pin"></ons-icon>
         </ons-speed-dial-item>
+        <ons-speed-dial-item onclick="myApp.controllers.assets.barcodeScanAssign()">
+          <ons-icon icon="fa-shopping-cart"></ons-icon>
+        </ons-speed-dial-item>
       </ons-speed-dial>
 
       <ons-modal class="loadingDialog">
@@ -125,6 +128,13 @@
           <div class="left"><ons-back-button>Back</ons-back-button></div>
         </div>
         <div class="center" id="projectPage-title">Project</div>
+        <div class="right">
+          <ons-if platform="android other">
+            <ons-toolbar-button id="projectPage-selectProject">
+              <ons-icon icon="fa-shopping-basket"></ons-icon>
+            </ons-toolbar-button>
+          </ons-if>
+        </div>
       </ons-toolbar>
       <ons-modal class="loadingDialog">
         <img src='assets/cyc-fixture-loader.png' style="min-width:100%;height:25vh;" />
@@ -156,6 +166,9 @@
           <ons-button modifier="large" id="projectPageAssetButton">Assets</ons-button>
         </ons-list-item>
       </ons-list>
+      <ons-if platform="ios">
+        <ons-button id="projectPage-selectProject" modifier="large">Select Project</ons-button>
+      </ons-if>
     </ons-page>
   </template>
   <template id="projectAssets.html">

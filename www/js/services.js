@@ -7,6 +7,11 @@ myApp.functions = {
       console.log(data);
     }
   },
+  setProject: function(projectid) {
+    myApp.data.project = myApp.data.projects[projectid];
+    localStorage.setItem('projectID',myApp.data.project.projectid);
+    ons.notification.toast("Project " + myApp.data.project.project.projects_name +" Selected", {timeout: 3000});
+  },
   escapeHtml: function (text) {
     var map = {
       '&': '&amp;',

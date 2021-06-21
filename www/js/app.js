@@ -14,6 +14,7 @@ myApp.data = {
   instance: [],
   instanceID: null,
   projects: {},
+  project: {},
   assetTypes: {},
   assetTypesPages: null,
   init: function() {
@@ -21,6 +22,7 @@ myApp.data = {
     myApp.data.instanceID = localStorage.getItem('instanceID');
     myApp.data.instance= [];
     myApp.data.projects= {};
+    myApp.data.project = {};
     myApp.data.assetTypes= {};
     myApp.data.assetTypesPages = null;
   }

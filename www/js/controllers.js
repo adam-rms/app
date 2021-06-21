@@ -372,6 +372,25 @@ myApp.controllers = {
                 document.querySelector('#myNavigator').popPage();
             });
         },
+        barcodeScanAssign: function(){
+            if (myApp.auth.location.type !== false) {
+                if (Object.keys(myApp.data.project).length > 0) {
+                    myApp.functions.barcode.scan(false, function(text,type) {
+                        if (text !== false) {
+                            if (type === "Fake") {
+                                type = "CODE_128";
+                            }
+                            //NB this api call doesn't fully work yet. It will add an entire asset type rather than a single asset.
+                            myApp.functions.apiCall("projects/assets/assign.php", {"projects_id": myApp.data.project.project.projects_id, "assets_tag": text});
+                        }
+                    });
+                } else {
+                    ons.notification.toast("Please select a project before attempting to scan a barcode", { timeout: 2000});
+                }
+            } else {
+                ons.notification.toast("Please set a location before attempting to scan a barcode", { timeout: 2000 });
+            }
+        },
     },
     pages: {
         projectPage: function (data) {
@@ -380,6 +399,7 @@ myApp.controllers = {
                 $("#projectPage-title").html(myApp.data.projects[data.data.id]['project']['projects_name']);
                 $("#projectPageTitle").html(myApp.data.projects[data.data.id]['project']['projects_name']);
                 $("#projectPageAssetButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'projectAssets.html\', {data: {id: ' + data.data.id + '}});');
+                $("#projectPage-selectProject").attr("onclick", 'myApp.functions.setProject('+ data.data.id +')');
                 $("#projectPageAssetStatuses").html('');
                 $(myApp.data.projects[data.data.id]['assetsAssignmentsStatus']).each(function (index, element) {
                     $("#projectPageAssetStatuses").append("<option value='" + element['assetsAssignmentsStatus_id'] + "' " + (index == 0 ? 'selected' : '') + ">" + element['assetsAssignmentsStatus_name'] + "</option>");
