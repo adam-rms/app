@@ -158,21 +158,25 @@ myApp.controllers = {
                 ons.notification.toast("Please set a location before attempting to scan a barcode", { timeout: 2000 });
             }
         },
-        barcodeScanFAB: function() {
+        barcodeScanFAB: function(projectAssign=false) {
             if (myApp.auth.location.type !== false) {
-                myApp.functions.barcode.scan(false, function(text,type) {
-                    if (text !== false) {
-                        if (type === "Fake") {
-                            type = "CODE_128";
+                if (!projectAssign || Object.keys(myApp.data.project).length > 0) {
+                    myApp.functions.barcode.scan(false, function(text,type) {
+                        if (text !== false) {
+                            if (type === "Fake") {
+                                type = "CODE_128";
+                            }
+                            myApp.controllers.assets.barcodeScanPostScan(text,type,projectAssign);
                         }
-                        myApp.controllers.assets.barcodeScanPostScan(text,type);
-                    }
-                });
+                    });
+                } else {
+                    ons.notification.toast("Please select a project before attempting to scan a barcode", { timeout: 2000});
+                }
             } else {
                 ons.notification.toast("Please set a location before attempting to scan a barcode", { timeout: 2000 });
             }
         },
-        barcodeScanPostScan: function(text,type) {
+        barcodeScanPostScan: function(text,type,projectAssign = false) {
             myApp.functions.apiCall("assets/barcodes/search.php", {"text":text,"type":type,"location":myApp.auth.location.value,"locationType":myApp.auth.location.type}, function (assetResult) {
                 if (assetResult.asset === false) {
                     if (assetResult.barcode !== false) {
@@ -227,7 +231,20 @@ myApp.controllers = {
                             myApp.data.assetTypes[element['assetTypes_id']] = element;
                         });
                         if (Object.keys(assetDownloadResult['assets']).length > 0) {
-                            myApp.controllers.assets.barcodeScanAddToList(assetResult.asset.assetTypes_id, assetResult.asset.assets_id);
+                            if (projectAssign) {
+                                //we're assigning the scanned asset to the selected project
+                                myApp.functions.apiCall("projects/assets/assign.php", {"projects_id": myApp.data.project.project.projects_id, "assets_id": assetResult.asset.assets_id}, function (assignResult){
+                                    console.log(assignResult);
+                                    /*if (assignResult['result']){
+                                        ons.notification.toast(assignResult);
+                                    } else {
+                                        ons.notification.toast("There was an error assigning this asset: " + assignResult['message'], { timeout: 3000});
+                                    }*/
+                                });
+                            } else {
+                                //load the asset view
+                                myApp.controllers.assets.barcodeScanAddToList(assetResult.asset.assetTypes_id, assetResult.asset.assets_id);
+                            } 
                         } else {
                             //Asset wasn't found
                             ons.notification.toast("Sorry asset not found - is the correct business set?", { timeout: 2000 });
@@ -371,25 +388,6 @@ myApp.controllers = {
                 $("#assetMaintenancePage-form").trigger("reset");
                 document.querySelector('#myNavigator').popPage();
             });
-        },
-        barcodeScanAssign: function(){
-            if (myApp.auth.location.type !== false) {
-                if (Object.keys(myApp.data.project).length > 0) {
-                    myApp.functions.barcode.scan(false, function(text,type) {
-                        if (text !== false) {
-                            if (type === "Fake") {
-                                type = "CODE_128";
-                            }
-                            //NB this api call doesn't fully work yet. It will add an entire asset type rather than a single asset.
-                            myApp.functions.apiCall("projects/assets/assign.php", {"projects_id": myApp.data.project.project.projects_id, "assets_tag": text});
-                        }
-                    });
-                } else {
-                    ons.notification.toast("Please select a project before attempting to scan a barcode", { timeout: 2000});
-                }
-            } else {
-                ons.notification.toast("Please set a location before attempting to scan a barcode", { timeout: 2000 });
-            }
         },
     },
     pages: {
