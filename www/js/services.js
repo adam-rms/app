@@ -11,6 +11,10 @@ myApp.functions = {
     myApp.data.project = myApp.data.projects[projectid];
     ons.notification.toast("Project " + myApp.data.project.project.projects_name +" Selected", {timeout: 3000});
   },
+  supermarketSweep: function(projectid) {
+    myApp.data.project = myApp.data.projects[projectid];
+    myApp.controllers.assets.barcodeScanFAB(projectAssign=true);
+  },
   escapeHtml: function (text) {
     var map = {
       '&': '&amp;',

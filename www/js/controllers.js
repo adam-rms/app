@@ -398,6 +398,7 @@ myApp.controllers = {
                 $("#projectPageTitle").html(myApp.data.projects[data.data.id]['project']['projects_name']);
                 $("#projectPageAssetButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'projectAssets.html\', {data: {id: ' + data.data.id + '}});');
                 $("#projectPage-selectProject").attr("onclick", 'myApp.functions.setProject('+ data.data.id +')');
+                $("#projectPage-supermarketSweep").attr("onclick", 'myApp.functions.supermarketSweep('+ data.data.id +')');
                 $("#projectPageAssetStatuses").html('');
                 $(myApp.data.projects[data.data.id]['assetsAssignmentsStatus']).each(function (index, element) {
                     $("#projectPageAssetStatuses").append("<option value='" + element['assetsAssignmentsStatus_id'] + "' " + (index == 0 ? 'selected' : '') + ">" + element['assetsAssignmentsStatus_name'] + "</option>");
