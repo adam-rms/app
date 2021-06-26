@@ -234,12 +234,11 @@ myApp.controllers = {
                             if (projectAssign) {
                                 //we're assigning the scanned asset to the selected project
                                 myApp.functions.apiCall("projects/assets/assign.php", {"projects_id": myApp.data.project.project.projects_id, "assets_id": assetResult.asset.assets_id}, function (assignResult){
-                                    console.log(assignResult);
-                                    /*if (assignResult['result']){
-                                        ons.notification.toast(assignResult);
+                                    if (assignResult.result){
+                                        ons.notification.toast("Asset added to project");
                                     } else {
-                                        ons.notification.toast("There was an error assigning this asset: " + assignResult['message'], { timeout: 3000});
-                                    }*/
+                                        ons.notification.toast("There was an error assigning this asset: " + assignResult.error["message"], { timeout: 3000});
+                                    }
                                 });
                             } else {
                                 //load the asset view
