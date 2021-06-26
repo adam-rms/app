@@ -36,7 +36,7 @@ myApp.auth = {
   logout: function() {
     localStorage.setItem('token','');
     $("#app-mainview").hide();
-    if (navigator.app) {a
+    if (navigator.app) {
       navigator.app.exitApp();
     } else {
       myApp.auth.showLogin();
