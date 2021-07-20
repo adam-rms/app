@@ -396,7 +396,16 @@ myApp.controllers = {
                     done();
                 });
             });
-        }
+        },
+        deleteCrew: function(crewAssignments_id){
+            myApp.functions.apiCall("projects/crew/unassign.php", {"crewAssignments_id": crewAssignments_id}, function () {
+                myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
+                    myApp.data.projects[data.data.id] = projectData;
+                    myApp.controllers.pages.ProjectPage({"data": data.data});
+                    done();
+                });
+            });
+        },
     },
     pages: {
         projectPage: function (data) {
@@ -427,14 +436,33 @@ myApp.controllers = {
                 } else {
                     $("#projectPageFilesCard").hide();
                 }
-                if (myApp.data.projects[data.data.id]['project']['clients_name'] != null) {
-                    $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['project']['clients_name']);
-                } else $("#projectPageDescription").html("");
+                $("#projectPageDescription").html((myApp.data.projects[data.data.id]['project']['projects_description'] != null ? '<p>' + myApp.data.projects[data.data.id]['project']['projects_description'] + '</p>' : '') + (myApp.data.projects[data.data.id]['project']['clients_name'] != null ? '<p>Client: ' + myApp.data.projects[data.data.id]['project']['clients_name'] + '</p>' : ''));
 
                 if (myApp.auth.instanceHasPermission(53)) {
                     $("#projectPageScanAssets").show();
                 } else {
                     $("#projectPageScanAssets").hide();
+                }
+                if (myApp.auth.instanceHasPermission(47) || myApp.auth.instanceHasPermission(124)) {
+                    $("#projectPageCrewCard").show();
+                    $("#projectPageCrewList").html("");
+                    if (myApp.auth.instanceHasPermission(47)){
+                        $(myApp.data.projects[data.data.id]['project']['crewAssignments']).each(function (index, element) {
+                            $("#projectPageCrewList").append(
+                                '<ons-list-item modifier="longdivider" class="asset-assignment" data-crewAssignments_id="' + element['crewAssignments_id'] + '">' +
+                                (myApp.auth.instanceHasPermission(49) ? '<div class="left"><ons-button modifier="outline" onclick="myApp.controllers.assets.deleteCrew(' + element['crewAssignments_id'] + ')"><ons-icon icon="fa-trash"></ons-icon></ons-button></div>' : '') +
+                                '<div class="center"><span class="list-item__title">' + element['users_name1'] + ' ' + element['users_name2'] + '</span><span class="list-item__subtitle">' + element['crewAssignments_role'] + '</span></div>' +
+                                '</ons-list-item>'
+                            );
+                        });
+                    }
+                    if (myApp.auth.instanceHasPermission(124)){
+                        $("#projectPageSignupButton").show();
+                    } else {
+                        $("#projectPageSignupButton").hide();
+                    }
+                } else {
+                    $("#projectPageCrewCard").hide();
                 }
             });
         },
