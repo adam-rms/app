@@ -3,6 +3,7 @@ window.myApp = {};
 myApp.config = {
   endpoint: 'https://dash.adam-rms.com/',
   //endpoint: 'https://192.168.1.143/admin/',
+  //endpoint: 'https://192.168.1.23/admin/',
   debug: false,
   version: {
     code: 'WEB',

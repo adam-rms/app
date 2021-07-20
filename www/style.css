@@ -50,6 +50,48 @@ ons-splitter-side[side="left"][animation="overlay"] {
   -o-animation: loader-cyc 10s linear infinite;
   animation: loader-cyc 10s linear infinite;
 }
+
+.subtitle {
+  font-family: -apple-system, 'Helvetica Neue', 'Helvetica', 'Arial', 'Lucida Grande', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 18px;
+  margin: 4px 0 8px 0;
+  padding: 0;
+  display: block;
+  box-sizing: border-box;
+  font-weight: 500;
+}
+
+.p-1 {
+  padding: 2px;
+}
+
+.p-x-1 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.p-y-1 {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.p-2 {
+  padding: 5px;
+}
+
+.p-x-2 {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.p-y-2 {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 @-webkit-keyframes loader-cyc {
   0%   { background-color: rgba(255, 0, 0, 0.7); }
   12% { background-color: rgba(255, 111, 0, 0.7); }

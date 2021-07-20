@@ -141,24 +141,25 @@
 
         </div>
       </ons-card>
-      <ons-list-title>Project Files</ons-list-title>
-      <ons-list id="projectPageFilesList">
-      </ons-list>
-      <ons-list-title>Scan Assets</ons-list-title>
-      <ons-list id="projectPageScanAssets" style="display:none;">
-        <ons-list-item modifier="nodivider">
-          <p>When I check off assets, set their status to</p>
-        </ons-list-item>
-        <ons-list-item modifier="nodivider">
-          <ons-select class="select">
+      <ons-card id="projectPageFilesCard">
+        <div class="subtitle">Project Files</div>
+        <ons-list id="projectPageFilesList">
+        </ons-list>
+      </ons-card>      
+      <ons-card>
+        <div class="subtitle">Project Assets</div>
+        <ons-button modifier="large" id="projectPageAllAssetsButton">View All Assets</ons-button>
+        <div id="projectPageScanAssets">
+          <div class="subtitle" style="padding-top: 10px;">Scan Assets</div>
+          <p>When I check off assets, set their status to:</p>
+          <ons-select class="select" style="padding-bottom: 10px;">
             <select class="select-input" id="projectPageAssetStatuses">
             </select>
           </ons-select>
-        </ons-list-item>
-        <ons-list-item modifier="nodivider">
-          <ons-button modifier="large" id="projectPageAssetButton">Assets</ons-button>
-        </ons-list-item>
-      </ons-list>
+          <br>
+          <ons-button modifier="large" id="projectPageAssetButton">Set Asset Status</ons-button>
+        </div>
+      </ons-card>
       <ons-speed-dial position="bottom right" direction="up" class="scanSpeedDial">
         <ons-fab>
           <ons-icon icon="fa-shopping-basket"></ons-icon>
@@ -172,6 +173,27 @@
       </ons-speed-dial>
     </ons-page>
   </template>
+
+  <!-- projectAssetsList.html is for listing all Assets-->
+  <template id="projectAssetsList.html">
+    <ons-page id="ProjectAssetsListPage">
+      <ons-toolbar>
+        <div class="left">
+          <div class="left"><ons-back-button>Back</ons-back-button></div>
+        </div>
+        <div class="center" id="projectAssetListPage-title">Project Assets</div>
+      </ons-toolbar>
+      <ons-modal class="loadingDialog">
+        <img src='assets/cyc-fixture-loader.png' style="min-width:100%;height:25vh;" />
+      </ons-modal>
+      <ons-pull-hook id="projectAssetsListPullHook">
+        Pull to refresh
+      </ons-pull-hook>
+      <ons-list id="allAssets"></ons-list>
+    </ons-page>
+  </template>
+
+  <!-- projectAssets.html is for asset statuses -->
   <template id="projectAssets.html">
     <ons-page id="projectAssetsPage">
       <ons-toolbar>
