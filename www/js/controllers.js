@@ -389,15 +389,20 @@ myApp.controllers = {
             });
         },
         unassignAsset: function(assetAssignment, assetId, projectId){
-            data = {data: {id:projectId} };
             myApp.functions.apiCall("projects/assets/unassign.php", {"assetsAssignments_id":assetAssignment,"assets_id":assetId}, function () {
-                myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
-                    myApp.data.projects[data.data.id] = projectData;
-                    myApp.controllers.pages.ProjectAssetsListPage({"data": data.data});
-                    done();
-                });
+                myApp.controllers.assets.updatePage(myApp.controllers.pages.ProjectAssetsListPage, projectId, null);
             });
         },
+        updatePage: function(page, projectId, done){
+            let data = {data: {id:projectId} };
+            myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
+                myApp.data.projects[data.data.id] = projectData;
+                page({"data": data.data});
+                if (done){
+                    done();
+                }
+            });
+        }
     },
     pages: {
         projectPage: function (data) {
@@ -486,11 +491,7 @@ myApp.controllers = {
                 myApp.controllers.assets.projectAssetsPagePullRefresh.innerHTML = message;
             });
             myApp.controllers.assets.projectAssetsPagePullRefresh.onAction = function(done) {
-                myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
-                    myApp.data.projects[data.data.id] = projectData;
-                    myApp.controllers.pages.ProjectAssetsListPage({"data": data.data});
-                    done();
-                });
+                myApp.controllers.assets.updatePage(myApp.controllers.pages.ProjectAssetsListPage, data.data.id, null);
             };
             $("#projectAssetListPage-title").html(myApp.data.projects[data.data.id]['project']['projects_name']);
             $("#allAssets").html('');
@@ -533,18 +534,11 @@ myApp.controllers = {
                 myApp.controllers.assets.projectAssetsPagePullRefresh.innerHTML = message;
             });
             myApp.controllers.assets.projectAssetsPagePullRefresh.onAction = function(done) {
-                myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
-                    myApp.data.projects[data.data.id] = projectData;
-                    myApp.controllers.pages.projectAssetsPage({"data": data.data});
-                    done();
-                });
+                myApp.controllers.assets.updatePage(myApp.controllers.pages.projectAssetsPage, data.data.id, done);
             };
             myApp.controllers.assets.projectAssetsPageTabs = document.querySelector('#scannedProjectAssetsTabs');
             myApp.controllers.assets.projectAssetsPageTabs.addEventListener('prechange', function() {
-                myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
-                    myApp.data.projects[data.data.id] = projectData;
-                    myApp.controllers.pages.projectAssetsPage({"data": data.data});
-                });
+                myApp.controllers.assets.updatePage(myApp.controllers.pages.projectAssetsPage, data.data.id, null);
             })
             $("#allProjectAssets").html("");
             $("#scannedProjectAssetsList").html("");
