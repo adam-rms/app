@@ -388,20 +388,12 @@ myApp.controllers = {
                 document.querySelector('#myNavigator').popPage();
             });
         },
-        unassignAsset: function(assetAssignment, assetId){
+        unassignAsset: function(assetAssignment, assetId, projectId){
+            data = {data: {id:projectId} };
             myApp.functions.apiCall("projects/assets/unassign.php", {"assetsAssignments_id":assetAssignment,"assets_id":assetId}, function () {
                 myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
                     myApp.data.projects[data.data.id] = projectData;
                     myApp.controllers.pages.ProjectAssetsListPage({"data": data.data});
-                    done();
-                });
-            });
-        },
-        deleteCrew: function(crewAssignments_id){
-            myApp.functions.apiCall("projects/crew/unassign.php", {"crewAssignments_id": crewAssignments_id}, function () {
-                myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
-                    myApp.data.projects[data.data.id] = projectData;
-                    myApp.controllers.pages.ProjectPage({"data": data.data});
                     done();
                 });
             });
@@ -411,16 +403,27 @@ myApp.controllers = {
         projectPage: function (data) {
             myApp.functions.apiCall("projects/data.php", {"id":data.data.id}, function (projectData) {
                 myApp.data.projects[data.data.id] = projectData;
+                //update static labels 
                 $("#projectPage-title").html(myApp.data.projects[data.data.id]['project']['projects_name']);
                 $("#projectPageTitle").html(myApp.data.projects[data.data.id]['project']['projects_name']);
+                $("#projectPageDescription").html((myApp.data.projects[data.data.id]['project']['projects_description'] != null ? '<p>' + myApp.data.projects[data.data.id]['project']['projects_description'] + '</p>' : '') + (myApp.data.projects[data.data.id]['project']['clients_name'] != null ? '<p>Client: ' + myApp.data.projects[data.data.id]['project']['clients_name'] + '</p>' : ''));
+                //setup button clicks
                 $("#projectPageAssetButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'projectAssets.html\', {data: {id: ' + data.data.id + '}});');
                 $("#projectPageAllAssetsButton").attr("onclick", 'document.querySelector(\'#myNavigator\').pushPage(\'projectAssetsList.html\', {data: {id: '+ data.data.id + '}});');
                 $("#projectPage-selectProject").attr("onclick", 'myApp.functions.setProject('+ data.data.id +')');
                 $("#projectPage-supermarketSweep").attr("onclick", 'myApp.functions.supermarketSweep('+ data.data.id +')');
+                //update asset status list
                 $("#projectPageAssetStatuses").html('');
                 $(myApp.data.projects[data.data.id]['assetsAssignmentsStatus']).each(function (index, element) {
                     $("#projectPageAssetStatuses").append("<option value='" + element['assetsAssignmentsStatus_id'] + "' " + (index == 0 ? 'selected' : '') + ">" + element['assetsAssignmentsStatus_name'] + "</option>");
                 });
+                //show asset status section if user has permission to change asset statuses
+                if (myApp.auth.instanceHasPermission(53)) {
+                    $("#projectPageScanAssets").show();
+                } else {
+                    $("#projectPageScanAssets").hide();
+                }
+                //update files if user has permission to view project files (permission 121)
                 $("#projectPageFilesList").html("");
                 if (myApp.auth.instanceHasPermission(121)) {
                     $("#projectPageFilesCard").show();
@@ -434,32 +437,29 @@ myApp.controllers = {
                             '</ons-list-item>');
                     });
                 } else {
+                    //hide card as user doesn't have permission
                     $("#projectPageFilesCard").hide();
                 }
-                $("#projectPageDescription").html((myApp.data.projects[data.data.id]['project']['projects_description'] != null ? '<p>' + myApp.data.projects[data.data.id]['project']['projects_description'] + '</p>' : '') + (myApp.data.projects[data.data.id]['project']['clients_name'] != null ? '<p>Client: ' + myApp.data.projects[data.data.id]['project']['clients_name'] + '</p>' : ''));
-
-                if (myApp.auth.instanceHasPermission(53)) {
-                    $("#projectPageScanAssets").show();
-                } else {
-                    $("#projectPageScanAssets").hide();
-                }
+                //show Crew card if user can View Project Crew (47) or can View & Apply for Crew Roles (124)
                 if (myApp.auth.instanceHasPermission(47) || myApp.auth.instanceHasPermission(124)) {
                     $("#projectPageCrewCard").show();
                     $("#projectPageCrewList").html("");
                     if (myApp.auth.instanceHasPermission(47)){
+                        //list crew
                         $(myApp.data.projects[data.data.id]['project']['crewAssignments']).each(function (index, element) {
                             $("#projectPageCrewList").append(
                                 '<ons-list-item modifier="longdivider" class="asset-assignment" data-crewAssignments_id="' + element['crewAssignments_id'] + '">' +
-                                (myApp.auth.instanceHasPermission(49) ? '<div class="left"><ons-button modifier="outline" onclick="myApp.controllers.assets.deleteCrew(' + element['crewAssignments_id'] + ')"><ons-icon icon="fa-trash"></ons-icon></ons-button></div>' : '') +
                                 '<div class="center"><span class="list-item__title">' + element['users_name1'] + ' ' + element['users_name2'] + '</span><span class="list-item__subtitle">' + element['crewAssignments_role'] + '</span></div>' +
                                 '</ons-list-item>'
                             );
                         });
                     }
+                    //show signup button
                     if (myApp.auth.instanceHasPermission(124)){
-                        $("#projectPageSignupButton").show();
+                        $("#projectPageCrewButton").show();
+                        $("#projectPageCrewButton").attr("onclick", 'myApp.functions.openBrowser(\'' + myApp.config.endpoint + 'project/crew/vacancies.php\')')
                     } else {
-                        $("#projectPageSignupButton").hide();
+                        $("#projectPageCrewButton").hide();
                     }
                 } else {
                     $("#projectPageCrewCard").hide();
@@ -467,6 +467,8 @@ myApp.controllers = {
             });
         },
         ProjectAssetsListPage: function (data){
+            console.log(data);
+            //list all project assets
             myApp.controllers.assets.projectAssetsPagePullRefresh = document.getElementById('projectAssetsListPullHook');
             myApp.controllers.assets.projectAssetsPagePullRefresh.addEventListener('changestate', function(event) {
                 var message = '';
@@ -496,7 +498,7 @@ myApp.controllers = {
                 for (const thisAssignment in assets) {
                     $(assets[thisAssignment]['assets']).each(function (index, element) {
                         $("#allAssets").append('<ons-list-item tappable modifier="longdivider" class="asset-assignment" data-assetassignmentid="' + element['assetsAssignments_id'] + '">' +
-                            (myApp.auth.instanceHasPermission(31) ? '<div class="left"><ons-button modifier="outline" onclick="myApp.controllers.assets.unassignAsset(' + element['assetsAssignments_id'] + ',' + element['assets_id'] +')"><ons-icon icon="fa-trash"></ons-icon></ons-button></div>' : '') +    
+                            (myApp.auth.instanceHasPermission(31) ? '<div class="left"><ons-button modifier="outline" onclick="myApp.controllers.assets.unassignAsset(' + element['assetsAssignments_id'] + ', ' + element['assets_id'] + ', ' + data.data.id +')"><ons-icon icon="fa-trash"></ons-icon></ons-button></div>' : '') +    
                             '<div class="center"><span class="list-item__title">' + element['assetTypes_name'] + (element['assetsAssignmentsStatus_name'] ? ' - ' + element['assetsAssignmentsStatus_name'] : '') + '</span><span class="list-item__subtitle">' + element['assetCategories_name'] + ' - ' + element['manufacturers_name'] + '</span></div>' +
                             '<div class="right" onclick="document.querySelector(\'#myNavigator\').pushPage(\'assetType.html\', {data: {id: ' + element['assetTypes_id'] + '}});">' +
                                 '<div class="list-item__label">' + element['assets_tag'].replace("-", "&#8209;") + '</div>' +
@@ -507,6 +509,7 @@ myApp.controllers = {
             });
         },
         projectAssetsPage: function (data) {
+            //list assets by status
             var newStatus = $("#projectPageAssetStatuses").val();
             if (!newStatus || newStatus == null) {
                 document.querySelector('#myNavigator').popPage();

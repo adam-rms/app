@@ -55,13 +55,12 @@ ons-splitter-side[side="left"][animation="overlay"] {
   font-family: -apple-system, 'Helvetica Neue', 'Helvetica', 'Arial', 'Lucida Grande', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 18px;
   margin: 4px 0 8px 0;
   padding: 0;
   display: block;
   box-sizing: border-box;
-  font-weight: 500;
 }
 
 .p-1 {
