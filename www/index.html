@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>AdamRMS</title>
 
-  <meta http-equiv="Content-Security-Policy" content="
+  <!--<meta http-equiv="Content-Security-Policy" content="
      default-src 'self' 'unsafe-eval' 'unsafe-inline' data: gap: https://adam-rms.com https://*.adam-rms.com https://ssl.gstatic.com file://*;
      base-uri 'self' *;
      media-src *;
@@ -12,7 +12,7 @@
      connect-src 'self' https://adam-rms.com https://*.adam-rms.com;
      script-src 'self' 'unsafe-inline' https://*.phonegap.com;
      frame-src *;
-    " />
+    " />-->
   <!-- Frame-src is to allow links -->
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
@@ -102,25 +102,45 @@
       <ons-modal class="loadingDialog">
         <img src='assets/cyc-fixture-loader.png' alt="loading page..." style="min-width:100%;height:25vh;" />
       </ons-modal>
-
-      <ons-page on-infinite-scroll="myApp.controllers.assets.fullAssetList">
-        <ons-pull-hook id="allAssetsListLoaderPullHook">
-          Pull to refresh
-        </ons-pull-hook>
-        <p style="text-align: center; margin-top: 10px;margin-bottom:10px;">
-          <ons-search-input
-                  placeholder="Search"
-                  onchange="myApp.controllers.assets.fullAssetListSearch(this.value)"
-          ></ons-search-input>
-        </p>
-        <ons-list id="allAssetsList">
-        </ons-list>
-        <div style="text-align: center;padding:10px;" id="allAssetsListLoader">
-          <ons-progress-circular indeterminate></ons-progress-circular>
-        </div>
+      
+      <ons-page>
+        <ons-card style="text-align: center;">
+          <img src="assets/logo.svg" alt="AdamRMS" style="max-width: 100%; max-height: 100px;">
+        </ons-card>
+        <ons-card>
+          <ons-row>
+            <ons-col>
+              <div class="home-item" tappable onclick="document.querySelector('#myNavigator').pushPage('assets.html');">
+                <ons-icon icon="fa-warehouse" size="75px"></ons-icon>
+                <p>All Assets</p>
+              </div>
+            </ons-col>
+            <ons-col>
+              <div tappable class="home-item" onclick="document.querySelector('#myNavigator').pushPage('projects.html');">
+                <ons-icon icon="fa-list" size="75px"></ons-icon>
+                <p>Projects</p>
+              </div>
+            </ons-col>
+          </ons-row>
+          <ons-row>
+            <ons-col>
+              <div class="home-item" tappable onclick="document.querySelector('#myNavigator').pushPage('cmsPages.html');">
+                <ons-icon icon="fa-newspaper" size="75px"></ons-icon>
+                <p>Pages</p>
+              </div>
+            </ons-col>
+            <ons-col>
+              <div tappable class="home-item" onclick="document.querySelector('#myNavigator').pushPage('about.html');">
+                <ons-icon icon="fa-info" size="75px"></ons-icon>
+                <p>About this App</p>
+              </div>
+            </ons-col>
+          </ons-row>
+        </ons-card>
       </ons-page>
     </ons-page>
   </template>
+
   <template id="project.html">
     <ons-page id="projectPage">
       <ons-toolbar>
@@ -219,6 +239,7 @@
       </ons-tabbar>
     </ons-page>
   </template>
+
   <template id="assetMaintenancePage.html">
     <ons-page id="assetMaintenancePage">
       <ons-toolbar>
@@ -258,6 +279,7 @@
       </ons-if>
     </ons-page>
   </template>
+
   <template id="cmsPage.html">
     <ons-page id="cmsPage">
       <ons-toolbar>
@@ -270,6 +292,7 @@
       <div id="cmsPageContent"></div>
     </ons-page>
   </template>
+
   <template id="editAssetTypePage.html">
     <ons-page id="editAssetTypePage">
       <ons-toolbar>
@@ -324,6 +347,7 @@
       </ons-if>-->
     </ons-page>
   </template>
+
   <template id="assetType.html">
     <ons-page id="assetTypePage">
       <ons-toolbar>
@@ -378,6 +402,7 @@
       </ons-if>
     </ons-page>
   </template>
+
   <template id="asset.html">
     <ons-page id="assetPage">
       <ons-toolbar>
@@ -428,6 +453,7 @@
       </ons-if>
     </ons-page>
   </template>
+
   <template id="about.html">
     <ons-page id="about">
       <ons-toolbar>
@@ -467,6 +493,56 @@
           </ons-list>
         </div>
       </ons-card>
+    </ons-page>
+  </template>
+
+  <template id="assets.html">
+    <ons-page id="assetsPage" on-infinite-scroll="myApp.controllers.assets.fullAssetList">
+      <ons-toolbar>
+        <div class="left">
+          <div class="left"><ons-back-button>Back</ons-back-button></div>
+        </div>
+        <div class="center">Assets</div>
+      </ons-toolbar>
+      <ons-pull-hook id="allAssetsListLoaderPullHook">
+        Pull to refresh
+      </ons-pull-hook>
+      <p style="text-align: center; margin-top: 10px;margin-bottom:10px;">
+        <ons-search-input
+                placeholder="Search"
+                onchange="myApp.controllers.assets.fullAssetListSearch(this.value)"
+        ></ons-search-input>
+      </p>
+      <ons-list id="allAssetsList">
+      </ons-list>
+      <div style="text-align: center;padding:10px;" id="allAssetsListLoader">
+        <ons-progress-circular indeterminate></ons-progress-circular>
+      </div>
+    </ons-page>
+  </template>
+
+  <template id="projects.html">
+    <ons-page id="projectsPage">
+      <ons-toolbar>
+        <div class="left">
+          <div class="left"><ons-back-button>Back</ons-back-button></div>
+        </div>
+        <div class="center">Projects</div>
+      </ons-toolbar>
+      <ons-list id="allProjectsList">
+      </ons-list>
+    </ons-page>
+  </template>
+
+  <template id="cmsPages.html">
+    <ons-page id="cmsPagesPage">
+      <ons-toolbar>
+        <div class="left">
+          <div class="left"><ons-back-button>Back</ons-back-button></div>
+        </div>
+        <div class="center">Pages</div>
+      </ons-toolbar>
+      <ons-list id="cmsPagesList"></ons-list>
     </ons-page>
   </template>
 </div>

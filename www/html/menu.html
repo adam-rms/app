@@ -30,9 +30,15 @@
         Barcode Manager
       </div>
     </ons-list-item>
+    <ons-list-item tappable modifier="longdivider" onclick="document.querySelector('#myNavigator').pushPage('assets.html')" >
+      <div class="left">
+        <ons-icon icon="fa-warehouse" style="color: grey;"></ons-icon>
+      </div>
+      <div class="center">All Assets</div>
+    </ons-list-item>
   </ons-list>
   <div id="cmsPages"></div>
-  <ons-list-title>Projects</ons-list-title>
+  <ons-list-title id="menu-projects-section">Projects</ons-list-title>
     <ons-list id="menu-projects-list">
     </ons-list>
   <ons-list-title>Settings</ons-list-title>

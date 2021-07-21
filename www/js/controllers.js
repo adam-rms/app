@@ -41,6 +41,7 @@ myApp.controllers = {
                             myApp.data.instanceID = element['instances_id'];
                             $("#menu-title").html(element['instances_name']);
                             if (myApp.auth.instanceHasPermission(20)) {
+                                $("#menu-projects-section").show();
                                 myApp.functions.apiCall("projects/list.php", {}, function (projectResult) {
                                     $("#menu-projects-list").html("");
                                     $(projectResult).each(function (index, element) {
@@ -53,6 +54,8 @@ myApp.controllers = {
                                             '</ons-list-item>');
                                     });
                                 });
+                            } else {
+                                $("#menu-projects-section").hide();
                             }
                             myApp.functions.apiCall("cms/list.php", {}, function (pagesResult) {
                                 let cmsPagesNavHtml = "";
@@ -753,30 +756,81 @@ myApp.controllers = {
                 });
             }
         },
+        assetsPage: function(data){
+            myApp.controllers.assets.fullAssetList(function(){}, null, true);
+            myApp.controllers.assets.fullAssetListPullRefresh = document.getElementById('allAssetsListLoaderPullHook');
+            setTimeout(function() {
+                if (myApp.controllers.assets.fullAssetListPullRefresh) {
+                    myApp.controllers.assets.fullAssetListPullRefresh.addEventListener('changestate', function(event) {
+                        var message = '';
+                        switch (event.state) {
+                            case 'initial':
+                                message = 'Pull to refresh';
+                                break;
+                            case 'preaction':
+                                message = 'Release';
+                                break;
+                            case 'action':
+                                message = 'Loading...';
+                                break;
+                        }
+                        myApp.controllers.assets.fullAssetListPullRefresh.innerHTML = message;
+                    });
+                    myApp.controllers.assets.fullAssetListPullRefresh.onAction = function(done) {
+                        myApp.controllers.assets.fullAssetList(done, null, true);
+                    };
+                }
+            }, (myApp.controllers.assets.fullAssetListPullRefresh ? 1 : 10000));
+        },
+        projectsPage: function(data){
+            if (myApp.auth.instanceHasPermission(20)) {
+                myApp.functions.apiCall("projects/list.php", {}, function (projectResult) {
+                    if (projectResult.length > 0) {
+                        $("#allProjectsList").html("");
+                        $(projectResult).each(function (index, element) {
+                            myApp.data.projects[element['projects_id']] = element;
+                            $("#allProjectsList").append('<ons-list-item tappable modifier="longdivider"  onclick="document.querySelector(\'#myNavigator\').pushPage(\'project.html\', {data: {id: ' + element['projects_id'] + '}});">' +
+                                '<div class="left">' +
+                                (element.thisProjectManager ? '<ons-icon icon="fa-star" style="color: #ffc107;"></ons-icon>' : '<ons-icon icon="fa-circle" style="color: grey;"></ons-icon>')+
+                                '</div>' +
+                                '<div class="center"><span class="list-item__title">' + element['projects_name'] + '</span><span class="list-item__subtitle">' + (element['clients_name'] || "") + '</span></div>' +
+                                '</ons-list-item>');
+                        });
+                    } else {
+                        $("#allProjectsList").html('<ons-card style="text-align: center;"><p class="title">There are no active projects</p><p>Head to the AdamRMS dashboard to create one.</p></ons-card>');
+                    }
+                });
+            } else {
+                $("#allProjectsList").html('<ons-card style="text-align: center;"><p class="title"> You don\'t have permission to view projects</p><p>Contact your Adam-RMS Administrator if this is a mistake.</p></ons-card>');
+            }
+        },
+        cmsPagesPage: function(data){
+            myApp.functions.apiCall("cms/list.php", {}, function (pagesResult) {
+                let cmsPagesNavHtml = "";
+                if (pagesResult.length > 0) {
+                    $(pagesResult).each(function (index, element) {
+                        if (element.SUBPAGES.length > 0) {
+                            cmsPagesNavHtml += '<ons-list-item expandable>' + element.cmsPages_name + '<div class="expandable-content">';
+                            cmsPagesNavHtml += ('<ons-list-item tappable modifier="longdivider" onclick="document.querySelector(\'#myNavigator\').pushPage(\'cmsPage.html\', {data: {\'id\': ' + element.cmsPages_id + '}});">' +
+                                element.cmsPages_name +
+                                '</ons-list-item>');
+                            $(element.SUBPAGES).each(function (index, element) {
+                                cmsPagesNavHtml += ('<ons-list-item tappable modifier="longdivider" onclick="document.querySelector(\'#myNavigator\').pushPage(\'cmsPage.html\', {data: {\'id\': ' + element.cmsPages_id + '}});">' +
+                                    element.cmsPages_name +
+                                    '</ons-list-item>');
+                            });
+                            cmsPagesNavHtml += '</div></ons-list-item>';
+                        } else {
+                            cmsPagesNavHtml += ('<ons-list-item tappable modifier="longdivider" onclick="document.querySelector(\'#myNavigator\').pushPage(\'cmsPage.html\', {data: {\'id\': ' + element.cmsPages_id + '}});">' +
+                                element.cmsPages_name +
+                                '</ons-list-item>');
+                        }
+                    });
+                } else {
+                    cmsPagesNavHtml = '<ons-card style="text-align: center;"><p class="title">No-one has created a page yet!</p><p>Head to the AdamRMS dashboard to create one.</p></ons-card>';
+                }
+                $("#cmsPagesList").html(cmsPagesNavHtml);
+            });
+        },
     }
 }
-ons.ready(function() {
-    myApp.controllers.assets.fullAssetListPullRefresh = document.getElementById('allAssetsListLoaderPullHook');
-    setTimeout(function() {
-        if (myApp.controllers.assets.fullAssetListPullRefresh) {
-            myApp.controllers.assets.fullAssetListPullRefresh.addEventListener('changestate', function(event) {
-                var message = '';
-                switch (event.state) {
-                    case 'initial':
-                        message = 'Pull to refresh';
-                        break;
-                    case 'preaction':
-                        message = 'Release';
-                        break;
-                    case 'action':
-                        message = 'Loading...';
-                        break;
-                }
-                myApp.controllers.assets.fullAssetListPullRefresh.innerHTML = message;
-            });
-            myApp.controllers.assets.fullAssetListPullRefresh.onAction = function(done) {
-                myApp.controllers.assets.fullAssetList(done, null, true);
-            };
-        }
-    }, (myApp.controllers.assets.fullAssetListPullRefresh ? 1 : 10000));
-});
