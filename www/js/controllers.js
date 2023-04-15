@@ -29,8 +29,8 @@ myApp.controllers = {
                             var i;
                             var arraylength = element['permissions'].length;
                             for (i = 0; i < arraylength; i++) {
-                                if (element['permissions'][i] != null && parseInt(element['permissions'][i]) !== NaN) {
-                                    element.permissionsArray.push(parseInt(element['permissions'][i]));
+                                if (element['permissions'][i] != null) {
+                                    element.permissionsArray.push(element['permissions'][i]);
                                 }
                             }
                         }
@@ -40,7 +40,7 @@ myApp.controllers = {
                             myApp.data.instance = element;
                             myApp.data.instanceID = element['instances_id'];
                             $("#menu-title").html(element['instances_name']);
-                            if (myApp.auth.instanceHasPermission(20)) {
+                            if (myApp.auth.instanceHasPermission("PROJECTS:VIEW")) {
                                 myApp.functions.apiCall("projects/list.php", {}, function (projectResult) {
                                     $("#menu-projects-list").html("");
                                     $(projectResult).each(function (index, element) {
@@ -82,7 +82,7 @@ myApp.controllers = {
                                 }
                                 $("#cmsPages").html(cmsPagesNavHtml);
                             });
-                            if (myApp.auth.instanceHasPermission(85)) {
+                            if (myApp.auth.instanceHasPermission("ASSETS:ASSET_BARCODES:VIEW:SCAN_IN_APP")) {
                                 $(".scanSpeedDial").show();
                                 $("#menu-asset-barcodeButton").show();
                             } else {
@@ -127,7 +127,7 @@ myApp.controllers = {
         },
         barcodeDeleteFAB: function() {
             if (myApp.auth.location.type !== false) {
-                if (myApp.auth.instanceHasPermission(86)) {
+                if (myApp.auth.instanceHasPermission("ASSETS:ASSET_BARCODES:DELETE")) {
                     myApp.functions.barcode.scan(false, function(text,type) {
                         if (text !== false) {
                             if (type === "Fake") {
@@ -182,7 +182,7 @@ myApp.controllers = {
                         //This is a totally random new barcode
                         var barcodeid = false;
                     }
-                    if (myApp.auth.instanceHasPermission(88)) {
+                    if (myApp.auth.instanceHasPermission("ASSETS:ASSET_BARCODES:EDIT:ASSOCIATE_UNNASOCIATED_BARCODES_WITH_ASSETS")) {
                         ons.notification.confirm({
                             title: "Unassociated Barcode",
                             message: "Would you like to associate it with an asset in " + myApp.data.instance['instances_name'] + "?",
@@ -248,7 +248,7 @@ myApp.controllers = {
                         "text": text,
                         "type": type
                     }, function (result) {
-                        if (myApp.auth.instanceHasPermission(59)) {
+                        if (myApp.auth.instanceHasPermission("ASSETS:EDIT")) {
                             ons.notification.confirm({
                                 title: "Change Asset Tag",
                                 message: 'Would you like to change the Asset\'s Tag to ' + text + '?',
@@ -385,7 +385,7 @@ myApp.controllers = {
                     $("#projectPageAssetStatuses").append("<option value='" + element['assetsAssignmentsStatus_id'] + "' " + (index == 0 ? 'selected' : '') + ">" + element['assetsAssignmentsStatus_name'] + "</option>");
                 });
                 $("#projectPageFilesList").html("");
-                if (myApp.auth.instanceHasPermission(121)) {
+                if (myApp.auth.instanceHasPermission("PROJECTS:PROJECT_PAYMENTS:VIEW:FILE_ATTACHMENTS")) {
                     $(myApp.data.projects[data.data.id]['files']).each(function (index, element) {
                         $("#projectPageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',false,myApp.functions.openBrowser);">' +
                             '<div class="left">' +
@@ -400,7 +400,7 @@ myApp.controllers = {
                     $("#projectPageDescription").html("Client: " + myApp.data.projects[data.data.id]['project']['clients_name']);
                 } else $("#projectPageDescription").html("");
 
-                if (myApp.auth.instanceHasPermission(53)) {
+                if (myApp.auth.instanceHasPermission("PROJECTS:PROJECT_ASSETS:EDIT:ASSIGNMENT_STATUS")) {
                     $("#projectPageScanAssets").show();
                 }
             });
@@ -528,7 +528,7 @@ myApp.controllers = {
                     };
                     var thisAsset = assetDownloadResult['assets'][0];
                     myApp.data.assetTypes[thisAsset['assetTypes_id']] = thisAsset;
-                    if (myApp.auth.instanceHasPermission(58)) {
+                    if (myApp.auth.instanceHasPermission("ASSETS:ASSET_TYPES:EDIT")) {
                         $(".assetTypePageEditButton").show();
                     } else {
                         $(".assetTypePageEditButton").hide();
@@ -569,7 +569,7 @@ myApp.controllers = {
 
                     //Files
                     $("#assetTypePageFilesList").html("");
-                    if (myApp.auth.instanceHasPermission(54)) {
+                    if (myApp.auth.instanceHasPermission("ASSETS:ASSET_TYPE_FILE_ATTACHMENTS:VIEW")) {
                         $(thisAsset['files']).each(function (index, element) {
                             myApp.functions.log(element);
                             $("#assetTypePageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',false,myApp.functions.openBrowser);">' +
@@ -594,7 +594,7 @@ myApp.controllers = {
                 }
             });
             myApp.functions.log(thisAsset);
-            if (myApp.auth.instanceHasPermission(18)) {
+            if (myApp.auth.instanceHasPermission("ASSETS:ASSET_TYPES:CREATE")) {
                 $(".assetPageMaintenanceButton").show();
             } else {
                 $(".assetPageMaintenanceButton").hide();
@@ -642,7 +642,7 @@ myApp.controllers = {
             //TODO associate with barcode
             //Files
             $("#assetPageFilesList").html("");
-            if (myApp.auth.instanceHasPermission(61)) {
+            if (myApp.auth.instanceHasPermission("ASSETS:ASSET_FILE_ATTACHMENTS:VIEW")) {
                 $(thisAsset['files']).each(function (index, element) {
                     myApp.functions.log(element);
                     $("#assetPageFilesList").append('<ons-list-item tappable modifier="longdivider" onclick="myApp.functions.s3url(' + element['s3files_id'] + ',false,myApp.functions.openBrowser);">' +

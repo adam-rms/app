@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.bstudios.adamrms" version="1.7.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.bstudios.adamrms" version="1.7.1" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>AdamRMS</name>
     <description>
         Rental Management System for Theatre, AV and Broadcast
@@ -93,10 +93,14 @@
         <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
         <uses-permission android:name="android.permission.FLASHLIGHT" />
         <uses-feature android:name="android.hardware.camera" android:required="true" />
+        <provider android:exported="true" />
+        <receiver android:exported="true" />
+        <activity android:exported="true"/>
+        <service android:exported="true"/>
     </edit-config>
     <preference name="android-installLocation" value="auto" />
     <preference name="android-minSdkVersion" value="28" />
-    <preference name="android-targetSdkVersion" value="30" />
+    <preference name="android-targetSdkVersion" value="31" />
     <preference name="android-build-tool" value="gradle" />
     <preference name="AndroidXEnabled" value="true" />
 
