@@ -1,6 +1,9 @@
 # AdamRMS App
 
-The AdamRMS app is a companion to the [AdamRMS Rental Management System](https://github.com/bstudios/adam-rms)
+> [!WARNING]  
+> This app has now been retired. [Screenshots of how it looked previously](/assets%20-%20not%20bundled/screenshots/Screenshots.md)
+
+The AdamRMS app is a companion to the [AdamRMS Rental Management System](https://github.com/adam-rms/adam-rms)
 
 # Debugging locally
 
